@@ -171,10 +171,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (!start || !end) return res.json({ title: null, events: null, code: 500, message: "Did not find start and end times." })
     
     // check if vercel is in prod and if it is, add 8 hours to the start and end times
-    // if (process.env.VERCEL_ENV == "production") {
-    //   start = addHours(start, 8)
-    //   end = addHours(end, 8)
-    // }
+    if (process.env.VERCEL_ENV == "production") {
+      start = addHours(start, 8)
+      end = addHours(end, 8)
+    }
     // if the time is before 8am, add 12 hours to it
     if (start.getHours() < 8) start = addHours(start, 12)
     if (end.getHours() < 8) end = addHours(end, 12)
