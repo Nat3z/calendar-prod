@@ -3,17 +3,34 @@ const matchRegex = /(.*?) (\d{1,2}:\d{2}(?: - |-|- )\d{1,2}:\d{2})(?:.*?)/gm;
 import axios from 'axios';
 import * as ical from 'node-ical';
 import * as ics from 'ics';
+
+function subtractHours(date: Date, hours: number) {
+  const newDate = new Date(date);
+  const currentHours = newDate.getUTCHours();
+  let newHours = currentHours - hours;
+  if (newHours >= 0) {
+      newDate.setUTCHours(newHours);
+  } else {
+      const daysToSubtract = Math.ceil(Math.abs(newHours) / 24);
+      newDate.setUTCDate(newDate.getUTCDate() - daysToSubtract);
+      newHours = 24*daysToSubtract + newHours;
+      newDate.setUTCHours(newHours);
+  }
+  return newDate;
+}
+
+
 function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday", excludeToday = false, refDate = new Date()) {
   const dayOfWeek = ["sun","mon","tue","wed","thu","fri","sat"]
     .indexOf(dayName.slice(0,3).toLowerCase());
   if (dayOfWeek < 0) return;
+  if (process.env.VERCEL_ENV === "production") {
+    refDate = subtractHours(refDate, 2)
+  }
+  
   refDate.setHours(0,0,0,0);
   refDate.setDate(refDate.getDate() + +!!excludeToday + 
     (dayOfWeek + 7 - refDate.getDay() - +!!excludeToday) % 7);
-  // check if currently in vercel prod, and if so, add +7 hours to date
-  if (process.env.VERCEL_ENV === "production") {
-    refDate.setHours(refDate.getHours() + 7)
-  }
   return refDate;
 }
 

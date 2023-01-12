@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 const events = scheduleData.events
-
+const utcOffset = 8 * 60 * 60 * 1000
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
 	// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
@@ -23,7 +23,7 @@ function replaceShorthands(period: string) {
 				<div class="flex flex-col justify-center items-center p-4">
 					<h1 class="text-lg md:text-3xl font-bold text-white text-center mb-4">{scheduleData.title}</h1>
 					{Object.entries(events).map(([key, value]) =>
-						<h1 id={key} class="text-white text-center text-lg md:text-3xl">{new Date(events[key].start * 1000).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - {new Date(events[key].end * 1000).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─── {replaceShorthands(key)}</h1>
+						<h1 id={key} class="text-white text-center text-lg md:text-3xl">{new Date(events[key].start * 1000 + utcOffset).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - {new Date(events[key].end * 1000 + utcOffset).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─── {replaceShorthands(key)}</h1>
 					)}
 				</div>
 			</div>
@@ -39,6 +39,7 @@ function replaceShorthands(period: string) {
 	<script>
 		const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 		const events = scheduleData.events
+		const utcOffset = 8 * 60 * 60 * 1000
 
 		function replaceShorthands(period: string) {
 			// replace period to Lunch if it's ONLY "L" with regex
@@ -52,14 +53,14 @@ function replaceShorthands(period: string) {
 			let success = false
 			let closestStart = 0
 			Object.entries(events).map(([key, value]) => {
-				if (now >= events[key].start && now <= events[key].end) {
+				if (now >= events[key].start + utcOffset && now <= events[key].end + utcOffset) {
 					document.getElementById(key)!.classList.add("font-bold")
 					// get minutes between end and now time and update the #current element
-					const minutes = Math.floor((events[key].end - now) / 60)
+					const minutes = Math.floor((events[key].end + utcOffset - now) / 60)
 					let text = ''
 					// if the minutes is below 1, then instead of minutes, show seconds
 					if (minutes < 1) {
-						text = `${replaceShorthands(key)} ("${Math.floor(events[key].end - now)})`
+						text = `${replaceShorthands(key)} ("${Math.floor(events[key].end + utcOffset - now)})`
 					} else {
 						text = `${replaceShorthands(key)} ('${minutes})`
 					}
@@ -71,8 +72,8 @@ function replaceShorthands(period: string) {
 					success = true
 				}
 
-				if (events[key].start - now > 0 && (closestStart == 0 || events[key].start - now < closestStart)) {
-					closestStart = events[key].start - now
+				if (events[key].start + utcOffset - now > 0 && (closestStart == 0 || events[key].start + utcOffset - now < closestStart)) {
+					closestStart = events[key].start + utcOffset - now
 				}
 			})
 
