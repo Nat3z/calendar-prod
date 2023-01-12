@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 const events = scheduleData.events
-console.log(events)
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
 	// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
@@ -15,6 +14,9 @@ function parseTime(t: string) {
 	if (!time) return new Date()
 	d.setHours( parseInt( time[1]) + (time[3] ? 12 : 0) )
 	d.setMinutes( parseInt( time[2]) || 0 )
+	if (d.getHours() < 8) {
+		d.setHours(d.getHours() + 12)
+	}
 	return d
 }
 ---
@@ -69,7 +71,6 @@ function parseTime(t: string) {
 		setInterval(() => {
 			// get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
 			let current = new Date()
-			
 			let now = moment(current.getTime()).unix()
 			let success = false
 			let closestStart = 0
@@ -117,12 +118,6 @@ function parseTime(t: string) {
 					// if not, then most likely just out of session
 					else {
 						let text = 'Out of Session'
-						// console.log(closestStart)
-						if (Math.floor(closestStart / 60) - offset < 1) {
-							text += ` ("${Math.floor(closestStart) - offset})`
-						} else {
-							text += ` ('${Math.floor(closestStart / 60) - offset})`
-						}
 						document.getElementById("current")!.innerHTML = text
 						if (!document.hasFocus()) {
 							document.title = text
@@ -134,9 +129,9 @@ function parseTime(t: string) {
 						// if the minutes is below 1, then instead of minutes, show seconds
 					
 						if (Math.floor(closestStart / 60) - offset < 1) {
-							text += ` ("${Math.floor(closestStart) - (offset * 60)})`
+							text += ` ("${Math.floor(closestStart) - offset})`
 						} else {
-							text += ` ('${Math.floor(closestStart / 60) - offset})`
+							text += ` ('${Math.floor(closestStart / 60) - (offset * 60)})`
 						}
 						document.getElementById("current")!.innerHTML = text
 						if (!document.hasFocus()) {
