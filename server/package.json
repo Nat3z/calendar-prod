@@ -1,0 +1,10 @@
+{
+	"dependencies": {
+		"@types/node": "^18.11.18",
+		"axios": "^1.2.2",
+		"node-ical": "^0.15.3"
+	},
+	"scripts": {
+		"dev": "tsc-watch --onSuccess \"node dist/app.js\""
+	}
+}
