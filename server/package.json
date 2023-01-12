@@ -4,6 +4,7 @@
 		"@types/node": "^18.11.18",
 		"axios": "^1.2.2",
 		"express": "^4.18.2",
+		"ics": "^2.41.0",
 		"node-ical": "^0.15.3"
 	},
 	"devDependencies": {
