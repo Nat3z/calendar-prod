@@ -2,7 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 const events = scheduleData.events
-const utcOffset = 8 * 60 * 60 * 1000
+let utcOffset = 8 * 60 * 60 * 1000
+// check if on vercel production and if so, set utcOffset to 0
+if (import.meta.env.NODE_ENV === 'production') {
+	utcOffset = 0
+}
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
 	// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
