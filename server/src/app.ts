@@ -1,8 +1,11 @@
 import ical, { VEvent } from 'node-ical'
 import axios from 'axios'
-const matchRegex = /(.*?) (\d{1,2}:\d{2}(?: - |-|- )\d{1,2}:\d{2})(?:.*?)/gm;
+import express from 'express'
 
-(async () => {
+const matchRegex = /(.*?) (\d{1,2}:\d{2}(?: - |-|- )\d{1,2}:\d{2})(?:.*?)/gm;
+const app = express()
+
+app.get('/', async (req, res) => {
   let ics = (await axios.get("https://www.salesian.com/data/calendar/icalcache/calendar_369.ics")).data
   // parse the ics file with node-ical
   let events = await ical.async.parseICS(ics)
@@ -18,7 +21,7 @@ const matchRegex = /(.*?) (\d{1,2}:\d{2}(?: - |-|- )\d{1,2}:\d{2})(?:.*?)/gm;
       return event.summary.match(matchRegex) != null
     }
   })  
-  if (!event) return console.error("Did not find VEvent for today")
+  if (!event) return res.send({ events: null, code: 500, message: "Did not find VEevent for today." })
   console.log(event.summary)
 
   let times = new Map<string, number[]>()
@@ -28,11 +31,11 @@ const matchRegex = /(.*?) (\d{1,2}:\d{2}(?: - |-|- )\d{1,2}:\d{2})(?:.*?)/gm;
     let time = matchedTime[2].replace(" - ", "-").replace(" ", "-").replace("- ", "-")
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
     
-    if (!time || !period) return console.error("Did not find time periods in event description. " + event.description)
+    if (!time || !period) return res.send({ events: null, code: 500, message: "Did not find event time period in event description." })
 
     let [start, end] = time.split("-").map(time => new Date(today.getFullYear(), today.getMonth(), today.getDate(), ...time.split(":").map(Number)))
     // get the period of the event
-    if (!start || !end) return console.error("Did not find start and end times in event description. " + event.description)
+    if (!start || !end) return res.send({ events: null, code: 500, message: "Did not find start and end times." })
     
     // if the time is before 8am, add 12 hours to it
     if (start.getHours() < 8) start.setHours(start.getHours() + 12)
@@ -41,5 +44,8 @@ const matchRegex = /(.*?) (\d{1,2}:\d{2}(?: - |-|- )\d{1,2}:\d{2})(?:.*?)/gm;
     times.set(period, [ start.getTime() / 1000, end.getTime() / 1000 ])
   }
 
-  console.log({ events: Object.fromEntries(times) })
-})()
+  return res.send({ events: Object.fromEntries(times), code: 200 })
+})
+app.listen(3001 || process.env.PORT, () => {
+  console.log('Server started on port 3001')
+})
