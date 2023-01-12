@@ -1,7 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
+const scheduleData = await ((await fetch('http://localhost:5000/api/schedule')).json())
 const events = scheduleData.events
+
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
 	// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
@@ -49,7 +50,7 @@ function parseTime(t: string) {
 
 	<script>
 		import moment from 'moment'
-		const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
+		const scheduleData = await ((await fetch('http://localhost:5000/api/schedule')).json())
 		const events = scheduleData.events
 
 		function replaceShorthands(period: string) {
@@ -83,10 +84,10 @@ function parseTime(t: string) {
 					const minutes = Math.floor((endTime - now) / 60)
 					let text = ''
 					// if the minutes is below 1, then instead of minutes, show seconds
-					if (minutes < 1) {
-						text = `${replaceShorthands(key)} ("${Math.floor(endTime - now)})`
+					if (endTime / 60 < 1) {
+						text += `${replaceShorthands(key)} (${Math.floor(minutes * 60)}")`
 					} else {
-						text = `${replaceShorthands(key)} ('${minutes})`
+						text += `${replaceShorthands(key)} (${Math.floor(minutes)}')`
 					}
 
 					document.getElementById("current")!.innerHTML = text
@@ -99,45 +100,44 @@ function parseTime(t: string) {
 					document.getElementById(key)!.classList.remove("font-bold")
 				}
 
-				if (startTime - now > 0 && (closestStart == 0)) {
+				if (startTime - now > 0 && (closestStart == 0 || startTime - now < closestStart)) {
 					closestStart = startTime - now
 				}
 			})
 
 			if (!success) {
 				// if it is still before 3:00 and after 8, most likely just passing period.
-				let rightNow = new Date()
-				if (rightNow.getUTCHours() < 15) {
-					let text = ''
-					let offset = 0
-					// if it is 8:00 AM, and before 20 minutes, then it is NOT passing period and is instead the start of the day. 
-					// Set offset to 10 to make the nearest event 10 minutes away from 8:30 AM, thus being the actual "Welcome Bell"
-					if (rightNow.getUTCHours() === 8 && rightNow.getUTCMinutes() < 20) { text = "Start of Day"; offset = 10 }
-					// if it is before 3:00 PM, and after or equal to 8:00 AM, then it is a passing period
-					else if (rightNow.getUTCHours() < 15 && rightNow.getUTCHours() >= 8) text = "Passing Period"
-					// if not, then most likely just out of session
-					else {
-						let text = 'Out of Session'
-						document.getElementById("current")!.innerHTML = text
-						if (!document.hasFocus()) {
-							document.title = text
-						}
-						success = true
+				let text = ''
+				let offset = 0
+				// if it is 8:00 AM, and before 20 minutes, then it is NOT passing period and is instead the start of the day. 
+				// Set offset to 10 to make the nearest event 10 minutes away from 8:30 AM, thus being the actual "Welcome Bell"
+				if (current.getHours() === 8 && current.getMinutes() < 20) { text = "Welcome Bell"; offset = 10 }
+				// if it is before 3:00 PM, and after or equal to 8:00 AM, then it is a passing period
+				else if (current.getHours() < 15 && current.getHours() >= 8) text = "Passing Period"
+				// if not, then most likely just out of session
+				else {
+					let text = 'Out of Session'
+					
+					document.getElementById("current")!.innerHTML = text
+					if (!document.hasFocus()) {
+						document.title = text
 					}
 
-					if (!success) {
-						// if the minutes is below 1, then instead of minutes, show seconds
-					
-						if (Math.floor(closestStart / 60) - offset < 1) {
-							text += ` ("${Math.floor(closestStart) - offset})`
-						} else {
-							text += ` ('${Math.floor(closestStart / 60) - (offset * 60)})`
-						}
-						document.getElementById("current")!.innerHTML = text
-						if (!document.hasFocus()) {
-							document.title = text
-						}	
+					success = true
+				}
+
+				if (!success) {
+					// if the minutes is below 1, then instead of minutes, show seconds
+				
+					if (closestStart / 60 - offset < 1) {
+						text += ` (${Math.floor(closestStart) - (offset * 60)}")`
+					} else {
+						text += ` (${Math.floor(closestStart / 60) - (offset)}')`
 					}
+					document.getElementById("current")!.innerHTML = text
+					if (!document.hasFocus()) {
+						document.title = text
+					}	
 				}
 
 			}

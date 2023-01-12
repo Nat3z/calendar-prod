@@ -131,6 +131,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let vEvents = Object.values(events).filter(event => event.type == "VEVENT")
   // get the current date and find the event in the ics
   let today = new Date()
+  if (process.env.VERCEL_ENV == "production") {
+    today = subtractHours(today, 8)
+  }
   /* @ts-ignore */
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
@@ -139,7 +142,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
       return event.description.match(matchRegex) != null
     }
-  })  
+  })
 
   // if the event is null in normal calendar, go to the fallback calendar
   if (!event) {
@@ -176,9 +179,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       end = addHours(end, 8)
     }
     // if the time is before 8am, add 12 hours to it
-    
-    // if (start.getUTCHours() < 8) start = addHours(start, 12)
-    // if (end.getUTCHours() < 8) start = addHours(end, 12)
+    if (start.getHours() < 8) start = addHours(start, 12)
+    if (end.getHours() < 8) end = addHours(end, 12)
     
     times.set(period, { start: start.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }) })
   }
