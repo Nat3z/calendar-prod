@@ -27,7 +27,7 @@ function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesd
   if (process.env.VERCEL_ENV === "production") {
     refDate = subtractHours(refDate, 2)
   }
-  
+
   refDate.setHours(0,0,0,0);
   refDate.setDate(refDate.getDate() + +!!excludeToday + 
     (dayOfWeek + 7 - refDate.getDay() - +!!excludeToday) % 7);
@@ -143,7 +143,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   if (!event) return res.json({ title: null, events: null, code: 500, message: "Did not find VEevent for today." })
   let title = event.summary
-  let times = new Map<string, { start: number, end: number }>()
+  let times = new Map<string, { start: string, end: string }>()
 
   let matchedTime: RegExpExecArray | null
   while ((matchedTime = matchRegex.exec(event.description)) !== null) {
@@ -160,7 +160,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (start.getHours() < 8) start.setHours(start.getHours() + 12)
     if (end.getHours() < 8) end.setHours(end.getHours() + 12)
 
-    times.set(period, { start: start.getTime() / 1000, end: end.getTime() / 1000 })
+    times.set(period, { start: start.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }) })
   }
 
   return res.json({ title, events: Object.fromEntries(times), code: 200 })
