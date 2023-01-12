@@ -10,6 +10,10 @@ function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesd
   refDate.setHours(0,0,0,0);
   refDate.setDate(refDate.getDate() + +!!excludeToday + 
     (dayOfWeek + 7 - refDate.getDay() - +!!excludeToday) % 7);
+  // check if currently in vercel prod, and if so, add +7 hours to date
+  if (process.env.VERCEL_ENV === "production") {
+    refDate.setHours(refDate.getHours() + 7)
+  }
   return refDate;
 }
 

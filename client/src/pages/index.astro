@@ -10,7 +10,7 @@ function replaceShorthands(period: string) {
 }
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="DynSchedule">
 	<body>
 		<div class="flex justify-center items-center w-screen h-screen">
 
@@ -50,6 +50,7 @@ function replaceShorthands(period: string) {
 		setInterval(() => {
 			const now = new Date().getTime() / 1000
 			let success = false
+			let closestStart = 0
 			Object.entries(events).map(([key, value]) => {
 				if (now >= events[key].start && now <= events[key].end) {
 					document.getElementById(key)!.classList.add("font-bold")
@@ -69,14 +70,48 @@ function replaceShorthands(period: string) {
 					}
 					success = true
 				}
+
+				if (events[key].start - now > 0 && (closestStart == 0 || events[key].start - now < closestStart)) {
+					closestStart = events[key].start - now
+				}
 			})
 
 			if (!success) {
-				let text = 'Out of Session'
-				document.getElementById("current")!.innerHTML = text
-				if (!document.hasFocus()) {
-					document.title = text
+				// if it is still before 3:00 and after 8, most likely just passing period.
+				let rightNow = new Date()
+				if (rightNow.getUTCHours() < 15) {
+					let text = ''
+					let offset = 0
+					// if it is 8:00 AM, and before 20 minutes, then it is NOT passing period and is instead the start of the day. 
+					// Set offset to 10 to make the nearest event 10 minutes away from 8:30 AM, thus being the actual "Welcome Bell"
+					if (rightNow.getUTCHours() === 8 && rightNow.getUTCMinutes() < 20) { text = "Start of Day"; offset = 10 }
+					// if it is before 3:00 PM, and after or equal to 8:00 AM, then it is a passing period
+					else if (rightNow.getUTCHours() < 15 && rightNow.getUTCHours() >= 8) text = "Passing Period"
+					// if not, then most likely just out of session
+					else {
+						let text = 'Out of Session'
+						document.getElementById("current")!.innerHTML = text
+						if (!document.hasFocus()) {
+							document.title = text
+						}
+						success = true
+					}
+
+					if (!success) {
+						// if the minutes is below 1, then instead of minutes, show seconds
+					
+						if (Math.floor(closestStart / 60) - offset < 1) {
+							text += ` ("${Math.floor(closestStart) - (offset * 60)})`
+						} else {
+							text += ` ('${Math.floor(closestStart / 60) - offset})`
+						}
+						document.getElementById("current")!.innerHTML = text
+						if (!document.hasFocus()) {
+							document.title = text
+						}	
+					}
 				}
+
 			}
 
 			if (document.hasFocus()) document.title = `DynSchedule`
