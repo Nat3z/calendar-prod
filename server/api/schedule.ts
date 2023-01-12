@@ -177,8 +177,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     }
     // if the time is before 8am, add 12 hours to it
     
-    if (start.getHours() < 8) start = addHours(start, 12)
-    if (end.getHours() < 8) start = addHours(end, 12)
+    if (start.getUTCHours() < 8) start = addHours(start, 12)
+    if (end.getUTCHours() < 8) start = addHours(end, 12)
     
     times.set(period, { start: start.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }) })
   }
