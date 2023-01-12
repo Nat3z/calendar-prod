@@ -180,7 +180,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // if (start.getUTCHours() < 8) start = addHours(start, 12)
     // if (end.getUTCHours() < 8) start = addHours(end, 12)
     
-    times.set(period, { start: start.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }) })
+    times.set(period, { start: start.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }) })
   }
 
   return res.json({ title, events: Object.fromEntries(times), code: 200 })
