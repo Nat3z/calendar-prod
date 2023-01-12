@@ -156,10 +156,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // get the period of the event
     if (!start || !end) return res.json({ title: null, events: null, code: 500, message: "Did not find start and end times." })
     
+    // check if vercel is in prod and if it is, add 8 hours to the start and end times
+    if (process.env.VERCEL_ENV == "production") {
+      start.setHours(start.getHours() + 8)
+      end.setHours(end.getHours() + 8)
+    }
     // if the time is before 8am, add 12 hours to it
+    
     if (start.getHours() < 8) start.setHours(start.getHours() + 12)
     if (end.getHours() < 8) end.setHours(end.getHours() + 12)
-
+    
     times.set(period, { start: start.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }) })
   }
 
