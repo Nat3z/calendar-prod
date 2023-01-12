@@ -6,6 +6,7 @@ specifiers:
   axios: ^1.2.2
   express: ^4.18.2
   node-ical: ^0.15.3
+  typescript: ^4.9.4
 
 dependencies:
   '@types/express': 4.17.15
@@ -13,6 +14,9 @@ dependencies:
   axios: 1.2.2
   express: 4.18.2
   node-ical: 0.15.3
+
+devDependencies:
+  typescript: 4.9.4
 
 packages:
 
@@ -551,6 +555,12 @@ packages:
       media-typer: 0.3.0
       mime-types: 2.1.35
     dev: false
+
+  /typescript/4.9.4:
+    resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
 
   /unpipe/1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
