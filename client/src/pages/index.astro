@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-const scheduleData = await ((await fetch('http://localhost:5000/api/schedule')).json())
+const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 const events = scheduleData.events
 
 function replaceShorthands(period: string) {
@@ -50,7 +50,7 @@ function parseTime(t: string) {
 
 	<script>
 		import moment from 'moment'
-		const scheduleData = await ((await fetch('http://localhost:5000/api/schedule')).json())
+		const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 		const events = scheduleData.events
 
 		function replaceShorthands(period: string) {
