@@ -19,6 +19,20 @@ function subtractHours(date: Date, hours: number) {
   return newDate;
 }
 
+function addHours(date: Date, hours: number) {
+  const newDate = new Date(date);
+  const currentHours = newDate.getUTCHours();
+  const newHours = currentHours + hours;
+  if (newHours < 24) {
+      newDate.setUTCHours(newHours);
+  } else {
+      const daysToAdd = Math.floor(newHours / 24);
+      newDate.setUTCDate(newDate.getUTCDate() + daysToAdd);
+      newDate.setUTCHours(newHours % 24);
+  }
+  return newDate;
+}
+
 
 function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday", excludeToday = false, refDate = new Date()) {
   const dayOfWeek = ["sun","mon","tue","wed","thu","fri","sat"]
@@ -158,13 +172,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     
     // check if vercel is in prod and if it is, add 8 hours to the start and end times
     if (process.env.VERCEL_ENV == "production") {
-      start.setHours(start.getHours() + 8)
-      end.setHours(end.getHours() + 8)
+      start = addHours(start, 8)
+      end = addHours(end, 8)
     }
     // if the time is before 8am, add 12 hours to it
     
-    if (start.getHours() < 8) start.setHours(start.getHours() + 12)
-    if (end.getHours() < 8) end.setHours(end.getHours() + 12)
+    if (start.getHours() < 8) start = addHours(start, 12)
+    if (end.getHours() < 8) start = addHours(end, 12)
     
     times.set(period, { start: start.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-us', { timeZone: "PST", hour: 'numeric', minute: "2-digit", hour12: true }) })
   }
