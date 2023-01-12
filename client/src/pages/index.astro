@@ -1,16 +1,63 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
+const events = scheduleData.events
+
+function replaceShorthands(period: string) {
+	// replace period to Lunch if it's ONLY "L" with regex
+	// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
+	return period.replace(/(\d) Blk/, "Block $1").replace(/L/, "Lunch")
+}
 ---
 
 <Layout title="Welcome to Astro.">
 	<body>
 		<div class="flex justify-center items-center w-screen h-screen">
 
-			<div class="bg-primary w-11/12 h-5/6 rounded-lg">
+			<div class="bg-primary w-11/12 h-5/6 rounded-lg flex-col flex-wrap justify-center">
+				
+				<div class="w-full h-1/4 flex justify-center items-center rounded-t-lg bg-light-primary">
+					<h1 class="text-center text-white text-4xl" id="current">Out of Session</h1>
+				</div>
 
+				<div class="flex flex-col justify-center items-center p-4">
+					<h1 class="text-4xl font-bold text-white text-center mb-4">{scheduleData.title}</h1>
+					{Object.entries(events).map(([key, value]) =>
+						<h1 id={key} class="text-white text-center text-3xl">{new Date(events[key].start * 1000).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - {new Date(events[key].end * 1000).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─── {replaceShorthands(key)}</h1>
+					)}
+				</div>
 			</div>
 		</div>
 	</body>
+
+	<script>
+		const scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
+		const events = scheduleData.events
+
+		function replaceShorthands(period: string) {
+			// replace period to Lunch if it's ONLY "L" with regex
+			// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
+			return period.replace(/(\d) Blk/, "Block $1").replace(/L/, "Lunch")
+		}
+
+		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
+		setInterval(() => {
+			const now = new Date().getTime() / 1000
+			Object.entries(events).map(([key, value]) => {
+				if (now >= events[key].start && now <= events[key].end) {
+					document.getElementById(key)!.classList.add("font-bold")
+					// get minutes between end and now time and update the #current element
+					const minutes = Math.floor((events[key].end - now) / 60)
+					// if the minutes is below 1, then instead of minutes, show seconds
+					if (minutes < 1) {
+						document.getElementById("current")!.innerHTML = `${replaceShorthands(key)} ("${Math.floor(events[key].end - now)})`
+					} else {
+						document.getElementById("current")!.innerHTML = `${replaceShorthands(key)} ('${minutes})`
+					}
+				}
+			})
+		}, 100)
+	</script>
 
 </Layout>
 
