@@ -6,7 +6,7 @@
     "module": "commonjs",
     "target": "es2021",
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "api",
 
     "strict": true,
     "esModuleInterop": true,

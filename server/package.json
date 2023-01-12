@@ -6,12 +6,8 @@
 		"express": "^4.18.2",
 		"node-ical": "^0.15.3"
 	},
-	"scripts": {
-		"dev": "tsc-watch --onSuccess \"node dist/app.js\"",
-		"build": "tsc",
-		"start": "node dist/app.js"
-	},
 	"devDependencies": {
+		"@vercel/node": "^2.8.6",
 		"typescript": "^4.9.4"
 	}
 }
