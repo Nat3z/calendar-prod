@@ -1,4 +1,5 @@
 ---
+import moment from 'moment';
 import Layout from '../layouts/Layout.astro';
 const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 const events = scheduleData.events
@@ -9,16 +10,13 @@ function replaceShorthands(period: string) {
 	return period.replace(/(\d) Blk/, "Block $1").replace(/L/, "Lunch")
 }
 
-function parseTime(t: string) {
-	var d = new Date()
-	var time = t.match( /(\d+)(?::(\d\d))?\s*(p?)/ )
-	if (!time) return new Date()
-	d.setHours( parseInt( time[1]) + (time[3] ? 12 : 0) )
-	d.setMinutes( parseInt( time[2]) || 0 )
-	if (d.getHours() < 8) {
-		d.setHours(d.getHours() + 12)
+function parseTime(t: string, offsetTime = new Date()) {
+	let momentDate = moment(t, "h:mm A").toDate()
+	if (momentDate.getHours() < 8) {
+		momentDate.setHours(momentDate.getHours() + 12)
+		
 	}
-	return d
+	return momentDate
 }
 ---
 
@@ -59,13 +57,12 @@ function parseTime(t: string) {
 			return period.replace(/(\d) Blk/, "Block $1").replace(/L/, "Lunch")
 		}
 
-		function parseTime(t: string) {
-			var d = new Date()
-			var time = t.match( /(\d+)(?::(\d\d))?\s*(p?)/ )
-			if (!time) return new Date()
-			d.setHours( parseInt( time[1]) + (time[3] ? 12 : 0) )
-			d.setMinutes( parseInt( time[2]) || 0 )
-			return d
+		function parseTime(t: string, offsetTime = new Date()) {
+			let momentDate = moment(t, "h:mm A").toDate()
+			if (momentDate.getHours() < 8) {
+				momentDate.setHours(momentDate.getHours() + 12)
+			}
+			return momentDate
 		}
 
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
@@ -76,25 +73,29 @@ function parseTime(t: string) {
 			let success = false
 			let closestStart = 0
 			Object.entries(events).map(([key, value]) => {
-				let startTime = moment(parseTime(events[key].start)).unix()
-				let endTime = moment(parseTime(events[key].end)).unix()
+				let startTime = moment(parseTime(events[key].start, current)).unix()
+				let endTime = moment(parseTime(events[key].end, current)).unix()
 				if (now >= startTime && now <= endTime) {
 					document.getElementById(key)!.classList.add("font-bold")
 					// get minutes between end and now time and update the #current element
 					const minutes = Math.floor((endTime - now) / 60)
-					let text = ''
-					// if the minutes is below 1, then instead of minutes, show seconds
-					if (endTime / 60 < 1) {
-						text += `${replaceShorthands(key)} (${Math.floor(minutes * 60)}")`
-					} else {
-						text += `${replaceShorthands(key)} (${Math.floor(minutes)}')`
+					if (Math.floor(minutes * 60) !== 0) {
+						let text = ''
+						// if the minutes is below 1, then instead of minutes, show seconds
+						if (endTime / 60 < 1) {
+							text += `${replaceShorthands(key)} (${Math.floor(minutes * 60)}")`
+						} else {
+							text += `${replaceShorthands(key)} (${Math.floor(minutes)}')`
+						}
+
+						document.getElementById("current")!.innerHTML = text
+						if (!document.hasFocus()) {
+							document.title = text
+						}
+						
+						success = true
 					}
 
-					document.getElementById("current")!.innerHTML = text
-					if (!document.hasFocus()) {
-						document.title = text
-					}
-					success = true
 				}
 				else {
 					document.getElementById(key)!.classList.remove("font-bold")
