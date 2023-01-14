@@ -81,14 +81,14 @@ function parseTime(t: string, offsetTime = new Date()) {
 				if (now >= startTime && now <= endTime) {
 					document.getElementById(key)!.classList.add("font-bold")
 					// get minutes between end and now time and update the #current element
-					const minutes = Math.floor((endTime - now) / 60)
-					if (Math.floor(minutes * 60) !== 0) {
+					const minutes = Math.ceil((endTime - now) / 60)
+					if (Math.ceil(minutes * 60) !== 0) {
 						let text = ''
 						// if the minutes is below 1, then instead of minutes, show seconds
 						if (endTime / 60 < 1) {
-							text += `${replaceShorthands(key)} (${Math.floor(minutes * 60)}")`
+							text += `${replaceShorthands(key)} (${Math.ceil(minutes * 60)}")`
 						} else {
-							text += `${replaceShorthands(key)} (${Math.floor(minutes)}')`
+							text += `${replaceShorthands(key)} (${Math.ceil(minutes)}')`
 						}
 
 						document.getElementById("current")!.innerHTML = text
@@ -134,9 +134,9 @@ function parseTime(t: string, offsetTime = new Date()) {
 					// if the minutes is below 1, then instead of minutes, show seconds
 				
 					if (closestStart / 60 - offset < 1) {
-						text += ` (${Math.floor(closestStart) - (offset * 60)}")`
+						text += ` (${Math.ceil(closestStart) - (offset * 60)}")`
 					} else {
-						text += ` (${Math.floor(closestStart / 60) - (offset)}')`
+						text += ` (${Math.ceil(closestStart / 60) - (offset)}')`
 					}
 					document.getElementById("current")!.innerHTML = text
 					if (!document.hasFocus()) {
