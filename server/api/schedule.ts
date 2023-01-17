@@ -131,6 +131,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let vEvents = Object.values(events).filter(event => event.type == "VEVENT")
   // get the current date and find the event in the ics
   let today = new Date()
+  today.setDate(17)
   /* @ts-ignore */
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
@@ -161,7 +162,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   let matchedTime: RegExpExecArray | null
   while ((matchedTime = matchRegex.exec(event.description)) !== null) {
-    let time = matchedTime[2].replace(" - ", "-").replace(" ", "-").replace("- ", "-")
+    let time = matchedTime[2].replace(" ", "").trim()
+    console.log(time)
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
     
     if (!time || !period) return res.json({ title: null, events: null, code: 500, message: "Did not find event time period in event description." })
@@ -173,6 +175,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // check if vercel is in prod and if it is, add 8 hours to the start and end times
     if (process.env.VERCEL_ENV == "production") {
       start = addHours(start, 8)
+      console.log(end)
       end = addHours(end, 8)
     }
     // if the time is before 8am, add 12 hours to it
