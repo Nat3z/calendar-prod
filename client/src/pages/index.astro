@@ -35,7 +35,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 					{events && Object.entries(events).map(([key, value]) =>
 						<h1 id={key} class="text-white text-center text-lg md:text-3xl">{parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - {parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─── {replaceShorthands(key)}</h1>
 					)}
-					{!events && <h1 class="text-white text-center text-lg md:text-3xl">No classes today</h1>}
+					{(events === null || events === undefined) && <h1 class="text-white text-center text-lg md:text-3xl">No classes today</h1>}
 				</div>
 			</div>
 		</div>
