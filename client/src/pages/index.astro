@@ -30,8 +30,8 @@ function parseTime(t: string, offsetTime = new Date()) {
 					<h1 class="text-center text-white text-4xl md:text-6xl" id="current">Out of Session</h1>
 				</div>
 
-				<div class="flex flex-col justify-center items-center p-4">
-					<h1 class="text-lg md:text-3xl font-bold text-white text-center mb-4">{scheduleData.title}</h1>
+				<div class="flex flex-col justify-center items-center p-4" id="classes">
+					<h1 class="text-lg md:text-3xl font-bold text-white text-center mb-4" id="title">{scheduleData.title}</h1>
 					{events && Object.entries(events).map(([key, value]) =>
 						<h1 id={key} class="text-white text-center text-lg md:text-3xl">{parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - {parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─── {replaceShorthands(key)}</h1>
 					)}
@@ -65,7 +65,8 @@ function parseTime(t: string, offsetTime = new Date()) {
 			}
 			return momentDate
 		}
-
+		
+		document.getElementById("title")!.textContent = replaceShorthands(scheduleData.title)
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
 		setInterval(() => {
 			// get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
@@ -78,6 +79,16 @@ function parseTime(t: string, offsetTime = new Date()) {
 			Object.entries(events).map(([key, value]) => {
 				let startTime = moment(parseTime(events[key].start, current)).unix()
 				let endTime = moment(parseTime(events[key].end, current)).unix()
+				let docKey = document.getElementById(key)
+				if (!docKey) {
+					// add to classes the current period
+					document.getElementById("classes")!.innerHTML += `
+						<h1 id="${key}" class="text-white text-center text-lg md:text-3xl">
+							${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─── ${replaceShorthands(key)}
+						</h1>
+					`
+				}
+
 				if (now >= startTime && now <= endTime) {
 					document.getElementById(key)!.classList.add("font-bold")
 					// get minutes between end and now time and update the #current element
