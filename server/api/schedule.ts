@@ -162,8 +162,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   let matchedTime: RegExpExecArray | null
   while ((matchedTime = matchRegex.exec(event.description)) !== null) {
-    let time = matchedTime[2].replace(" ", "").trim()
-    console.log(time)
+    let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
     
     if (!time || !period) return res.json({ title: null, events: null, code: 500, message: "Did not find event time period in event description." })
