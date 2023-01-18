@@ -29,7 +29,6 @@ function parseTime(t: string, offsetTime = new Date()) {
 				</div>
 
 				<div class="flex flex-col justify-center items-center p-4" id="classes">
-					<h1 class="text-lg md:text-3xl font-bold text-white text-center mb-4" id="title"></h1>
 				</div>
 			</div>
 		</div>
@@ -60,7 +59,6 @@ function parseTime(t: string, offsetTime = new Date()) {
 			return momentDate
 		}
 		
-		document.getElementById("title")!.textContent = replaceShorthands(scheduleData.title)
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
 		setInterval(() => {
 			// get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
@@ -76,7 +74,9 @@ function parseTime(t: string, offsetTime = new Date()) {
 				let docKey = document.getElementById(key)
 				if (!hasClearedAllDocs && !docKey) {
 					hasClearedAllDocs = true
-					document.getElementById("classes")!.innerHTML = ""
+					document.getElementById("classes")!.innerHTML = `
+					<h1 class="text-lg md:text-3xl font-bold text-white text-center mb-4" id="title">${replaceShorthands(scheduleData.title)}</h1>
+					`
 				}
 
 				if (!docKey) {
