@@ -165,7 +165,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
     
-    if (!time || !period) return res.json({ title: null, events: null, code: 500, message: "Did not find event time period in event description." })
+    if (time.match(/^[a-zA-Z]/)) {
+      // if this is the case, then just inverse the props
+      let currentperiod = time
+      time = period
+      period = currentperiod
+    }
+    if (!time || !period || !time.match(/[0-9]:[0-9]/)) continue;
 
     let [start, end] = time.split("-").map(time => new Date(today.getFullYear(), today.getMonth(), today.getDate(), ...time.split(":").map(Number)))
     // get the period of the event
