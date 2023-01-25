@@ -189,5 +189,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     times.set(period, { start: start.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }) })
   }
 
+  res = res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
   return res.json({ title, events: Object.fromEntries(times), code: 200 })
 }
