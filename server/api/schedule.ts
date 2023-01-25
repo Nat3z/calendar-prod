@@ -167,7 +167,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     
     if (time.match(/^[a-zA-Z]/)) {
       // if this is the case, then just inverse the props
-      let currentperiod = time
+      let currentperiod = `${time}`
       time = period
       period = currentperiod
     }
