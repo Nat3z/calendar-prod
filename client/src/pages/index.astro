@@ -5,7 +5,7 @@ import Layout from '../layouts/Layout.astro';
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
 	// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-	return period.replace(/(\d) Blk/, "Block $1").replace(/L/, "Lunch")
+	return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch")
 }
 
 function parseTime(t: string, offsetTime = new Date()) {
@@ -48,7 +48,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 		function replaceShorthands(period: string) {
 			// replace period to Lunch if it's ONLY "L" with regex
 			// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-			return period.replace(/(\d) Blk/, "Block $1").replace(/L/, "Lunch")
+			return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch")
 		}
 
 		function parseTime(t: string, offsetTime = new Date()) {
