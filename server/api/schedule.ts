@@ -1,4 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
+const matchRegex_inverse = /(\d{1,2}:\d{2}(?:.*?)(?: - |-|- )\d{1,2}:\d{2})(?:.*?) (.*)/gm;
+
 const matchRegex = /(.*?) (\d{1,2}:\d{2}(?: - |-|- )\d{1,2}:\d{2})(?:.*?)/gm;
 import axios from 'axios';
 import * as ical from 'node-ical';
@@ -93,6 +95,7 @@ function generateFallbacks() {
     description: `7 Blk 8:30 - 9:30
     1 Blk 9:45 - 11:00
     L 11:00 - 11:40
+    2 Blk 11:45 - 1:00
     3 Blk 1:10 - 2:25
     Flex - 2:30 - 3:00`
   }, {
@@ -161,16 +164,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let times = new Map<string, { start: string, end: string }>()
 
   let matchedTime: RegExpExecArray | null
-  while ((matchedTime = matchRegex.exec(event.description)) !== null) {
+  while ((matchedTime = matchRegex.exec(event.description)) !== null || (matchedTime = matchRegex_inverse.exec(event.description)) !== null) {
     let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
-    
+
     if (time.match(/^[a-zA-Z]/)) {
       // if this is the case, then just inverse the props
-      let currentperiod = `${time}`
-      time = period
-      period = currentperiod
+      time = matchedTime[1].replaceAll(" ", "").trim()
+      period = matchedTime[2].replace("-", "").replace(":", "").trim()
     }
+
     if (!time || !period || !time.match(/[0-9]:[0-9]/)) continue;
 
     let [start, end] = time.split("-").map(time => new Date(today.getFullYear(), today.getMonth(), today.getDate(), ...time.split(":").map(Number)))
@@ -189,6 +192,18 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     times.set(period, { start: start.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }) })
   }
 
+  let sortedTimes = new Map([...times.entries()].sort((a, b) => {
+    let [aStart, bStart] = [a[1].start, b[1].start].map(time => {
+      // regex to match time, "8:30 PM" or "12:05 PM" ignore the time delta
+      let [, hour, minute] = (/([0-9]+):([0-9]+) [AP]M/).exec(time)!
+      if (!hour || !minute) return 0
+      let hour_num = Number(hour)
+      if (hour_num < 8) hour_num += 12
+      let minute_num = Number(minute)
+      return hour_num * 60 + minute_num
+    })
+    return aStart - bStart
+  }))
   res = res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
-  return res.json({ title, events: Object.fromEntries(times), code: 200 })
+  return res.json({ title, events: Object.fromEntries(sortedTimes), code: 200 })
 }
