@@ -42,8 +42,8 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 	<script>
 		import moment from 'moment'
-		const scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
-		const events = scheduleData.events
+		let scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
+		let events = scheduleData.events
 
 		function replaceShorthands(period: string) {
 			// replace period to Lunch if it's ONLY "L" with regex
@@ -57,6 +57,14 @@ function parseTime(t: string, offsetTime = new Date()) {
 				momentDate.setHours(momentDate.getHours() + 12)
 			}
 			return momentDate
+		}
+		if (!events || events.length === 0) {
+			document.getElementById("current")!.innerHTML = "Out of Session"
+			document.getElementById("classes")!.innerHTML += `
+				<h1 id="failed" class="text-white text-center text-lg md:text-3xl">
+					No classes today
+				</h1>
+			`
 		}
 		
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
@@ -158,6 +166,12 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 			if (document.hasFocus()) document.title = `DynSchedule`
 		}, 100)
+
+		setInterval(async () => {
+			scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
+			events = scheduleData.events
+			console.log("Refetched schedule")
+		}, 5 * 60 * 60 * 1000);
 	</script>
 
 </Layout>
