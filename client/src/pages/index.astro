@@ -104,7 +104,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 			
 				document.body.classList.remove("bg-dark-primary")
 				document.body.style.cursor = "none"
-			}, 2000);
+			}, 5000);
 		}
 		document.onmousemove = mouseMove
 		mouseMove()
@@ -145,7 +145,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 					if (Math.ceil(minutes * 60) !== 0) {
 						let text = ''
 						// if the minutes is below 1, then instead of minutes, show seconds
-						if (minutes / 60 < 1) {
+						if (minutes <= 1) {
 							text += `${replaceShorthands(key)} (${Math.ceil((endTime - now))}")`
 						} else {
 							text += `${replaceShorthands(key)} (${Math.ceil(minutes)}')`
@@ -213,7 +213,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 			scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 			events = scheduleData.events
 			console.log("Refetched schedule")
-		}, 5 * 60 * 60 * 1000);
+		}, 1 * 60 * 60 * 1000);
 	</script>
 
 </Layout>
