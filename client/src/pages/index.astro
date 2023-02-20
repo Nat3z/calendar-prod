@@ -22,9 +22,9 @@ function parseTime(t: string, offsetTime = new Date()) {
 	<body>
 		<div class="flex justify-center items-center w-screen h-screen">
 
-			<div class="bg-primary w-11/12 h-5/6 rounded-lg flex-col flex-wrap justify-center">
+			<div class="bg-primary w-11/12 transition-all h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg" id="main_schedule">
 				
-				<div class="w-full h-1/4 flex justify-center items-center rounded-t-lg bg-light-primary">
+				<div class="w-full h-1/4 flex justify-center items-center rounded-t-lg bg-light-primary transition-all" id="quickpeek">
 					<h1 class="text-center text-white text-4xl md:text-6xl" id="current">Loading</h1>
 				</div>
 
@@ -34,7 +34,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 		</div>
 
 		<div class="hidden sm:block fixed bottom-4 w-full">
-			<div class="flex justify-center text-white items-center gap-2 m-auto">
+			<div class="flex justify-center text-white items-center gap-2 m-auto" id="vercel">
 				<!-- <img width="25" height="25" alt="Light mode" src="./sun.svg"/> -->
 				Powered by <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative"> and made by Nat3z
 			</div>
@@ -67,6 +67,47 @@ function parseTime(t: string, offsetTime = new Date()) {
 				</h1>
 			`
 		}
+
+		let mouseTimeout: number | undefined;
+
+		function mouseMove() {
+			clearTimeout(mouseTimeout)
+			let quickpeek = document.getElementById("quickpeek")!
+			let mainschedule = document.getElementById("main_schedule")!
+
+			quickpeek.classList.remove("backdrop-blur")
+			quickpeek.classList.remove("bg-white/0")
+
+			mainschedule.classList.remove("backdrop-blur")
+			mainschedule.classList.remove("dark:bg-white/5")
+			mainschedule.classList.remove("bg-black/5")
+
+			document.body.classList.remove("bg-light")
+			document.body.classList.remove("dark:bg-dark")
+			
+			document.body.classList.remove("bg-dark-primary")
+			document.body.style.cursor = "auto"
+			mouseTimeout = setTimeout(() => {
+				let quickpeek = document.getElementById("quickpeek")!
+				let mainschedule = document.getElementById("main_schedule")!
+
+				quickpeek.classList.add("backdrop-blur")
+				quickpeek.classList.add("bg-white/0")
+
+				mainschedule.classList.add("backdrop-blur")
+				mainschedule.classList.add("dark:bg-white/5")
+				mainschedule.classList.add("bg-black/5")
+
+				document.body.classList.add("bg-light")
+				
+				document.body.classList.add("dark:bg-dark")
+			
+				document.body.classList.remove("bg-dark-primary")
+				document.body.style.cursor = "none"
+			}, 2000);
+		}
+		document.onmousemove = mouseMove
+		mouseMove()
 		
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
 		setInterval(() => {
@@ -183,6 +224,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 	@tailwind utilities;
 
 	body {
-		@apply bg-dark-primary h-screen w-screen
+		background-size: cover;
+		@apply bg-dark-primary transition-all h-screen;
 	}
 </style>
