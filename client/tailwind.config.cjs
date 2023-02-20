@@ -8,6 +8,10 @@ module.exports = {
 				"primary": "#0e003a",
 				"light-primary": "#1a0066",
 			},
+			"backgroundImage": {
+				"dark": "url('/dark.gif')",
+				"light": "url('/background.gif')"
+			},
 			/* custom unit .5 */
 			"spacing": {
 				"0.5": "0.125rem",
