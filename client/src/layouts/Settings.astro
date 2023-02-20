@@ -1,0 +1,138 @@
+---
+
+---
+
+<button class="fixed top-2 right-2 p-2 bg-light-primary rounded-lg w-12 h-12 text-white" id="settings_cog">
+  <img src="/settings.svg" alt="⚙️" class="w-full h-full">
+</button>
+
+<div class="bg-primary flex hidden w-2/3 h-5/6 rounded-lg transition-all p-6 pt-10 sm:p-12 gap-4 flex-col" id="settings">
+  <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-4" id="blk_1-input">
+    <h1>Block 1</h1>
+    <input class="w-36 text-black font-normal">
+  </section>
+  <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-4" id="blk_2-input">
+    <h1>Block 2</h1>
+    <input class="w-36 text-black font-normal">
+  </section>
+  <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-4" id="blk_3-input">
+    <h1>Block 3</h1>
+    <input class="w-36 text-black font-normal">
+  </section>
+  <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-4" id="blk_4-input">
+    <h1>Block 4</h1>
+    <input class="w-36 text-black font-normal">
+  </section>
+  <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-4" id="blk_5-input">
+    <h1>Block 5</h1>
+    <input class="w-36 text-black font-normal">
+  </section>
+  <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-4" id="blk_6-input">
+    <h1>Block 6</h1>
+    <input class="w-36 text-black font-normal">
+  </section>
+  <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-4" id="blk_7-input">
+    <h1>Block 7</h1>
+    <input class="w-36 text-black font-normal">
+  </section>
+
+  <div class="flex justify-center flex-row items-center gap-2">
+    <button class="bg-light-primary text-white font-bold text-lg rounded-lg p-2 h-12" id="save">Save</button>
+    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12" id="paste">Paste from Schoology</button>
+  </div>
+
+</div>
+
+<div class="fixed hidden w-screen z-40 h-screen flex justify-center items-center bg-black/25" id="paste_screen">
+  <div class="rounded-lg w-3/4 sm:w-3/12 flex justify-center items-center flex-col bg-primary">
+    <div class="w-full text-left text-white text-lg bg-light-primary flex flex-row p-2">
+      Paste from Schoology
+      <button class="relative ml-auto bg-light-primary rounded-lg w-12 h-full text-white" id="close_paste">
+        ❌
+      </button>
+    </div>
+
+    <img src="/howtocopy.gif" alt="Open the Schoology Courses tab and type CTRL + A and CTRL + C. Then, type CTRL + V in the 'Paste Here' field." class="w-full h-full">
+    <div class="text-white p-2 text-left flex justify-start items-start flex-col gap-2">      
+      <div class="flex flex-row gap-2">
+        <h1>Paste Here:</h1>
+        <textarea class="text-black" id="pasted_text" />
+      </div>
+
+      <button class="bg-light-primary text-white font-bold text-lg rounded-lg p-1 h-8" id="paste_confirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script defer>
+  document.getElementById("blk_1-input").children[1].value = localStorage.getItem("blk_1") || "Block 1";
+  document.getElementById("blk_2-input").children[1].value = localStorage.getItem("blk_2") || "Block 2";
+  document.getElementById("blk_3-input").children[1].value = localStorage.getItem("blk_3") || "Block 3";
+  document.getElementById("blk_4-input").children[1].value = localStorage.getItem("blk_4") || "Block 4";
+  document.getElementById("blk_5-input").children[1].value = localStorage.getItem("blk_5") || "Block 5";
+  document.getElementById("blk_6-input").children[1].value = localStorage.getItem("blk_6") || "Block 6";
+  document.getElementById("blk_7-input").children[1].value = localStorage.getItem("blk_7") || "Block 7";
+
+  function toggleSettings() {
+    const settings = document.getElementById("settings")
+    const mainschedule = document.getElementById("main_schedule")
+    if (!settings.classList.contains("hidden")) {
+      mainschedule.classList.remove("hidden");
+      settings.classList.add("hidden");
+    }
+    else {
+      mainschedule.classList.add("hidden");
+      settings.classList.remove("hidden");
+    }
+  }
+
+  document.getElementById("paste").addEventListener("click", () => {
+    const paste_screen = document.getElementById("paste_screen")
+    paste_screen.classList.remove("hidden");
+  });
+
+  document.getElementById("paste_confirm").addEventListener("click", () => {
+    /**
+     * @type {string}
+     */
+    const pasted_text = document.getElementById("pasted_text").value;
+    let regex_pasted = /(.*)\nBlock (\d)/g;
+    let result;
+    pasted_text.match(regex_pasted).forEach((match) => {
+      let match_found = match.split("\n");
+      let block = match_found[1].split(" ")[1];
+      let block_name = match_found[0];
+      document.getElementById(`blk_${block}-input`).children[1].value = block_name;
+    })
+    const paste_screen = document.getElementById("paste_screen")
+    paste_screen.classList.add("hidden");
+  });
+
+  document.getElementById("close_paste").addEventListener("click", () => {
+    const paste_screen = document.getElementById("paste_screen")
+    paste_screen.classList.add("hidden");
+  });
+
+  document.getElementById("save").addEventListener("click", () => {
+    const blk_1 = document.getElementById("blk_1-input").children[1].value;
+    const blk_2 = document.getElementById("blk_2-input").children[1].value;
+    const blk_3 = document.getElementById("blk_3-input").children[1].value;
+    const blk_4 = document.getElementById("blk_4-input").children[1].value;
+    const blk_5 = document.getElementById("blk_5-input").children[1].value;
+    const blk_6 = document.getElementById("blk_6-input").children[1].value;
+    const blk_7 = document.getElementById("blk_7-input").children[1].value;
+
+    localStorage.setItem("blk_1", blk_1);
+    localStorage.setItem("blk_2", blk_2);
+    localStorage.setItem("blk_3", blk_3);
+    localStorage.setItem("blk_4", blk_4);
+    localStorage.setItem("blk_5", blk_5);
+    localStorage.setItem("blk_6", blk_6);
+    localStorage.setItem("blk_7", blk_7);
+
+    toggleSettings();
+    document.getElementById("classes").innerHTML = "";
+  });
+
+  document.getElementById("settings_cog").addEventListener("click", toggleSettings);
+</script>
