@@ -154,10 +154,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     /* @ts-ignore */
     event = vEvents.find(event => {
       if (event.type !== "VEVENT") return false
-      return event.summary === "Thursday Schedule";
-      // if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
-      //   return event.description.match(matchRegex) != null
-      // }
+      if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
+        return event.description.match(matchRegex) != null
+      }
     })
   }
 
