@@ -1,4 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
+import moment from 'moment';
 const matchRegex_inverse = /(\d{1,2}:\d{2}(?:.*?)(?: - |-|- )\d{1,2}:\d{2})(?:.*?) (.*)/gm;
 
 const matchRegex = /(.*?) (\d{1,2}:\d{2}(?: - |-|- )\d{1,2}:\d{2})(?:.*?)/gm;
@@ -153,9 +154,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     /* @ts-ignore */
     event = vEvents.find(event => {
       if (event.type !== "VEVENT") return false
-      if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
-        return event.description.match(matchRegex) != null
-      }
+      return event.summary === "Thursday Schedule";
+      // if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
+      //   return event.description.match(matchRegex) != null
+      // }
     })
   }
 
@@ -175,27 +177,21 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     }
 
     if (!time || !period || !time.match(/[0-9]:[0-9]/)) continue;
-
-    let [start, end] = time.split("-").map(time => new Date(today.getFullYear(), today.getMonth(), today.getDate(), ...time.split(":").map(Number)))
-    // get the period of the event
-    if (!start || !end) return res.json({ title: null, events: null, code: 500, message: "Did not find start and end times." })
-    
-    // check if vercel is in prod and if it is, add 8 hours to the start and end times
-    if (process.env.VERCEL_ENV == "production") {
-      start = addHours(start, 8)
-      end = addHours(end, 8)
-    }
-    // if the time is before 8am, add 12 hours to it
-    if (start.getHours() < 8) start = addHours(start, 12)
-    if (end.getHours() < 8) end = addHours(end, 12)
-    
-    times.set(period, { start: start.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }), end: end.toLocaleTimeString('en-US', { timeZone: "America/Los_Angeles", hour: 'numeric', minute: "2-digit", hour12: true }) })
+    // if the time is below 8am, add 12 hours to it
+    time = time.split("-").map(time => {
+      let [hour, minute] = time.split(":").map(Number)
+      if (hour < 8 || hour === 12) {
+        return `${hour}:${minute < 10 ? "0" + minute : minute} PM`
+      }
+      return `${hour}:${minute < 10 ? "0" + minute : minute} AM`
+    }).join("-")
+    times.set(period, { start: time.split("-")[0], end: time.split("-")[1] })
   }
 
   let sortedTimes = new Map([...times.entries()].sort((a, b) => {
     let [aStart, bStart] = [a[1].start, b[1].start].map(time => {
       // regex to match time, "8:30 PM" or "12:05 PM" ignore the time delta
-      let [, hour, minute] = (/([0-9]+):([0-9]+) [AP]M/).exec(time)!
+      let [, hour, minute] = (/([0-9]+):([0-9]+)/).exec(time)!
       if (!hour || !minute) return 0
       let hour_num = Number(hour)
       if (hour_num < 8) hour_num += 12
