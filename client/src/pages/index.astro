@@ -170,7 +170,14 @@ function parseTime(t: string, offsetTime = new Date()) {
 					document.getElementById(key)!.classList.add("font-bold")					 
 					const minutes = Math.floor((endTime - now) / 60 % 60)
 					let timeNowCountdown = moment().startOf('day').seconds(endTime - now).format('H:mm:ss')
-					document.getElementById(key)!.textContent = `${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─ ${timeNowCountdown} ─ ${replaceShorthands(key)}`
+					let replace_shorthand = replaceShorthands(key)
+					if (replace_shorthand.startsWith("Block ")) {
+						let block_num = replace_shorthand.split(" ")[1]
+						if (localStorage.getItem("blk_" + block_num)) {
+							replace_shorthand = localStorage.getItem("blk_" + block_num)!
+						}
+					}
+					document.getElementById(key)!.textContent = `${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─ ${timeNowCountdown} ─ ${replace_shorthand}`
 					// get minutes between end and now time and update the #current element
 
 					if (Math.ceil(minutes * 60) !== 0) {
