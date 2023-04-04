@@ -2,6 +2,7 @@
 import moment from 'moment';
 import Settings from '../layouts/Settings.astro';
 import Layout from '../layouts/Layout.astro';
+import ThemeModifier from '../components/ThemeModifier.astro';
 
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
@@ -25,11 +26,14 @@ function parseTime(t: string, offsetTime = new Date()) {
 			<Settings />
 			<div class="bg-primary w-11/12 transition-all h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg" id="main_schedule">
 				
-				<div class="w-full h-1/4 flex justify-center items-center rounded-t-lg bg-light-primary transition-all" id="quickpeek">
-					<h1 class="text-center text-white text-4xl md:text-6xl" id="current">Loading</h1>
+				<div class="w-full h-1/6 sm:h-1/4 flex justify-center items-center rounded-t-lg bg-light-primary transition-all" id="quickpeek">
+					<h1 class="text-center text-white text-4xl md:text-6xl absolute z-10" id="current">Loading</h1>
+					<div class="w-full bg-transparent opacity-20 rounded-t-lg h-full ">
+						<div class="bg-blue-500 h-full rounded-t-lg rounded-tr-none" style="width: 0%" id="progressbar"></div>
+					</div>
 				</div>
 
-				<div class="flex flex-col justify-center items-center p-4" id="classes">
+				<div class="flex flex-col justify-center items-center p-4 text-lg" id="classes">
 				</div>
 			</div>
 		</div>
@@ -40,17 +44,21 @@ function parseTime(t: string, offsetTime = new Date()) {
 				Powered by <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative"> and made by Nat3z
 			</div>
 		</div>
+
+		<ThemeModifier />
 	</body>
 
 	<script>
-		import moment from 'moment'
+		import moment from 'moment';
 		let scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
-		let events = scheduleData.events
+		let events = scheduleData.events;
+
+		console.log("%cCreated by cool people at Salesian lololol!!!!!", "color: grey; text-shadow: 2px 2px white; font-size: 32px;")
 
 		function replaceShorthands(period: string) {
 			// replace period to Lunch if it's ONLY "L" with regex
 			// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-			return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch")
+			return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch").replace(/^Flextime$/, "Flex")
 		}
 
 		function parseTime(t: string, offsetTime = new Date()) {
@@ -63,7 +71,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 		if (!events || events.length === 0) {
 			document.getElementById("current")!.innerHTML = "Out of Session"
 			document.getElementById("classes")!.innerHTML += `
-				<h1 id="failed" class="text-white text-center text-lg md:text-3xl">
+				<h1 id="failed" class="text-center text-lg md:text-3xl">
 					No classes today
 				</h1>
 			`
@@ -113,16 +121,22 @@ function parseTime(t: string, offsetTime = new Date()) {
 				document.body.style.cursor = "none"
 			}, 5000);
 		}
-		document.onmousemove = mouseMove
-		mouseMove()
+
+		if (localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) {
+			document.onmousemove = mouseMove
+			mouseMove()
+		}
+
 		
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
 		setInterval(() => {
 			// get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
 			let current = new Date()
+			
 			let now = moment(current.getTime()).unix()
 			let success = false
 			let closestStart = 0
+			let lastEndedBlock = 0
 			let hasClearedAllDocs = false
 			if (!events) return
 			Object.entries(events).map(([key, value]) => {
@@ -132,7 +146,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 				if (!hasClearedAllDocs && !docKey) {
 					hasClearedAllDocs = true
 					document.getElementById("classes")!.innerHTML = `
-					<h1 class="text-lg md:text-3xl font-bold text-white text-center mb-4" id="title">${replaceShorthands(scheduleData.title)}</h1>
+					<h1 class="text-lg md:text-3xl font-bold text-center mb-4" id="title">${replaceShorthands(scheduleData.title)}</h1>
 					`
 				}
 
@@ -146,16 +160,19 @@ function parseTime(t: string, offsetTime = new Date()) {
 						}
 					}
 					document.getElementById("classes")!.innerHTML += `
-						<h1 id="${key}" class="text-white text-center text-lg md:text-3xl">
-							${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─── ${replace_shorthand}
+						<h1 id="${key}" class="text-center text-ultramd md:text-3xl">
+							${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replace_shorthand}
 						</h1>
 					`
 				}
 
 				if (now >= startTime && now <= endTime) {
-					document.getElementById(key)!.classList.add("font-bold")
+					document.getElementById(key)!.classList.add("font-bold")					 
+					const minutes = Math.floor((endTime - now) / 60 % 60)
+					let timeNowCountdown = moment().startOf('day').seconds(endTime - now).format('H:mm:ss')
+					document.getElementById(key)!.textContent = `${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─ ${timeNowCountdown} ─ ${replaceShorthands(key)}`
 					// get minutes between end and now time and update the #current element
-					const minutes = Math.ceil((endTime - now) / 60)
+
 					if (Math.ceil(minutes * 60) !== 0) {
 						let text = ''
 						// if the minutes is below 1, then instead of minutes, show seconds
@@ -172,6 +189,10 @@ function parseTime(t: string, offsetTime = new Date()) {
 						} else {
 							text += `${replace_shorthand} (${Math.ceil(minutes)}')`
 						}
+						// get the seconds between now and endtime and convert it into a percentage
+						// then set the width of the progress bar to that percentage
+						let percentage = (endTime - now) / (endTime - startTime) * 100
+						document.getElementById("progressbar")!.style.width = `${percentage}%`
 
 						document.getElementById("current")!.innerHTML = text
 						if (!document.hasFocus()) {
@@ -189,6 +210,9 @@ function parseTime(t: string, offsetTime = new Date()) {
 				if (startTime - now > 0 && (closestStart == 0 || startTime - now < closestStart)) {
 					closestStart = startTime - now
 				}
+				if (endTime - now < 0 && (lastEndedBlock == 0 || endTime - now > lastEndedBlock)) {
+					lastEndedBlock = endTime - now
+				}
 			})
 
 			if (!success) {
@@ -199,7 +223,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 				// Set offset to 10 to make the nearest event 10 minutes away from 8:30 AM, thus being the actual "Welcome Bell"
 				if (current.getHours() === 8 && current.getMinutes() < 20) { text = "Welcome Bell"; offset = 10 }
 				// if it is before 3:00 PM, and after or equal to 8:00 AM, then it is a passing period
-				else if (closestStart != 0) text = "Passing Period"
+				else if (closestStart != 0 && current.getHours() > 8) text = "Passing Period"
 				// if not, then most likely just out of session
 				else {
 					let text = 'Out of Session'
@@ -208,7 +232,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 					if (!document.hasFocus()) {
 						document.title = text
 					}
-
+					document.getElementById("progressbar")!.style.width = `0%`
 					success = true
 				}
 
@@ -221,6 +245,9 @@ function parseTime(t: string, offsetTime = new Date()) {
 						text += ` (${Math.ceil(closestStart / 60) - (offset)}')`
 					}
 					document.getElementById("current")!.innerHTML = text
+					document.getElementById("progressbar")!.style.width = `0%`
+
+					// get the percentage of time between now and the start of the next block
 					if (!document.hasFocus()) {
 						document.title = text
 					}	
@@ -247,6 +274,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 	body {
 		background-size: cover;
+		color: white;
 		@apply bg-dark-primary transition-all h-screen;
 	}
 </style>

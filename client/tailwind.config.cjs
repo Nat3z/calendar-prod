@@ -12,6 +12,9 @@ module.exports = {
 				"dark": "url('/dark.gif')",
 				"light": "url('/background.gif')"
 			},
+			"fontSize": {
+				"ultramd": "1.25rem",
+			},
 			/* custom unit .5 */
 			"spacing": {
 				"0.5": "0.125rem",
