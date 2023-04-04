@@ -205,7 +205,14 @@ function parseTime(t: string, offsetTime = new Date()) {
 				}
 				else {
 					document.getElementById(key)!.classList.remove("font-bold")
-					document.getElementById(key)!.textContent = `${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replaceShorthands(key)}`
+					let replace_shorthand = replaceShorthands(key)
+					if (replace_shorthand.startsWith("Block ")) {
+						let block_num = replace_shorthand.split(" ")[1]
+						if (localStorage.getItem("blk_" + block_num)) {
+							replace_shorthand = localStorage.getItem("blk_" + block_num)!
+						}
+					}
+					document.getElementById(key)!.textContent = `${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replace_shorthand}`
 				}
 
 				if (startTime - now > 0 && (closestStart == 0 || startTime - now < closestStart)) {
