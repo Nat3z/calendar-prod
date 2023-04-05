@@ -1,16 +1,68 @@
+<style id="theme"></style>
 <script defer>
-  // for (let item of document.getElementsByClassName('bg-primary')) {
-  //   item.style.backgroundColor = '#baab90';
-  // }
-  // for (const item of document.getElementsByClassName('text-white')) {
-  //   item.style.color = "black"
-  // }
-  // for (let item of document.getElementsByClassName('bg-light-primary')) {
-  //   item.style.backgroundColor = '#ccbb9d';
-  // }
-  // for (const item of document.getElementsByClassName('bg-blue-500')) {
-  //   item.style.backgroundColor = '#eddab8'
-  // }
+  let themes = {
+    "salesian": {
+      "background-color": {
+        ".bg-primary": "#eddab8",
+        ".bg-light-primary": "#baab90",
+        "#quickpeek": "#eddab8",
+        "body": "#a6192e",
+        ".bg-blue-500": "#cc1e38",
+      },
+      "color": {
+        ".text-white": "black",
+        "h1": "black"
+      },
+      "border-bottom": {
+        "#quickpeek": "2px solid black",
+      },
+      "visibility": {
+        "#vercel": "hidden",
+        "#throwback": "visible",
+      },
+      "border": {
+        "#main_schedule": "2px solid black",
+        "#settings_cog": "1px solid black",
+      }
+    },
+    "hotdog": {
+      "background-color": {
+        ".bg-primary": "#ffff00",
+        ".bg-light-primary": "red",
+        "#quickpeek": "red",
+        "body": "#ffff00",
+        ".bg-blue-500": "#cc1e38",
+      },
+      "color": {
+        ".text-white": "black",
+        "h1": "black"
+      },
+      "border-bottom": {
+        "#quickpeek": "2px solid black",
+      },
+      "visibility": {
+        "#vercel": "hidden",
+      },
+      "border": {
+        "#main_schedule": "2px solid black",
+        "#settings_cog": "1px solid black",
+        "#settings": "2px solid black",
+      }
+    }
+  }
+
+  let style = document.createElement("style");
+  let selectedTheme = localStorage.getItem("theme");
+  if (selectedTheme !== null && selectedTheme !== "default" && selectedTheme in themes) {
+    for (const cssClass of Object.keys(themes[selectedTheme])) {
+      for (const className of Object.keys(themes[selectedTheme][cssClass])) {
+        let value = themes[selectedTheme][cssClass][className];
+        style.innerHTML += `${className} {${cssClass}: ${value} !important; }`
+      }
+    } 
+  }
+
+  document.head.appendChild(style);
 </script>
 
 
