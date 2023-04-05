@@ -44,7 +44,15 @@
   
   <div class="flex justify-center items-center flex-col gap-2">
     <button class="bg-light-primary text-white p-2 rounded-lg" id="dynbackground">Disable Dynamic Background</button>
-    <h1>Theming update coming soon^tm</h1>
+    <!-- Create a drop down -->
+    <div class="flex flex-row gap-2">
+      <button class="bg-light-primary text-white p-2 rounded-lg" id="theme">Change Theme</button>
+      <select class="bg-light-primary text-white p-2 rounded-lg" value="default" id="theme_select">
+        <option value="default">Default</option>
+        <option value="salesian">Original Schedulology</option>
+        <option value="hotdog">Hot Dog Stand</option>
+      </select>
+    </div>
   </div>
 
 </div>
@@ -79,7 +87,7 @@
   document.getElementById("blk_6-input").children[1].value = localStorage.getItem("blk_6") || "Block 6";
   document.getElementById("blk_7-input").children[1].value = localStorage.getItem("blk_7") || "Block 7";
 
-  document.getElementById("dynbackground").textContent = localStorage.getItem("dynamic_theme") === "true" ? "Disable Dynamic Background" : "Enable Dynamic Background";
+  document.getElementById("dynbackground").textContent = localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme") ? "Disable Dynamic Background" : "Enable Dynamic Background";
 
   document.getElementById("dynbackground").addEventListener("click", () => {
     const dynbackground = document.getElementById("dynbackground");
@@ -91,6 +99,13 @@
       dynbackground.textContent = "Disable Dynamic Background";
       localStorage.setItem("dynamic_theme", "true");
     }
+    window.location.reload();
+  });
+
+  document.getElementById("theme_select").value = localStorage.getItem("theme") || "default";
+  document.getElementById("theme").addEventListener("click", () => {
+    const theme_select = document.getElementById("theme_select");
+    localStorage.setItem("theme", theme_select.value);
     window.location.reload();
   });
   

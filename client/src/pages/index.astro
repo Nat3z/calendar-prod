@@ -22,6 +22,9 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 <Layout title="DynSchedule">
 	<body>
+		<div id="throwback" class="fixed top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm">
+			<h1>Originally by C.J.F '22, Rebuilt by Nat3z</h1>
+		</div>
 		<div class="flex justify-center items-center w-screen h-screen gap-4 p-2">
 			<Settings />
 			<div class="bg-primary w-11/12 transition-all h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg" id="main_schedule">
@@ -122,7 +125,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 			}, 5000);
 		}
 
-		if (localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) {
+		if ((localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) && (localStorage.getItem("theme") === "default" || !localStorage.getItem("theme"))) {
 			document.onmousemove = mouseMove
 			mouseMove()
 		}
@@ -238,7 +241,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 				// Set offset to 10 to make the nearest event 10 minutes away from 8:30 AM, thus being the actual "Welcome Bell"
 				if (current.getHours() === 8 && current.getMinutes() < 20) { text = "Welcome Bell"; offset = 10 }
 				// if it is before 3:00 PM, and after or equal to 8:00 AM, then it is a passing period
-				else if (closestStart != 0 && current.getHours() > 8) text = "Passing Period"
+				else if (closestStart != 0 && current.getHours() > 7) text = "Passing Period"
 				// if not, then most likely just out of session
 				else {
 					let text = 'Out of Session'
