@@ -7,6 +7,7 @@
   </div>
 
   <div class="w-full mt-4 flex items-center flex-col gap-4">
+    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="shareTheme">Share Theme</button>
     <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="eyedrop">Select Element</button>
 
     <div class="w-11/12 overflow-auto max-h-screen-3/4">
@@ -170,8 +171,8 @@
   </div>
 
   <div class="absolute w-full h-12 bottom-0 border-t-4 flex justify-center items-center gap-2 flex-row border-gray-800 bg-gray-900">
-    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="saveEditor">Save</button>
-    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="resetEditor">Reset</button>
+    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="saveEditor">Save</button>
+    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="resetEditor">Reset</button>
     <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="preventTheme">Don't Apply Theme</button>
   </div>
 </div>
@@ -437,7 +438,6 @@
     }
     localStorage.setItem(`savedEditor.${themeSelected}`, JSON.stringify(data));
 
-    console.log(data);
   }
 
   document.getElementById("saveEditor")!.addEventListener("click", () => {
@@ -458,11 +458,9 @@
       for (const cssRule of element.css) {
         css += cssRule.rule + ": " + cssRule.value + ";";
       }
-      console.log(elementToAffect);
       if (!elementToAffect) {
         for (const elementSelected of document.querySelectorAll(element.element)) {
           elementSelected.setAttribute("style", css);
-          console.log(elementSelected)
         }
         continue;
       }
@@ -497,7 +495,6 @@
       addElementToEditor(elementCSSData.element);
       // then get the element in the editor and add the css rules to it
       let elementInEditor = document.getElementById("themedef-" + elementCSSData.element);
-      console.log(elementInEditor!.children[3].children[0]!);
       let placeholderAlreadyProcessed = false;
       for (const cssRule of elementCSSData.css) {
         if (cssRule.rule === "text-align" && !placeholderAlreadyProcessed) {
@@ -559,7 +556,34 @@
     location.reload();
   });
 
-  document.getElementById("preventTheme")!.textContent = localStorage.getItem(`editorThemeClear.${themeSelected}`) ? "Allow Theme to Apply" : "Prevent Theme from Applying";
+  document.getElementById("preventTheme")!.textContent = localStorage.getItem(`editorThemeClear.${themeSelected}`) ? "Enable Theme" : "Disable Theme";
   
   themeEditor.style.display = "none";
+
+  
+  // Theme Sharing!
+  let params = new URLSearchParams(window.location.search);
+  if (params.get("theme")) {
+    let theme = params.get("theme");
+    if (atob(theme!) !== localStorage.getItem(`savedEditor.${themeSelected}`)) {
+      let confirmation = confirm(`Are you sure you want to apply this theme?\n ⚠️⚠️ This will override your current theme (${themeSelected}), and you will not be able to undo this. ⚠️⚠️`)
+      if (confirmation) {
+        let themeData = localStorage.getItem(`savedEditor.${theme}`);
+        if (themeData) {
+          localStorage.setItem(`savedEditor.${themeSelected}`, atob(theme!));
+          location.reload();
+        }
+      } 
+    }
+  }
+
+  document.getElementById("shareTheme")!.addEventListener("click", () => {
+    let themeData = localStorage.getItem(`savedEditor.${themeSelected}`);
+    if (!themeData) return;
+    let url = new URL(window.location.href);
+    url.searchParams.set("theme", btoa(themeData));
+    alert("Link copied To Clipboard!")
+    navigator.clipboard.writeText(url.toString());
+  });
+
 </script>
