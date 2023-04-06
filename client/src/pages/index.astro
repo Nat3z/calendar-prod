@@ -61,6 +61,13 @@ function parseTime(t: string, offsetTime = new Date()) {
 		import moment from 'moment';
 		let scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 		let events = scheduleData.events;
+		document.dispatchEvent(
+			new CustomEvent("loadComplete", {
+				bubbles: true,
+				cancelable: true,
+				composed: false,
+			})
+		);
 
 		console.log("%cCreated by cool people at Salesian lololol!!!!!", "color: grey; text-shadow: 2px 2px white; font-size: 32px;")
 

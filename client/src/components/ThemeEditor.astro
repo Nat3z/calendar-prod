@@ -465,6 +465,7 @@
         }
         continue;
       }
+      if (!elementToAffect) continue;
       elementToAffect.setAttribute("style", css);
     }
     const head = document.getElementsByTagName("head")[0];
@@ -512,10 +513,18 @@
         updateColors();
       });
     });
+
+    console.log("Theme Applied!")
   }
-  setTimeout(() => {
-    loadFromSaved();
-  }, 500);
+
+  document.addEventListener("loadComplete", () => {
+    const interval = setInterval(() => {
+      if (document.getElementById("classes")!.children.length > 0) {
+        clearInterval(interval);
+        loadFromSaved();
+      }
+    }, 100);
+  });
   const themeEditor = document.getElementById("themeEditor")!;
   document.getElementById("closeEditor")!.addEventListener("click", () => {
     themeEditor.animate([
