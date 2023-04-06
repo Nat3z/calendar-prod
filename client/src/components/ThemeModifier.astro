@@ -1,5 +1,11 @@
 <style id="theme"></style>
 <script defer>
+  /**
+   * Themeing = Very Simple
+   * First nesting level is the theme name
+   * Second nesting level is the CSS property
+   * Third nesting level is the CSS class and the value
+   */
   let themes = {
     "salesian": {
       "background-color": {
@@ -57,7 +63,12 @@
     for (const cssClass of Object.keys(themes[selectedTheme])) {
       for (const className of Object.keys(themes[selectedTheme][cssClass])) {
         let value = themes[selectedTheme][cssClass][className];
-        style.innerHTML += `${className} {${cssClass}: ${value} !important; }`
+        if (className === "body") {
+          style.innerHTML += `body {${cssClass}: ${value} !important; }`
+        }
+        else {
+          style.innerHTML += `#schedule_page ${className} {${cssClass}: ${value} !important; }`
+        }
       }
     } 
   }

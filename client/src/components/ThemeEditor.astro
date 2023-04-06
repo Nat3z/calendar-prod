@@ -1,0 +1,251 @@
+<div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800">
+  <h1 class="font-bold font-mono text-center mt-4 text-xl">Theme Editor</h1>
+  <div class="w-full mt-4 flex items-center flex-col gap-4">
+    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="eyedrop">Select Element</button>
+
+    <div class="w-10/12 overflow-auto max-h-screen-3/4">
+      <h1 class="font-mono text-lg text-gray-600 text-center">Elements</h1>
+      <div class="flex justify-center items-center flex-col gap-4 w-full pr-2 pl-2 pb-4" id="elements">
+
+
+
+        <div class="hidden w-full rounded-lg bg-gray-800 p-4" id="element-copy" data-element="body">
+          <div class="flex flex-row">
+            <h1 class="font-mono bg-gray-700 p-1 w-fit" data-theme-type="tag-name">body</h1>
+            <button class="font-mono ml-auto text-2xl text-gray-700 hover:text-red-500">-</button>
+          </div>
+
+          <h1 class="font-mono text-gray-600 mt-2">Defined CSS</h1>
+          <hr class="mt-2 mb-2 border-gray-700">
+          <div class="flex flex-col gap-2">
+            <div class="hidden justify-between items-center flex-row flex-wrap" id="copy" data-element="body">
+              <select class="w-fit h-8 rounded-lg text-xs text-white pl-2 bg-gray-600">
+                <option value="text-align">text-align</option>
+                <option value="background-color">background-color</option>
+                <option value="color">color</option>
+                <option value="font-family">font-family</option>
+                <option value="font-size">font-size</option>
+                <option value="font-weight">font-weight</option>
+                <option value="text-decoration">text-decoration</option>
+                <option value="text-transform">text-transform</option>
+                <option value="text-shadow">text-shadow</option>
+                <option value="letter-spacing">letter-spacing</option>
+                <option value="line-height">line-height</option>
+                <option value="word-spacing">word-spacing</option>
+                <option value="text-indent">text-indent</option>
+                <option value="white-space">white-space</option>
+                <option value="word-wrap">word-wrap</option>
+                <option value="word-break">word-break</option>
+                <option value="overflow-wrap">overflow-wrap</option>
+                <option value="tab-size">tab-size</option>
+                <option value="hyphens">hyphens</option>
+                <option value="border">border</option>
+                <option value="border-top">border-top</option>
+                <option value="border-right">border-right</option>
+                <option value="border-bottom">border-bottom</option>
+                <option value="border-left">border-left</option>
+                <option value="border-color">border-color</option>
+                <option value="border-top-color">border-top-color</option>
+                <option value="border-right-color">border-right-color</option>
+                <option value="border-bottom-color">border-bottom-color</option>
+                <option value="border-left-color">border-left-color</option>
+                <option value="border-style">border-style</option>
+                <option value="border-top-style">border-top-style</option>
+                <option value="border-right-style">border-right-style</option>
+                <option value="border-bottom-style">border-bottom-style</option>
+                <option value="border-left-style">border-left-style</option>
+                <option value="border-width">border-width</option>
+                <option value="border-top-width">border-top-width</option>
+                <option value="border-right-width">border-right-width</option>
+              </select>
+
+              <input class="w-24 h-8 rounded-lg text-black" type="text" value="" />
+              <button class="font-mono text-gray-600 hover:text-red-400">X</button>
+            </div>
+            <button class="font-mono text-gray-500 bg-gray-700 rounded-lg pl-2 pr-2 pt-1 pb-1" data-element="body" data-theme-type="add">+</button>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="absolute w-full h-12 bottom-0 border-t-4 flex justify-center items-center gap-2 flex-row border-gray-800 bg-gray-900">
+    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg">Save</button>
+    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg">Share</button>
+  </div>
+</div>
+
+<script>
+  let eyedropMode = false;
+  function animatePulse(element: HTMLElement) {
+    element.animate([
+      { outline: "none" },
+      { outline: "1px solid yellow" },
+      { outline: "2px solid yellow" },
+      { outline: "3px solid yellow" },
+      { outline: "4px solid yellow" },
+      { outline: "6px solid yellow" },
+      { outline: "4px solid yellow" },
+      { outline: "3px solid yellow" },
+      { outline: "2px solid yellow" },
+      { outline: "1px solid yellow" },
+      { outline: "none" },
+    ], {
+      duration: 500,
+      iterations: 1
+    });
+  }
+  function enableEyedrop() {
+    eyedropMode = !eyedropMode
+
+    if (eyedropMode) {
+      document.getElementById("eyedrop")!.innerHTML = "Cancel";
+    } else {
+      document.getElementById("eyedrop")!.innerHTML = "Select Element";
+    }
+  }
+
+  const elementsList = document.getElementById("elements")!;
+
+  document.addEventListener("click", (e) => {
+    if (!e.target || !eyedropMode) return
+    let element = e.target as HTMLElement;
+    e.preventDefault();
+    enableEyedrop();
+    element.style.outline = "";
+    let tag = (element.id ? "#" + element.id :  element.tagName.toLowerCase())
+
+    if (document.getElementById("themedef-" + tag)) {
+      // jump to the element
+      document.getElementById("themedef-" + (element.id ? "#" + element.id :  element.tagName.toLowerCase()))!.scrollIntoView();
+
+      // then do a little animation to show that it's selected using dom
+      animatePulse(document.getElementById("themedef-" + (element.id ? "#" + element.id :  element.tagName.toLowerCase()))!)
+      return;
+    }
+    let copyof = document.getElementById("element-copy")!.cloneNode(true) as HTMLElement;
+    copyof.id = "themedef-" + tag;
+    copyof.classList.remove("hidden");
+    copyof.children[0].children[1].addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      elementsList.removeChild(copyof);
+      let cssElement = document.getElementById(tag.replace("#", ""));
+      if (!cssElement) {
+        for (const element of document.querySelectorAll(tag)) {
+          element.setAttribute("style", "");
+          animatePulse(element as HTMLElement);
+        }
+        return
+      }
+      cssElement.setAttribute("style", "");
+      animatePulse(cssElement);
+    });
+    copyof.children[0].children[0].innerHTML = tag;
+
+    function setDataElementToChildren(initialTag: string, child: HTMLElement) {
+      child.setAttribute("data-element", initialTag);
+      for (let i = 0; i < child.children.length; i++) {
+        setDataElementToChildren(initialTag, child.children[i] as HTMLElement);
+      }
+    }
+    setDataElementToChildren(tag, copyof);
+
+    elementsList.appendChild(copyof);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target) return
+    let element = e.target as HTMLElement;
+    if (element.getAttribute("data-theme-type") === "add") {
+      let copyof = document.getElementById("copy")!.cloneNode(true) as HTMLElement;
+      copyof.classList.remove("hidden");
+      copyof.id = "";
+      copyof.classList.add("flex");
+      function updateCSS(elementExecute: HTMLElement = copyof) {
+        let elementToAffect = elementExecute.parentElement!.getAttribute("data-element")!;
+        let css = "";
+        for (const item of elementExecute.parentElement!.children) {
+          if (item.getAttribute("data-theme-type") === "add") continue;
+          const cssRule = item.children[0] as HTMLSelectElement;
+          const cssValue = item.children[1] as HTMLInputElement;
+          if (!cssRule || !cssValue) return
+          css += cssRule.value + ": " + cssValue.value + ";";
+        }
+
+        let cssElement = document.getElementById(elementToAffect.replace("#", "")!);
+
+        if (!cssElement) {
+          for (const element of document.querySelectorAll(elementToAffect)) {
+            animatePulse(element as HTMLElement)
+            element.setAttribute("style", css);
+          }
+          return 
+        }
+        animatePulse(cssElement);
+        cssElement.setAttribute("style", css);
+      }
+
+      copyof.children[2].addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let cssElement = document.getElementById(copyof.parentElement!.getAttribute("data-element")!.replace("#", ""));
+        if (!cssElement) {
+          for (const element of document.querySelectorAll(copyof.parentElement!.getAttribute("data-element")!)) {
+            element.setAttribute("style", "");
+            animatePulse(element as HTMLElement);
+          }
+          return
+        }
+        let elementToExecuteClear: HTMLElement | null = null;
+        if (copyof.parentElement!.children.length > 1) {
+          elementToExecuteClear = copyof.parentElement!.children[1] as HTMLElement;
+        }
+        copyof.parentElement!.removeChild(copyof);
+        // remove the css from the element
+        if (elementToExecuteClear) {
+          updateCSS(elementToExecuteClear);
+        }
+        else {
+          cssElement.setAttribute("style", "");
+          animatePulse(cssElement);
+        }
+
+      });
+      copyof.addEventListener("change", (e) => {
+        e.stopPropagation();
+
+        if (e.target && (e.target as HTMLInputElement).value != (copyof.children[1]! as HTMLInputElement).value) {
+          if (e.target && (e.target as HTMLInputElement).value.includes("color")) {
+            copyof.children[1].setAttribute("type", "color");
+          } else
+            copyof.children[1].setAttribute("type", "text");
+          return;
+        }
+        updateCSS()
+      });
+      element.parentElement!.appendChild(copyof);
+    }
+  });
+  // on hover element put an outline around it
+  document.addEventListener("mouseover", (e) => {
+    if (!e.target || !eyedropMode) return
+    let element = e.target as HTMLElement;
+    element.style.outline = "6px solid red";
+  });
+  // on mouse out remove the outline
+  document.addEventListener("mouseout", (e) => {
+    if (!e.target || !eyedropMode) return
+    let element = e.target as HTMLElement;
+    element.style.outline = "none";
+  });
+  document.getElementById("eyedrop")!.addEventListener("click", () => {
+    setTimeout(() => {
+      enableEyedrop()
+    }, 100);
+  });
+</script>
