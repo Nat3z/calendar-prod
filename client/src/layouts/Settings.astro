@@ -51,6 +51,9 @@
         <option value="hotdog">Hot Dog Stand</option>
       </select>
       <button class="bg-light-primary text-white p-2 rounded-lg" id="theme">Change Theme</button>
+      <button class="bg-light-primary text-white p-2 rounded-lg" id="edit">
+        <img src="/edit.svg" alt="✏️" class="w-6 h-6">
+      </button>
     </div>
   </div>
 
@@ -170,4 +173,26 @@
   });
 
   document.getElementById("settings_cog").addEventListener("click", toggleSettings);
+  document.getElementById("edit").addEventListener("click", () => {
+    const themeEditor = document.getElementById("themeEditor");
+    if (themeEditor.style.display === "block") {
+      return;
+    }
+    themeEditor.style.display = "block";
+    themeEditor.animate([
+      { transform: "translateX(-100%)" },
+      { transform: "translateX(0)" }
+    ], {
+      duration: 510,
+      easing: "ease-in-out"
+    });
+  });
+
+  const mq = window.matchMedia( "(max-width: 760px)" );
+  if (mq.matches) {
+    document.getElementById("edit").classList.add("hidden");
+  }
+  else {
+    document.getElementById("edit").classList.remove("hidden");
+  }
 </script>

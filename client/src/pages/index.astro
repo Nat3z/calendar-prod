@@ -44,7 +44,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 					</div>
 				</div>
 					
-				<div class="hidden sm:block fixed bottom-4 w-full transition-all" id="vercel">
+				<div class="hidden sm:block fixed bottom-4 transition-all" id="vercel">
 					<div class="flex justify-center text-white items-center gap-2 m-auto">
 						<!-- <img width="25" height="25" alt="Light mode" src="./sun.svg"/> -->
 						<!-- Powered by <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative"> and made by Nat3z -->
@@ -176,7 +176,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 				if (now >= startTime && now <= endTime) {
 					document.getElementById(key)!.classList.add("font-bold")					 
-					const minutes = Math.ceil((endTime - now) / 60 % 60)
+					const minutes = Math.ceil((endTime - now) / 60)
 					let timeNowCountdown = moment().startOf('day').seconds(endTime - now).format('H:mm:ss')
 					let replace_shorthand = replaceShorthands(key)
 					if (replace_shorthand.startsWith("Block ")) {

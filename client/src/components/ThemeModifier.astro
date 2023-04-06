@@ -60,17 +60,20 @@
   let style = document.createElement("style");
   let selectedTheme = localStorage.getItem("theme");
   if (selectedTheme !== null && selectedTheme !== "default" && selectedTheme in themes) {
-    for (const cssClass of Object.keys(themes[selectedTheme])) {
-      for (const className of Object.keys(themes[selectedTheme][cssClass])) {
-        let value = themes[selectedTheme][cssClass][className];
-        if (className === "body") {
-          style.innerHTML += `body {${cssClass}: ${value} !important; }`
+    // If the theme has been flagged to be cleared in the theme editor, don't apply it
+    if (!localStorage.getItem(`editorThemeClear.${selectedTheme}`)) {
+      for (const cssClass of Object.keys(themes[selectedTheme])) {
+        for (const className of Object.keys(themes[selectedTheme][cssClass])) {
+          let value = themes[selectedTheme][cssClass][className];
+          if (className === "body") {
+            style.innerHTML += `body {${cssClass}: ${value} !important; }`
+          }
+          else {
+            style.innerHTML += `#schedule_page ${className} {${cssClass}: ${value} !important; }`
+          }
         }
-        else {
-          style.innerHTML += `#schedule_page ${className} {${cssClass}: ${value} !important; }`
-        }
-      }
-    } 
+      } 
+    }
   }
 
   document.head.appendChild(style);

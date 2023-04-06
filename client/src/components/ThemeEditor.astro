@@ -1,25 +1,31 @@
-<div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800">
-  <h1 class="font-bold font-mono text-center mt-4 text-xl">Theme Editor</h1>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+<div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800" style="display: none;" id="themeEditor">
+  <div class="flex justify-start items-center pl-4 pr-4 mt-4">
+    <h1 class="font-bold font-mono text-center text-xl" id="themeEditor-text">Theme Editor</h1>
+    <button class="font-bold font-mono ml-auto text-gray-600 hover:text-red-400 text-xl" id="closeEditor">X</button>
+  </div>
+
   <div class="w-full mt-4 flex items-center flex-col gap-4">
     <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="eyedrop">Select Element</button>
 
-    <div class="w-10/12 overflow-auto max-h-screen-3/4">
+    <div class="w-11/12 overflow-auto max-h-screen-3/4">
       <h1 class="font-mono text-lg text-gray-600 text-center">Elements</h1>
-      <div class="flex justify-center items-center flex-col gap-4 w-full pr-2 pl-2 pb-4" id="elements">
-
-
+      <div class="flex justify-center items-center flex-col gap-4 w-full pb-4 mt-2" id="elements">
 
         <div class="hidden w-full rounded-lg bg-gray-800 p-4" id="element-copy" data-element="body">
           <div class="flex flex-row">
             <h1 class="font-mono bg-gray-700 p-1 w-fit" data-theme-type="tag-name">body</h1>
-            <button class="font-mono ml-auto text-2xl text-gray-700 hover:text-red-500">-</button>
+            <button class="font-mono ml-auto text-2xl text-gray-700 hover:text-red-500 font-extrabold">-</button>
           </div>
 
           <h1 class="font-mono text-gray-600 mt-2">Defined CSS</h1>
           <hr class="mt-2 mb-2 border-gray-700">
-          <div class="flex flex-col gap-2">
-            <div class="hidden justify-between items-center flex-row flex-wrap" id="copy" data-element="body">
-              <select class="w-fit h-8 rounded-lg text-xs text-white pl-2 bg-gray-600">
+          <div class="flex flex-col gap-2" data-theme-type="defined-css-content">
+            <div class="hidden justify-start gap-2 items-center flex-row flex-wrap" id="copy" data-element="body">
+              <button class="font-mono text-gray-600 hover:text-red-400 font-bold">X</button>
+
+              <select class="w-24 h-8 rounded-lg text-xs text-white pl-2 bg-gray-600">
                 <option value="text-align">text-align</option>
                 <option value="background-color">background-color</option>
                 <option value="color">color</option>
@@ -57,10 +63,69 @@
                 <option value="border-width">border-width</option>
                 <option value="border-top-width">border-top-width</option>
                 <option value="border-right-width">border-right-width</option>
+                <option value="border-bottom-width">border-bottom-width</option>
+                <option value="border-left-width">border-left-width</option>
+                <option value="border-radius">border-radius</option>
+                <option value="border-top-left-radius">border-top-left-radius</option>
+                <option value="border-top-right-radius">border-top-right-radius</option>
+                <option value="border-bottom-right-radius">border-bottom-right-radius</option>
+                <option value="border-bottom-left-radius">border-bottom-left-radius</option>
+                <option value="border-spacing">border-spacing</option>
+                <option value="border-collapse">border-collapse</option>
+                <option value="outline">outline</option>
+                <option value="outline-width">outline-width</option>
+                <option value="outline-style">outline-style</option>
+                <option value="outline-color">outline-color</option>
+                <option value="outline-offset">outline-offset</option>
+                <option value="box-shadow">box-shadow</option>
+                <option value="margin">margin</option>
+                <option value="margin-top">margin-top</option>
+                <option value="margin-right">margin-right</option>
+                <option value="margin-bottom">margin-bottom</option>
+                <option value="margin-left">margin-left</option>
+                <option value="padding">padding</option>
+                <option value="padding-top">padding-top</option>
+                <option value="padding-right">padding-right</option>
+                <option value="padding-bottom">padding-bottom</option>
+                <option value="padding-left">padding-left</option>
+                <option value="width">width</option>
+                <option value="min-width">min-width</option>
+                <option value="max-width">max-width</option>
+                <option value="height">height</option>
+                <option value="min-height">min-height</option>
+                <option value="max-height">max-height</option>
+                <option value="overflow">overflow</option>
+                <option value="overflow-x">overflow-x</option>
+                <option value="overflow-y">overflow-y</option>
+                <option value="float">float</option>
+                <option value="clear">clear</option>
+                <option value="display">display</option>
+                <option value="visibility">visibility</option>
+                <option value="vertical-align">vertical-align</option>
+                <option value="list-style">list-style</option>
+                <option value="list-style-position">list-style-position</option>
+                <option value="list-style-type">list-style-type</option>
+                <option value="list-style-image">list-style-image</option>
+                <option value="position">position</option>
+                <option value="top">top</option>
+                <option value="right">right</option>
+                <option value="bottom">bottom</option>
+                <option value="left">left</option>
+                <option value="z-index">z-index</option>
+                <option value="flex">flex</option>
+                <option value="flex-grow">flex-grow</option>
+                <option value="flex-shrink">flex-shrink</option>
+                <option value="flex-basis">flex-basis</option>
+                <option value="flex-direction">flex-direction</option>
+                <option value="flex-wrap">flex-wrap</option>
+                <option value="flex-flow">flex-flow</option>
+                <option value="justify-content">justify-content</option>
+                <option value="align-items">align-items</option>
+                <option value="align-content">align-content</option>
+                <option value="align-self">align-self</option>
               </select>
 
-              <input class="w-24 h-8 rounded-lg text-black" type="text" value="" />
-              <button class="font-mono text-gray-600 hover:text-red-400">X</button>
+              <input class="w-14 h-8 rounded-lg text-black ml-auto" type="text" value="" />
             </div>
             <button class="font-mono text-gray-500 bg-gray-700 rounded-lg pl-2 pr-2 pt-1 pb-1" data-element="body" data-theme-type="add">+</button>
           </div>
@@ -69,18 +134,161 @@
 
 
       </div>
+      <h1 class="font-mono text-lg text-gray-600 text-center">Color Palette</h1>
+      <div class="flex justify-start items-start flex-col gap-2" id="colorpalette">
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-white" data-color>light-primary</h1>
+          <button class="text-gray-600 hover:text-red-500 ml-auto mr-2" data-reset-colors>
+            <span class="material-symbols-outlined">
+              restart_alt
+            </span>
+          </button>
+          <input class="w-12 h-8 rounded-lg text-black" data-color-selection="light-primary" type="color" data-default="#1a0066" value="#1a0066" />
+        </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-white" data-color>primary</h1>
+          <button class="text-gray-600 hover:text-red-500 ml-auto mr-2" data-reset-colors>
+            <span class="material-symbols-outlined">
+              restart_alt
+            </span>
+          </button>
+          <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="primary" data-default="#0e003a" value="#0e003a"/>
+        </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-white" data-color>dark-primary</h1>
+          <button class="text-gray-600 hover:text-red-500 ml-auto mr-2" data-reset-colors>
+            <span class="material-symbols-outlined">
+              restart_alt
+            </span>
+          </button>
+          <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="dark-primary" data-default="#050014" value="#050014" />
+        </div>
+
+      </div>
     </div>
 
   </div>
 
   <div class="absolute w-full h-12 bottom-0 border-t-4 flex justify-center items-center gap-2 flex-row border-gray-800 bg-gray-900">
-    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg">Save</button>
-    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg">Share</button>
+    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="saveEditor">Save</button>
+    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="resetEditor">Reset</button>
+    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="preventTheme">Don't Apply Theme</button>
   </div>
 </div>
 
 <script>
+  let themeSelected = localStorage.getItem("theme") || "default";
   let eyedropMode = false;
+  function updateColors() {
+    const colorDefinitions = document.querySelectorAll("[data-color-selection]");
+    if (document.getElementById("color-definitions")) {
+      document.getElementById("color-definitions")!.remove();
+    }
+
+    const head = document.getElementsByTagName("head")[0];
+    const style = document.createElement("style");
+    style.id = "color-definitions";
+    colorDefinitions.forEach((colorDefinitionRaw) => {
+      const colorDefinition = colorDefinitionRaw as HTMLInputElement;
+      const color = colorDefinition.getAttribute("data-color-selection");
+      const colorValue = colorDefinition.value;
+      style.innerHTML += `.bg-${color} { background-color: ${colorValue} !important; }`;
+      style.innerHTML += `.text-${color} { color: ${colorValue} !important; }`;
+    });
+    head.appendChild(style);
+  }
+
+  document.querySelectorAll("[data-color-selection]").forEach((colorDefinition) => {
+    colorDefinition.addEventListener("change", (event) => {
+      updateColors();
+    });
+  });
+
+  function addPropertyToElement(element: HTMLElement, property: string = "", value: string = "") {
+    let copyof = document.getElementById("copy")!.cloneNode(true) as HTMLElement;
+    copyof.classList.remove("hidden");
+    copyof.id = "";
+    copyof.classList.add("flex");
+    function updateCSS(elementExecute: HTMLElement = copyof) {
+      if (!elementExecute.parentElement!.parentElement) return;
+      let elementToAffect = elementExecute.parentElement!.parentElement!.getAttribute("data-element")!;
+      let css = "";
+      for (const item of elementExecute.parentElement!.children) {
+        if (item.getAttribute("data-theme-type") === "add") continue;
+        const cssRule = item.children[1] as HTMLSelectElement;
+        const cssValue = item.children[2] as HTMLInputElement;
+        if (!cssRule || !cssValue) return
+        css += cssRule.value + ": " + cssValue.value + ";";
+      }
+
+      let cssElement = document.getElementById(elementToAffect.replace("#", "")!);
+
+      if (!cssElement) {
+        for (const element of document.querySelectorAll(elementToAffect)) {
+          animatePulse(element as HTMLElement)
+          element.setAttribute("style", css);
+        }
+        return 
+      }
+      animatePulse(cssElement);
+      cssElement.setAttribute("style", css);
+    }
+
+    copyof.children[0].addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      let cssElement = document.getElementById(copyof.parentElement!.parentElement!.getAttribute("data-element")!.replace("#", ""));
+      if (!cssElement) {
+        for (const element of document.querySelectorAll(copyof.parentElement!.parentElement!.getAttribute("data-element")!)) {
+          element.setAttribute("style", "");
+          animatePulse(element as HTMLElement);
+        }
+        return
+      }
+      let elementToExecuteClear: HTMLElement | null = null;
+      if (copyof.parentElement!.children.length > 1) {
+        elementToExecuteClear = copyof.parentElement!.children[1] as HTMLElement;
+      }
+      copyof.parentElement!.removeChild(copyof);
+      // remove the css from the element
+      if (elementToExecuteClear) {
+        updateCSS(elementToExecuteClear);
+      }
+      else {
+        cssElement.setAttribute("style", "");
+        animatePulse(cssElement);
+      }
+
+    });
+    function fixInputType(target: HTMLElement) {
+      if (target && (target as HTMLSelectElement).value != (copyof.children[2]! as HTMLInputElement).value) {
+        if (target && (target as HTMLSelectElement).value.includes("color")) {
+          copyof.children[2].setAttribute("type", "color");
+        } else
+          copyof.children[2].setAttribute("type", "text");
+        return;
+      }
+    }
+    copyof.addEventListener("change", (e) => {
+      e.stopPropagation();
+
+      fixInputType(e.target as HTMLElement);
+      updateCSS()
+    });
+
+    let dropdownCSS = copyof.children[1] as HTMLSelectElement;
+    if (property) {
+      dropdownCSS.value = property;
+    }
+    let inputCSS = copyof.children[2] as HTMLInputElement;
+    if (value) {
+      inputCSS.value = value;
+    }
+    fixInputType(dropdownCSS as HTMLElement);
+    
+    element.parentElement!.appendChild(copyof);
+  }
+
   function animatePulse(element: HTMLElement) {
     element.animate([
       { outline: "none" },
@@ -110,23 +318,7 @@
   }
 
   const elementsList = document.getElementById("elements")!;
-
-  document.addEventListener("click", (e) => {
-    if (!e.target || !eyedropMode) return
-    let element = e.target as HTMLElement;
-    e.preventDefault();
-    enableEyedrop();
-    element.style.outline = "";
-    let tag = (element.id ? "#" + element.id :  element.tagName.toLowerCase())
-
-    if (document.getElementById("themedef-" + tag)) {
-      // jump to the element
-      document.getElementById("themedef-" + (element.id ? "#" + element.id :  element.tagName.toLowerCase()))!.scrollIntoView();
-
-      // then do a little animation to show that it's selected using dom
-      animatePulse(document.getElementById("themedef-" + (element.id ? "#" + element.id :  element.tagName.toLowerCase()))!)
-      return;
-    }
+  function addElementToEditor(tag: string) {
     let copyof = document.getElementById("element-copy")!.cloneNode(true) as HTMLElement;
     copyof.id = "themedef-" + tag;
     copyof.classList.remove("hidden");
@@ -148,7 +340,9 @@
     copyof.children[0].children[0].innerHTML = tag;
 
     function setDataElementToChildren(initialTag: string, child: HTMLElement) {
-      child.setAttribute("data-element", initialTag);
+      if (child.hasAttribute("data-element")) {
+        child.setAttribute("data-element", initialTag);
+      }
       for (let i = 0; i < child.children.length; i++) {
         setDataElementToChildren(initialTag, child.children[i] as HTMLElement);
       }
@@ -156,81 +350,39 @@
     setDataElementToChildren(tag, copyof);
 
     elementsList.appendChild(copyof);
+  }
+  document.addEventListener("click", (e) => {
+    if (!e.target || !eyedropMode) return
+    let element = e.target as HTMLElement;
+    e.preventDefault();
+    if (element.id === "eyedrop") {
+      element.style.outline = "none";
+      return;
+    }
+    enableEyedrop();
+    element.style.outline = "";
+    let tag = (element.id ? "#" + element.id :  element.tagName.toLowerCase())
+
+    if (document.getElementById("themedef-" + tag)) {
+      // jump to the element
+      document.getElementById("themedef-" + (element.id ? "#" + element.id :  element.tagName.toLowerCase()))!.scrollIntoView();
+
+      // then do a little animation to show that it's selected using dom
+      animatePulse(document.getElementById("themedef-" + (element.id ? "#" + element.id :  element.tagName.toLowerCase()))!)
+      return;
+    }
+    addElementToEditor(tag);
+    
   });
 
   document.addEventListener("click", (e) => {
     if (!e.target) return
     let element = e.target as HTMLElement;
     if (element.getAttribute("data-theme-type") === "add") {
-      let copyof = document.getElementById("copy")!.cloneNode(true) as HTMLElement;
-      copyof.classList.remove("hidden");
-      copyof.id = "";
-      copyof.classList.add("flex");
-      function updateCSS(elementExecute: HTMLElement = copyof) {
-        let elementToAffect = elementExecute.parentElement!.getAttribute("data-element")!;
-        let css = "";
-        for (const item of elementExecute.parentElement!.children) {
-          if (item.getAttribute("data-theme-type") === "add") continue;
-          const cssRule = item.children[0] as HTMLSelectElement;
-          const cssValue = item.children[1] as HTMLInputElement;
-          if (!cssRule || !cssValue) return
-          css += cssRule.value + ": " + cssValue.value + ";";
-        }
-
-        let cssElement = document.getElementById(elementToAffect.replace("#", "")!);
-
-        if (!cssElement) {
-          for (const element of document.querySelectorAll(elementToAffect)) {
-            animatePulse(element as HTMLElement)
-            element.setAttribute("style", css);
-          }
-          return 
-        }
-        animatePulse(cssElement);
-        cssElement.setAttribute("style", css);
-      }
-
-      copyof.children[2].addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        let cssElement = document.getElementById(copyof.parentElement!.getAttribute("data-element")!.replace("#", ""));
-        if (!cssElement) {
-          for (const element of document.querySelectorAll(copyof.parentElement!.getAttribute("data-element")!)) {
-            element.setAttribute("style", "");
-            animatePulse(element as HTMLElement);
-          }
-          return
-        }
-        let elementToExecuteClear: HTMLElement | null = null;
-        if (copyof.parentElement!.children.length > 1) {
-          elementToExecuteClear = copyof.parentElement!.children[1] as HTMLElement;
-        }
-        copyof.parentElement!.removeChild(copyof);
-        // remove the css from the element
-        if (elementToExecuteClear) {
-          updateCSS(elementToExecuteClear);
-        }
-        else {
-          cssElement.setAttribute("style", "");
-          animatePulse(cssElement);
-        }
-
-      });
-      copyof.addEventListener("change", (e) => {
-        e.stopPropagation();
-
-        if (e.target && (e.target as HTMLInputElement).value != (copyof.children[1]! as HTMLInputElement).value) {
-          if (e.target && (e.target as HTMLInputElement).value.includes("color")) {
-            copyof.children[1].setAttribute("type", "color");
-          } else
-            copyof.children[1].setAttribute("type", "text");
-          return;
-        }
-        updateCSS()
-      });
-      element.parentElement!.appendChild(copyof);
+      addPropertyToElement(element);
     }
   });
+  
   // on hover element put an outline around it
   document.addEventListener("mouseover", (e) => {
     if (!e.target || !eyedropMode) return
@@ -248,4 +400,166 @@
       enableEyedrop()
     }, 100);
   });
+
+  function saveProgress() {
+    let elements = document.getElementById("elements")!.children;
+    let data: { elements: { element: string, css: {rule: string, value: string}[] }[], colors: { name: string, value: string }[] } = { elements: [], colors: [] };
+    for (let htmlelement of elements) {
+      let element = htmlelement.querySelector("[data-theme-type=defined-css-content]")! as HTMLElement;
+      let cssArray: { rule: string, value: string }[] = [];
+      for (let tag of element.children) {
+        let cssToPush: { rule: string, value: string }[] = [];
+        if (tag.getAttribute("data-theme-type") === "add") continue;
+        let cssRule = tag.children[1] as HTMLSelectElement;
+        let cssValue = tag.children[2] as HTMLInputElement;
+        if (!cssRule || !cssValue) continue;
+        cssToPush.push({
+          rule: cssRule.value,
+          value: cssValue.value
+        });
+        cssArray.push(...cssToPush);
+
+      }
+      data.elements.push({
+        element: htmlelement.getAttribute("data-element")!,
+        css: cssArray
+      });
+    }
+    let colors = document.getElementById("colorpalette")!.children;
+    for (let color of colors) {
+      let colorName = color.children[0] as HTMLHeadingElement;
+      let colorValue = color.children[2] as HTMLInputElement;
+      if (!colorName || !colorValue) continue;
+      data.colors.push({
+        name: colorName.textContent!,
+        value: colorValue.value
+      });
+    }
+    localStorage.setItem(`savedEditor.${themeSelected}`, JSON.stringify(data));
+
+    console.log(data);
+  }
+
+  document.getElementById("saveEditor")!.addEventListener("click", () => {
+    saveProgress();
+    document.querySelector("#themeEditor-text")!.textContent = "Saved!";
+    setTimeout(() => {
+      document.querySelector("#themeEditor-text")!.textContent = "Theme Editor";
+    }, 1000);
+  });
+
+  function loadFromSaved() {
+    let savedData = localStorage.getItem(`savedEditor.${themeSelected}`);
+    if (!savedData) return;
+    let data = JSON.parse(savedData);
+    for (let element of data.elements) {
+      let elementToAffect = document.getElementById(element.element.replace("#", ""));
+      let css = "";
+      for (const cssRule of element.css) {
+        css += cssRule.rule + ": " + cssRule.value + ";";
+      }
+      console.log(elementToAffect);
+      if (!elementToAffect) {
+        for (const elementSelected of document.querySelectorAll(element.element)) {
+          elementSelected.setAttribute("style", css);
+          console.log(elementSelected)
+        }
+        continue;
+      }
+      elementToAffect.setAttribute("style", css);
+      animatePulse(elementToAffect);
+    }
+    const head = document.getElementsByTagName("head")[0];
+    const style = document.createElement("style");
+    for (let color of data.colors) {
+      style.innerHTML += `.bg-${color.name} { background-color: ${color.value} !important; }`
+      style.innerHTML += `.text-${color.name} { color: ${color.value} !important; }`
+    }
+    head.appendChild(style);
+
+    // apply saved colors to color palette
+    let colors = document.getElementById("colorpalette")!.children;
+    for (let color of colors) {
+      let colorName = color.children[0] as HTMLHeadingElement;
+      let colorValue = color.children[2] as HTMLInputElement;
+      if (!colorName || !colorValue) continue;
+      for (let savedColor of data.colors) {
+        if (savedColor.name === colorName.textContent) {
+          colorValue.value = savedColor.value;
+          break;
+        }
+      }
+    }
+
+    for (const elementCSSData of data.elements) {
+      if (elementCSSData.element === "body") continue;
+      // for each element, get the corresponding element in the dom, then fire the 'click' event in the dom to add it
+      addElementToEditor(elementCSSData.element);
+      // then get the element in the editor and add the css rules to it
+      let elementInEditor = document.getElementById("themedef-" + elementCSSData.element);
+      console.log(elementInEditor!.children[3].children[0]!);
+      let placeholderAlreadyProcessed = false;
+      for (const cssRule of elementCSSData.css) {
+        if (cssRule.rule === "text-align" && !placeholderAlreadyProcessed) {
+          placeholderAlreadyProcessed = true;
+          continue;
+        }
+        addPropertyToElement(elementInEditor!.children[3].children[0]! as HTMLElement, cssRule.rule, cssRule.value);
+      }
+    }
+
+    document.querySelectorAll('[data-reset-colors]').forEach((element) => {
+      element.addEventListener("click", () => {
+        let colorInput = element.parentElement!.children[2] as HTMLInputElement;
+        colorInput.value = colorInput.getAttribute("data-default")!;
+        updateColors();
+      });
+    });
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      loadFromSaved();
+    }, 250);
+  });
+  const themeEditor = document.getElementById("themeEditor")!;
+  document.getElementById("closeEditor")!.addEventListener("click", () => {
+    themeEditor.animate([
+      { transform: "translateX(0)" },
+      { transform: "translateX(-100%)" }
+    ], {
+      duration: 510,
+      easing: "ease-in-out"
+    });
+    setTimeout(() => {
+      themeEditor.style.display = "none";
+    }, 490);
+  });
+
+  document.getElementById("resetEditor")!.addEventListener("click", () => {
+    localStorage.removeItem(`savedEditor.${themeSelected}`);
+    location.reload();
+  });
+
+  document.getElementById("preventTheme")!.addEventListener("click", () => {
+    if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
+      localStorage.removeItem(`editorThemeClear.${themeSelected}`);
+      saveProgress();
+      location.reload();
+      return;
+    }
+    let allowed = confirm(
+      "Are you sure you want to prevent this theme from applying?\n" + 
+      "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
+      "➡️ This will allow you to make as many edits to the theme as you like.\n" +
+      "➡️ You can undo this by clicking the button again."
+    );
+    if (!allowed) return;
+
+    localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
+    location.reload();
+  });
+
+  document.getElementById("preventTheme")!.textContent = localStorage.getItem(`editorThemeClear.${themeSelected}`) ? "Allow Theme to Apply" : "Prevent Theme from Applying";
+  
+  themeEditor.style.display = "none";
 </script>
