@@ -517,14 +517,13 @@
     console.log("Theme Applied!")
   }
 
-  document.addEventListener("loadComplete", () => {
-    const interval = setInterval(() => {
-      if (document.getElementById("classes")!.children.length > 0) {
-        clearInterval(interval);
-        loadFromSaved();
-      }
-    }, 100);
-  });
+  const interval = setInterval(() => {
+    if (document.getElementById("classes")!.children.length > 0) {
+      clearInterval(interval);
+      loadFromSaved();
+    }
+  }, 100);
+
   const themeEditor = document.getElementById("themeEditor")!;
   document.getElementById("closeEditor")!.addEventListener("click", () => {
     themeEditor.animate([
