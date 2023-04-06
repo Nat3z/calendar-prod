@@ -513,11 +513,9 @@
       });
     });
   }
-  document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => {
-      loadFromSaved();
-    }, 250);
-  });
+  setTimeout(() => {
+    loadFromSaved();
+  }, 500);
   const themeEditor = document.getElementById("themeEditor")!;
   document.getElementById("closeEditor")!.addEventListener("click", () => {
     themeEditor.animate([
