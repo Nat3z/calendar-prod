@@ -465,7 +465,6 @@
         continue;
       }
       elementToAffect.setAttribute("style", css);
-      animatePulse(elementToAffect);
     }
     const head = document.getElementsByTagName("head")[0];
     const style = document.createElement("style");
@@ -568,11 +567,7 @@
     if (atob(theme!) !== localStorage.getItem(`savedEditor.${themeSelected}`)) {
       let confirmation = confirm(`Are you sure you want to apply this theme?\n ⚠️⚠️ This will override your current theme (${themeSelected}), and you will not be able to undo this. ⚠️⚠️`)
       if (confirmation) {
-        let themeData = localStorage.getItem(`savedEditor.${theme}`);
-        if (themeData) {
-          localStorage.setItem(`savedEditor.${themeSelected}`, atob(theme!));
-          location.reload();
-        }
+        localStorage.setItem(`savedEditor.${themeSelected}`, atob(theme!));
       } 
     }
   }
