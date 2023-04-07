@@ -44,7 +44,7 @@
   <div class="flex justify-center items-center flex-col gap-2">
     <button class="bg-light-primary text-white p-2 rounded-lg" id="dynbackground">Disable Dynamic Background</button>
     <!-- Create a drop down -->
-    <div class="flex flex-row gap-2">
+    <div class="flex flex-row gap-2 flex-wrap items-center justify-center">
       <select class="bg-light-primary text-white p-2 rounded-lg" value="default" id="theme_select">
         <option value="default">Default</option>
         <option value="salesian">Original Schedulology</option>
@@ -173,26 +173,46 @@
   });
 
   document.getElementById("settings_cog").addEventListener("click", toggleSettings);
-  document.getElementById("edit").addEventListener("click", () => {
-    const themeEditor = document.getElementById("themeEditor");
-    if (themeEditor.style.display === "block") {
-      return;
-    }
-    themeEditor.style.display = "block";
-    themeEditor.animate([
-      { transform: "translateX(-100%)" },
-      { transform: "translateX(0)" }
-    ], {
-      duration: 510,
-      easing: "ease-in-out"
-    });
-  });
 
   const mq = window.matchMedia( "(max-width: 760px)" );
   if (mq.matches) {
-    document.getElementById("edit").classList.add("hidden");
-  }
+    let themeSelected = localStorage.getItem("theme") || "default";
+    let editorButton = document.getElementById("edit");
+    editorButton.id = "preventTheme2";
+    document.getElementById("preventTheme2").addEventListener("click", () => {
+      if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
+        localStorage.removeItem(`editorThemeClear.${themeSelected}`);
+        location.reload();
+        return;
+      }
+      let allowed = confirm(
+        "Are you sure you want to prevent this theme from applying?\n" + 
+        "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
+        "➡️ This will allow you to make as many edits to the theme as you like.\n" +
+        "➡️ You can undo this by clicking the button again."
+      );
+      if (!allowed) return;
+
+      localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
+      location.reload();
+    });
+    document.getElementById("preventTheme2").textContent = localStorage.getItem(`editorThemeClear.${themeSelected}`) ? "Enable Theme" : "Disable Theme";  }
   else {
     document.getElementById("edit").classList.remove("hidden");
   }
+  if (document.getElementById("edit"))
+    document.getElementById("edit").addEventListener("click", () => {
+      const themeEditor = document.getElementById("themeEditor");
+      if (themeEditor.style.display === "block") {
+        return;
+      }
+      themeEditor.style.display = "block";
+      themeEditor.animate([
+        { transform: "translateX(-100%)" },
+        { transform: "translateX(0)" }
+      ], {
+        duration: 510,
+        easing: "ease-in-out"
+      });
+    });
 </script>

@@ -136,7 +136,7 @@
 
       </div>
       <h1 class="font-mono text-lg text-gray-600 text-center">Color Palette</h1>
-      <div class="flex justify-start items-start flex-col gap-2" id="colorpalette">
+      <div class="flex justify-start items-start flex-col gap-2 pb-24" id="colorpalette">
         <div class="flex w-full">
           <h1 class="font-mono text-lg text-white" data-color>light-primary</h1>
           <button class="text-gray-600 hover:text-red-500 ml-auto mr-2" data-reset-colors>
@@ -547,26 +547,29 @@
     location.reload();
   });
 
-  document.getElementById("preventTheme")!.addEventListener("click", () => {
-    if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
-      localStorage.removeItem(`editorThemeClear.${themeSelected}`);
-      saveProgress();
+  setTimeout(() => {
+    document.getElementById("preventTheme")!.addEventListener("click", () => {
+      if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
+        localStorage.removeItem(`editorThemeClear.${themeSelected}`);
+        saveProgress();
+        location.reload();
+        return;
+      }
+      let allowed = confirm(
+        "Are you sure you want to prevent this theme from applying?\n" + 
+        "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
+        "➡️ This will allow you to make as many edits to the theme as you like.\n" +
+        "➡️ You can undo this by clicking the button again."
+      );
+      if (!allowed) return;
+
+      localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
       location.reload();
-      return;
-    }
-    let allowed = confirm(
-      "Are you sure you want to prevent this theme from applying?\n" + 
-      "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
-      "➡️ This will allow you to make as many edits to the theme as you like.\n" +
-      "➡️ You can undo this by clicking the button again."
-    );
-    if (!allowed) return;
+    });
+    document.getElementById("preventTheme")!.textContent = localStorage.getItem(`editorThemeClear.${themeSelected}`) ? "Enable Theme" : "Disable Theme";
+  }, 250);
 
-    localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
-    location.reload();
-  });
 
-  document.getElementById("preventTheme")!.textContent = localStorage.getItem(`editorThemeClear.${themeSelected}`) ? "Enable Theme" : "Disable Theme";
   
   themeEditor.style.display = "none";
 
