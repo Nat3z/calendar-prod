@@ -226,6 +226,7 @@
 
       if (!cssElement) {
         for (const element of document.querySelectorAll(elementToAffect)) {
+          if (element.hasAttribute("data-in-theme-editor")) continue
           animatePulse(element as HTMLElement)
           element.setAttribute("style", css);
         }
@@ -241,6 +242,7 @@
       let cssElement = document.getElementById(copyof.parentElement!.parentElement!.getAttribute("data-element")!.replace("#", ""));
       if (!cssElement) {
         for (const element of document.querySelectorAll(copyof.parentElement!.parentElement!.getAttribute("data-element")!)) {
+          if (element.hasAttribute("data-in-theme-editor")) continue
           element.setAttribute("style", "");
           animatePulse(element as HTMLElement);
         }
@@ -330,6 +332,7 @@
       let cssElement = document.getElementById(tag.replace("#", ""));
       if (!cssElement) {
         for (const element of document.querySelectorAll(tag)) {
+          if (element.hasAttribute("data-in-theme-editor")) continue
           element.setAttribute("style", "");
           animatePulse(element as HTMLElement);
         }
@@ -387,13 +390,16 @@
   // on hover element put an outline around it
   document.addEventListener("mouseover", (e) => {
     if (!e.target || !eyedropMode) return
+    
     let element = e.target as HTMLElement;
+    if (element.hasAttribute("data-in-theme-editor")) return;
     element.style.outline = "6px solid red";
   });
   // on mouse out remove the outline
   document.addEventListener("mouseout", (e) => {
     if (!e.target || !eyedropMode) return
     let element = e.target as HTMLElement;
+    if (element.hasAttribute("data-in-theme-editor")) return;
     element.style.outline = "none";
   });
   document.getElementById("eyedrop")!.addEventListener("click", () => {
@@ -461,6 +467,7 @@
       }
       if (!elementToAffect) {
         for (const elementSelected of document.querySelectorAll(element.element)) {
+          if (elementSelected.hasAttribute("data-in-theme-editor")) continue
           elementSelected.setAttribute("style", css);
         }
         continue;
@@ -587,5 +594,14 @@
     alert("Link copied To Clipboard!")
     navigator.clipboard.writeText(url.toString());
   });
+
+  // prevent theme editor from being themed
+  function addThemeEditorTag(element: HTMLElement) {
+    element.setAttribute("data-in-theme-editor", "")
+    for (const child of element.children) {
+      addThemeEditorTag(child as HTMLElement);
+    }
+  }
+  addThemeEditorTag(themeEditor);
 
 </script>
