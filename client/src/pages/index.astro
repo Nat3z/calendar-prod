@@ -3,6 +3,7 @@ import moment from 'moment';
 import Settings from '../layouts/Settings.astro';
 import Layout from '../layouts/Layout.astro';
 import ThemeModifier from '../components/ThemeModifier.astro';
+import ThemeEditor from '../components/ThemeEditor.astro';
 
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
@@ -22,39 +23,51 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 <Layout title="DynSchedule">
 	<body>
-		<div id="throwback" class="fixed top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm">
-			<h1>Originally by C.J.F '22, Rebuilt by Nat3z</h1>
-		</div>
-		<div class="flex justify-center items-center w-screen h-screen gap-4 p-2">
-			<Settings />
-			<div class="bg-primary w-11/12 transition-all h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg" id="main_schedule">
-				
-				<div class="w-full h-1/6 sm:h-1/4 flex justify-center items-center rounded-t-lg bg-light-primary transition-all" id="quickpeek">
-					<h1 class="text-center text-white text-4xl md:text-6xl absolute z-10" id="current">Loading</h1>
-					<div class="w-full bg-transparent opacity-20 rounded-t-lg h-full ">
-						<div class="bg-blue-500 h-full rounded-t-lg rounded-tr-none" style="width: 0%" id="progressbar"></div>
+		<div class="flex justify-start items-center flex-row">
+			<ThemeEditor />
+			<div class="flex justify-center items-center w-screen h-screen gap-4 p-2 relative" id="schedule_page">
+				<div id="throwback" class="absolute top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm">
+					<h1>Originally by C.J.F '22, Rebuilt by Nat3z</h1>
+				</div>
+		
+				<Settings />
+				<div class="bg-primary w-11/12 transition-all h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg" id="main_schedule">
+					
+					<div class="w-full h-1/6 sm:h-1/4 flex justify-center items-center rounded-t-lg bg-light-primary transition-all" id="quickpeek">
+						<h1 class="text-center text-white text-4xl md:text-6xl absolute z-10" id="current">Loading</h1>
+						<div class="w-full bg-transparent opacity-20 rounded-t-lg h-full">
+							<div class="bg-blue-500 h-full rounded-t-lg rounded-tr-none" style="width: 0%" id="progressbar"></div>
+						</div>
+					</div>
+	
+					<div class="flex flex-col justify-center items-center p-4 text-lg" id="classes">
 					</div>
 				</div>
-
-				<div class="flex flex-col justify-center items-center p-4 text-lg" id="classes">
+					
+				<div class="hidden sm:block fixed bottom-4 transition-all" id="vercel">
+					<div class="flex justify-center text-white items-center gap-2 m-auto">
+						<!-- <img width="25" height="25" alt="Light mode" src="./sun.svg"/> -->
+						<!-- Powered by <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative"> and made by Nat3z -->
+						Built by Nat3z, using <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> and hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative">
+					</div>
 				</div>
 			</div>
+	
+			<ThemeModifier />
 		</div>
-
-		<div class="hidden sm:block fixed bottom-4 w-full transition-all" id="vercel">
-			<div class="flex justify-center text-white items-center gap-2 m-auto">
-				<!-- <img width="25" height="25" alt="Light mode" src="./sun.svg"/> -->
-				Powered by <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative"> and made by Nat3z
-			</div>
-		</div>
-
-		<ThemeModifier />
 	</body>
 
 	<script>
 		import moment from 'moment';
 		let scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 		let events = scheduleData.events;
+		document.dispatchEvent(
+			new CustomEvent("loadComplete", {
+				bubbles: true,
+				cancelable: true,
+				composed: false,
+			})
+		);
 
 		console.log("%cCreated by cool people at Salesian lololol!!!!!", "color: grey; text-shadow: 2px 2px white; font-size: 32px;")
 
@@ -135,7 +148,6 @@ function parseTime(t: string, offsetTime = new Date()) {
 		setInterval(() => {
 			// get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
 			let current = new Date()
-			
 			let now = moment(current.getTime()).unix()
 			let success = false
 			let closestStart = 0
@@ -171,7 +183,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 				if (now >= startTime && now <= endTime) {
 					document.getElementById(key)!.classList.add("font-bold")					 
-					const minutes = Math.floor((endTime - now) / 60 % 60)
+					const minutes = Math.ceil((endTime - now) / 60)
 					let timeNowCountdown = moment().startOf('day').seconds(endTime - now).format('H:mm:ss')
 					let replace_shorthand = replaceShorthands(key)
 					if (replace_shorthand.startsWith("Block ")) {
@@ -263,9 +275,10 @@ function parseTime(t: string, offsetTime = new Date()) {
 						text += ` (${Math.ceil(closestStart / 60) - (offset)}')`
 					}
 					document.getElementById("current")!.innerHTML = text
-					document.getElementById("progressbar")!.style.width = `0%`
+					// percentage
+					let percentage = (closestStart - offset * 60) / (closestStart - lastEndedBlock) * 100
+					document.getElementById("progressbar")!.style.width = `${percentage}%`
 
-					// get the percentage of time between now and the start of the next block
 					if (!document.hasFocus()) {
 						document.title = text
 					}	

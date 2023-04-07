@@ -2,56 +2,59 @@
 
 ---
 
-<button class="fixed top-2 right-2 p-2 bg-light-primary rounded-lg w-12 h-12 text-white" id="settings_cog">
+<button class="absolute top-2 right-2 p-2 bg-light-primary rounded-lg w-12 h-12 text-white" id="settings_cog">
   <img src="/settings.svg" alt="⚙️" class="w-full h-full">
 </button>
 
-<div class="bg-primary flex hidden w-11/12 sm:w-2/3 h-5/6 rounded-lg transition-all p-6 pt-4 sm:pt-10 sm:p-12 gap-4 flex-col" id="settings">
+<div class="bg-primary flex hidden w-11/12 sm:w-2/3 h-fit rounded-lg transition-all p-6 pt-4 sm:pt-10 sm:p-12 gap-4 flex-col" id="settings">
   <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4" id="blk_1-input">
     <h1>Block 1</h1>
-    <input class="w-36 text-black font-normal">
+    <input class="w-36 text-black font-normal pl-2">
   </section>
   <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4" id="blk_2-input">
     <h1>Block 2</h1>
-    <input class="w-36 text-black font-normal">
+    <input class="w-36 text-black font-normal pl-2">
   </section>
   <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4" id="blk_3-input">
     <h1>Block 3</h1>
-    <input class="w-36 text-black font-normal">
+    <input class="w-36 text-black font-normal pl-2">
   </section>
   <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4" id="blk_4-input">
     <h1>Block 4</h1>
-    <input class="w-36 text-black font-normal">
+    <input class="w-36 text-black font-normal pl-2">
   </section>
   <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4" id="blk_5-input">
     <h1>Block 5</h1>
-    <input class="w-36 text-black font-normal">
+    <input class="w-36 text-black font-normal pl-2">
   </section>
   <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4" id="blk_6-input">
     <h1>Block 6</h1>
-    <input class="w-36 text-black font-normal">
+    <input class="w-36 text-black font-normal pl-2">
   </section>
   <section class="text-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4" id="blk_7-input">
     <h1>Block 7</h1>
-    <input class="w-36 text-black font-normal">
+    <input class="w-36 text-black font-normal pl-2">
   </section>
 
-  <div class="flex justify-center flex-row items-center gap-2">
-    <button class="bg-light-primary text-white font-bold text-lg rounded-lg p-2 h-12" id="save">Save</button>
-    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12" id="paste">Paste from Schoology</button>
+  <div class="flex justify-center flex-row items-center gap-2 h-auto">
+    <button class="bg-light-primary text-white font-bold text-lg rounded-lg p-2 h-full" id="save">Save</button>
+    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-full" id="paste">Paste from Schoology</button>
   </div>
-
   
   <div class="flex justify-center items-center flex-col gap-2">
-    <button class="bg-light-primary text-white p-2 rounded-lg" id="dynbackground">Disable Dynamic Background</button>
     <!-- Create a drop down -->
-    <div class="flex flex-row gap-2">
-      <button class="bg-light-primary text-white p-2 rounded-lg" id="theme">Change Theme</button>
+    <div class="flex flex-row gap-2 flex-wrap items-center justify-center">
+      <button class="bg-light-primary text-white p-2 rounded-lg" id="dynbackground">Disable Dynamic Background</button>
+      <button class="bg-light-primary text-white p-2 rounded-lg" id="removeCustomTheme">Remove Custom Theme</button>
       <select class="bg-light-primary text-white p-2 rounded-lg" value="default" id="theme_select">
         <option value="default">Default</option>
         <option value="salesian">Original Schedulology</option>
         <option value="hotdog">Hot Dog Stand</option>
       </select>
+      <button class="bg-light-primary text-white p-2 rounded-lg" id="theme">Change Theme</button>
+      <button class="bg-light-primary text-white p-2 rounded-lg" id="edit">
+        <img src="/edit.svg" alt="✏️" class="w-6 h-6">
+      </button>
     </div>
   </div>
 
@@ -171,4 +174,52 @@
   });
 
   document.getElementById("settings_cog").addEventListener("click", toggleSettings);
+
+  const mq = window.matchMedia( "(max-width: 760px)" );
+  if (mq.matches) {
+    let themeSelected = localStorage.getItem("theme") || "default";
+    let editorButton = document.getElementById("edit");
+    editorButton.id = "preventTheme2";
+    document.getElementById("preventTheme2").addEventListener("click", () => {
+      if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
+        localStorage.removeItem(`editorThemeClear.${themeSelected}`);
+        location.reload();
+        return;
+      }
+      let allowed = confirm(
+        "Are you sure you want to prevent this theme from applying?\n" + 
+        "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
+        "➡️ This will allow you to make as many edits to the theme as you like.\n" +
+        "➡️ You can undo this by clicking the button again."
+      );
+      if (!allowed) return;
+
+      localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
+      location.reload();
+    });
+    document.getElementById("preventTheme2").textContent = localStorage.getItem(`editorThemeClear.${themeSelected}`) ? "Enable Theme" : "Disable Theme";  }
+  else {
+    document.getElementById("edit").classList.remove("hidden");
+  }
+  if (document.getElementById("edit"))
+    document.getElementById("edit").addEventListener("click", () => {
+      const themeEditor = document.getElementById("themeEditor");
+      if (themeEditor.style.display === "block") {
+        return;
+      }
+      themeEditor.style.display = "block";
+      themeEditor.animate([
+        { transform: "translateX(-100%)" },
+        { transform: "translateX(0)" }
+      ], {
+        duration: 510,
+        easing: "ease-in-out"
+      });
+    });
+  
+  document.getElementById("removeCustomTheme").addEventListener("click", () => {
+    let themeSelected = localStorage.getItem("theme") || "default";
+    localStorage.removeItem(`savedEditor.${themeSelected}`);
+    location.reload();
+  });
 </script>

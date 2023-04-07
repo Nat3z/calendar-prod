@@ -15,6 +15,13 @@ module.exports = {
 			"fontSize": {
 				"ultramd": "1.25rem",
 			},
+			"maxHeight": {
+				"screen-1/2": "50vh",
+				"screen-1/3": "33vh",
+				"screen-2/3": "66vh",
+				"screen-1/4": "25vh",
+				"screen-3/4": "75vh",
+			},
 			/* custom unit .5 */
 			"spacing": {
 				"0.5": "0.125rem",
