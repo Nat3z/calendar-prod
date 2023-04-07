@@ -4,6 +4,7 @@ import Settings from '../layouts/Settings.astro';
 import Layout from '../layouts/Layout.astro';
 import ThemeModifier from '../components/ThemeModifier.astro';
 import ThemeEditor from '../components/ThemeEditor.astro';
+import ScreenSaver from '../components/ScreenSaver.astro';
 
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
@@ -23,7 +24,8 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 <Layout title="DynSchedule">
 	<body>
-		<div class="flex justify-start items-center flex-row">
+		<div class="flex justify-start items-center flex-row" data-in-theme-editor>
+			<ScreenSaver />
 			<ThemeEditor />
 			<div class="flex justify-center items-center w-screen h-screen gap-4 p-2 relative" id="schedule_page">
 				<div id="throwback" class="absolute top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm">
@@ -143,6 +145,8 @@ function parseTime(t: string, offsetTime = new Date()) {
 			mouseMove()
 		}
 
+		if (!scheduleData.possiblyClosed) localStorage.removeItem("alwaysShowSchedule")
+
 		
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
 		setInterval(() => {
@@ -163,6 +167,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 					document.getElementById("classes")!.innerHTML = `
 					<h1 class="text-lg md:text-3xl font-bold text-center mb-4" id="title">${replaceShorthands(scheduleData.title)}</h1>
 					`
+					
 				}
 
 				if (!docKey) {
@@ -287,6 +292,23 @@ function parseTime(t: string, offsetTime = new Date()) {
 			}
 
 			if (document.hasFocus()) document.title = `DynSchedule`
+			if (scheduleData.possiblyClosed && !localStorage.getItem("alwaysShowSchedule")) {
+				if (!document.hasFocus()) document.title = `Possibly Closed`
+				document.getElementById("current")!.innerHTML = "No Classes Today"
+				document.getElementById("classes")!.innerHTML = `
+					<h1 id="failed" class="text-center text-lg w-3/4 md:text-3xl text-red-500 font-bold">
+						School is most likely closed for the day. Please check the school's website for more information.
+					</h1>
+					<button class="p-2 pl-4 pr-4 bg-light-primary rounded-lg mt-4" id="revealschedule">Show Schedule Anyways (Spam Click)</button>
+				`
+				document.querySelector("#revealschedule")!.addEventListener("click", () => {
+					localStorage.setItem("alwaysShowSchedule", "true");
+				});
+
+				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "flex"
+			} else {
+				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "none"
+			}
 		}, 100)
 
 		setInterval(async () => {

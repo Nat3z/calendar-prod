@@ -135,13 +135,15 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let vEvents = Object.values(events).filter(event => event.type == "VEVENT")
   // get the current date and find the event in the ics
   let today = new Date()
-  
+  let schoolToBeClosed = true;
   /* @ts-ignore */
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
     // development
     // return event.summary === "Schedule Change: Early 2:20pm Dismissal; PD for Faculty";
     if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
+      if (!schoolToBeClosed) 
+        schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
       return event.description.match(matchRegex) != null
     }
   })
@@ -200,5 +202,5 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return aStart - bStart
   }))
   res = res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
-  return res.json({ title, events: Object.fromEntries(sortedTimes), code: 200 })
+  return res.json({ title, events: Object.fromEntries(sortedTimes), possiblyClosed: schoolToBeClosed,  code: 200 })
 }
