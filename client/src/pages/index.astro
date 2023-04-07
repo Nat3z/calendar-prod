@@ -61,7 +61,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 	<script>
 		import moment from 'moment';
-		let scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
+		let scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 		let events = scheduleData.events;
 		document.dispatchEvent(
 			new CustomEvent("loadComplete", {
