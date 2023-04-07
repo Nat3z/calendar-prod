@@ -237,8 +237,6 @@
     }
 
     copyof.children[0].addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
       let cssElement = document.getElementById(copyof.parentElement!.parentElement!.getAttribute("data-element")!.replace("#", ""));
       if (!cssElement) {
         for (const element of document.querySelectorAll(copyof.parentElement!.parentElement!.getAttribute("data-element")!)) {
@@ -246,7 +244,6 @@
           element.setAttribute("style", "");
           animatePulse(element as HTMLElement);
         }
-        return
       }
       let elementToExecuteClear: HTMLElement | null = null;
       if (copyof.parentElement!.children.length > 1) {
@@ -257,7 +254,7 @@
       if (elementToExecuteClear) {
         updateCSS(elementToExecuteClear);
       }
-      else {
+      else if (cssElement) {
         cssElement.setAttribute("style", "");
         animatePulse(cssElement);
       }
