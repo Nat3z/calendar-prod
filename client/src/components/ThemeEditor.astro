@@ -7,8 +7,15 @@
   </div>
 
   <div class="w-full mt-4 flex items-center flex-col gap-4">
-    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="shareTheme">Share Theme</button>
-    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="eyedrop">Select Element</button>
+    <div class="flex flex-row justify-center items-center gap-2">
+      <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="eyedrop">Select Element</button>
+      <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg flex justify-center items-center" id="manualeyedrop">
+        <span class="material-symbols-outlined">
+          keyboard
+        </span>
+      </button>
+    </div>
+
 
     <div class="w-11/12 overflow-auto max-h-screen-3/4">
       <h1 class="font-mono text-lg text-gray-600 text-center">Elements</h1>
@@ -136,7 +143,7 @@
 
       </div>
       <h1 class="font-mono text-lg text-gray-600 text-center">Color Palette</h1>
-      <div class="flex justify-start items-start flex-col gap-2 pb-24" id="colorpalette">
+      <div class="flex justify-start items-start flex-col gap-2" id="colorpalette">
         <div class="flex w-full">
           <h1 class="font-mono text-lg text-white" data-color>light-primary</h1>
           <button class="text-gray-600 hover:text-red-500 ml-auto mr-2" data-reset-colors>
@@ -166,6 +173,12 @@
         </div>
 
       </div>
+
+      <h1 class="font-mono text-gray-600 text-center">Misc.</h1>
+      <div class="flex justify-center items-center flex-row mt-2 gap-2 pb-24">
+        <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="shareTheme">Share Theme</button>
+        <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="preventTheme">Don't Apply Theme</button>
+      </div>
     </div>
 
   </div>
@@ -173,7 +186,6 @@
   <div class="absolute w-full h-12 bottom-0 border-t-4 flex justify-center items-center gap-2 flex-row border-gray-800 bg-gray-900">
     <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="saveEditor">Save</button>
     <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="resetEditor">Reset</button>
-    <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="preventTheme">Don't Apply Theme</button>
   </div>
 </div>
 
@@ -219,7 +231,7 @@
         const cssRule = item.children[1] as HTMLSelectElement;
         const cssValue = item.children[2] as HTMLInputElement;
         if (!cssRule || !cssValue) return
-        css += cssRule.value + ": " + cssValue.value + ";";
+        css += cssRule.value + ": " + cssValue.value + " !important;";
       }
 
       let cssElement = document.getElementById(elementToAffect.replace("#", "")!);
@@ -374,6 +386,21 @@
     }
     addElementToEditor(tag);
     
+  });
+
+  document.querySelector("#manualeyedrop")!.addEventListener("click", (e) => {
+    e.preventDefault();
+    let tag = prompt("Enter the element's tag/classname/id you want to select (Ensure that you include the symbol (#, ., or none))");
+    if (!tag) return;
+    if (document.getElementById("themedef-" + tag)) {
+      // jump to the element
+      document.getElementById("themedef-" + tag)!.scrollIntoView();
+
+      // then do a little animation to show that it's selected using dom
+      animatePulse(document.getElementById("themedef-" + tag)!)
+      return;
+    }
+    addElementToEditor(tag);
   });
 
   document.addEventListener("click", (e) => {
@@ -543,6 +570,8 @@
   });
 
   document.getElementById("resetEditor")!.addEventListener("click", () => {
+    let confirmation = confirm("Are you sure you want to reset this theme? You cannot undo this action.");
+    if (!confirmation) return;
     localStorage.removeItem(`savedEditor.${themeSelected}`);
     location.reload();
   });
