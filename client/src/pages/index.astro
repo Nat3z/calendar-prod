@@ -36,7 +36,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 				<div class="bg-primary w-11/12 transition-all h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg" id="main_schedule">
 					
 					<div class="w-full h-1/6 sm:h-1/4 flex justify-center items-center rounded-t-lg bg-light-primary transition-all" id="quickpeek">
-						<h1 class="text-center text-white text-4xl md:text-6xl absolute z-10" id="current">Loading</h1>
+						<h1 class="text-center text-white text-4xl md:text-6xl absolute z-10" id="current">Loading...</h1>
 						<div class="w-full bg-transparent opacity-20 rounded-t-lg h-full">
 							<div class="bg-blue-500 h-full rounded-t-lg rounded-tr-none" style="width: 0%" id="progressbar"></div>
 						</div>
@@ -304,6 +304,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 				document.querySelector("#revealschedule")!.addEventListener("click", () => {
 					localStorage.setItem("alwaysShowSchedule", "true");
 				});
+				document.getElementById("progressbar")!.style.width = `0%`;
 
 				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "flex"
 			} else {
