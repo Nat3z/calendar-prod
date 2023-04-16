@@ -3,7 +3,7 @@
 ---
 
 <button class="absolute top-2 right-2 p-2 bg-light-primary rounded-lg w-12 h-12 text-white" id="settings_cog">
-  <img src="/settings.svg" alt="⚙️" class="w-full h-full">
+  <img src="/settings.svg" alt="⚙️" class="w-full h-full" id="cog_svg">
 </button>
 
 <div class="bg-primary flex hidden w-11/12 sm:w-2/3 h-fit rounded-lg transition-all p-6 pt-4 sm:pt-10 sm:p-12 gap-4 flex-col" id="settings">
@@ -50,13 +50,16 @@
         <option value="default">Default</option>
         <option value="salesian">Original Schedulology</option>
         <option value="hotdog">Hot Dog Stand</option>
+        <option value="purple">Purple</option>
         <option value="custom-1">Custom Theme 1</option>
         <option value="custom-2">Custom Theme 2</option>
         <option value="custom-3">Custom Theme 3</option>
       </select>
       <button class="bg-light-primary text-white p-2 rounded-lg" id="theme">Change Theme</button>
-      <button class="bg-light-primary text-white p-2 rounded-lg" id="edit">
-        <img src="/edit.svg" alt="✏️" class="w-6 h-6">
+      <button class="bg-light-primary text-white p-2 rounded-lg flex justify-center items-center" id="edit">
+        <span class="material-symbols-outlined">
+          edit
+        </span>
       </button>
     </div>
   </div>
@@ -118,12 +121,18 @@
   function toggleSettings() {
     const settings = document.getElementById("settings")
     const mainschedule = document.getElementById("main_schedule")
+    const cogsvg = document.getElementById("cog_svg");
     if (!settings.classList.contains("hidden")) {
       mainschedule.classList.remove("hidden");
+      cogsvg.src = "/settings.svg";
+      cogsvg.alt = "⚙️";
       settings.classList.add("hidden");
     }
     else {
       mainschedule.classList.add("hidden");
+
+      cogsvg.src = "/close.svg";
+      cogsvg.alt = "❌";
       settings.classList.remove("hidden");
     }
   }
@@ -206,6 +215,10 @@
   }
   if (document.getElementById("edit"))
     document.getElementById("edit").addEventListener("click", () => {
+      if (document.querySelector("#preview_menu").style.display !== "none") {
+        alert("Please close the preview menu before editing the theme.");
+        return;
+      }
       const themeEditor = document.getElementById("themeEditor");
       if (themeEditor.style.display === "block") {
         return;
