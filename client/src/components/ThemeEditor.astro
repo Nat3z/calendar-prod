@@ -16,7 +16,7 @@
   <h1 class="text-lg font-mono" data-in-theme-editor>Copied to Clipboard!</h1>
 </div>
 
-<div class="fixed top-2 left-2 bg-primary z-10 w-48 h-48 rounded-lg border border-black flex-col gap-2 justify-center items-center" style="display: none;" id="preview_menu" data-in-theme-editor>
+<div class="fixed rounded-none bottom-0 left-0 sm:bottom-0 sm:top-2 sm:left-2 bg-primary z-10 w-full h-24 sm:w-48 sm:h-48 sm:rounded-lg border border-black flex-col gap-2 justify-center items-center" style="display: none;" id="preview_menu" data-in-theme-editor>
   <h1 class="text-center text-xl">Previewing Theme</h1>
   <div class="flex flex-row flex-wrap justify-center items-center gap-2">
     <button class="bg-light-primary p-2 pl-4 pr-4 rounded-lg" id="applyPreviewTheme">Apply</button>
@@ -49,9 +49,9 @@
       <h1 class="font-mono text-lg text-gray-600 text-center">Elements</h1>
       <div class="flex justify-center items-center flex-col gap-4 w-full pb-4 mt-2" id="elements">
 
-        <div class="hidden w-full rounded-lg bg-gray-800 p-4" id="element-copy" data-element="body">
+        <div class="hidden w-full rounded-lg bg-gray-800 p-4" id="element-copy" data-element="abbr">
           <div class="flex flex-row">
-            <h1 class="font-mono bg-gray-700 p-1 w-fit" data-theme-type="tag-name">body</h1>
+            <h1 class="font-mono bg-gray-700 p-1 w-fit" data-theme-type="tag-name">abbr</h1>
             <button class="font-mono ml-auto text-2xl text-gray-700 hover:text-red-500 font-extrabold">
               <span class="material-symbols-outlined">
                 remove
@@ -62,7 +62,7 @@
           <h1 class="font-mono text-gray-600 mt-2">Defined CSS</h1>
           <hr class="mt-2 mb-2 border-gray-700">
           <div class="flex flex-col gap-2" data-theme-type="defined-css-content">
-            <div class="hidden justify-start gap-2 items-center flex-row flex-wrap" id="copy" data-element="body">
+            <div class="hidden justify-start gap-2 items-center flex-row flex-wrap" id="copy" data-element="abbr">
               <button class="font-mono text-gray-600 hover:text-red-400 font-bold flex items-center justify-center">
                 <span class="material-symbols-outlined">
                   remove
@@ -171,7 +171,7 @@
 
               <input class="w-14 h-8 rounded-lg text-black ml-auto" type="text" value="" />
             </div>
-            <button class="font-mono text-gray-500 bg-gray-700 rounded-lg pl-2 pr-2 pt-1 pb-1 flex justify-center items-center" data-element="body" data-theme-type="add">
+            <button class="font-mono text-gray-500 bg-gray-700 rounded-lg pl-2 pr-2 pt-1 pb-1 flex justify-center items-center" data-element="abbr" data-theme-type="add">
               <span class="material-symbols-outlined">
                 add
               </span>
@@ -557,7 +557,7 @@
     triggerSave();
   });
 
-  function loadFromSaved(saveData: any = null) {
+  function loadFromSaved(saveData: any = null, forceCSS: boolean = false) {
     let savedData = saveData || localStorage.getItem(`savedEditor.${themeSelected}`);
     if (!savedData) return;
     console.log("Loading Saved Theme...")
@@ -581,8 +581,8 @@
     const head = document.getElementsByTagName("head")[0];
     const style = document.createElement("style");
     for (let color of data.colors) {
-      style.innerHTML += `.bg-${color.name} { background-color: ${color.value} !important; }`
-      style.innerHTML += `.text-${color.name} { color: ${color.value} !important; }`
+      style.innerHTML += `.bg-${color.name} { background-color: ${color.value} ${forceCSS ? "!important" : ""}; }`
+      style.innerHTML += `.text-${color.name} { color: ${color.value} ${forceCSS ? "!important" : ""}; }`
     }
     head.appendChild(style);
 
@@ -601,7 +601,7 @@
     }
 
     for (const elementCSSData of data.elements) {
-      if (elementCSSData.element === "body") continue;
+      if (elementCSSData.element === "abbr") continue;
       // for each element, get the corresponding element in the dom, then fire the 'click' event in the dom to add it
       addElementToEditor(elementCSSData.element);
       // then get the element in the editor and add the css rules to it
@@ -619,15 +619,33 @@
     console.log("Theme Applied!")
   }
   let isPreviewing = false;
+  // Theme Sharing!
+  let params = new URLSearchParams(window.location.search);
 
   const interval = setInterval(() => {
     if (document.getElementById("classes")!.children.length > 0) {
       clearInterval(interval);
-      
+      // theme previews
+      if (params.get("theme")) {
+        let theme = params.get("theme");
+        isPreviewing = true;
+        
+        loadFromSaved(atob(theme!));
+        (document.querySelector("#preview_menu")! as HTMLElement).style.display = "flex";
+      }
       if (!isPreviewing) {
-        const purpleTheme = '{"elements":[{"element":"body","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a570be"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"#save","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#paste","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#failed","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]}],"colors":[{"name":"light-primary","value":"#ffe4f2"},{"name":"primary","value":"#e0b8da"},{"name":"dark-primary","value":"#e68bbe"}]}' 
-        if (themeSelected === "purple") {
+        let doesCurrentThemeHaveEdits = localStorage.getItem(`savedEditor.${themeSelected}`) !== null;
+        const purpleTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a570be"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"#save","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#paste","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#failed","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]}],"colors":[{"name":"light-primary","value":"#ffe4f2"},{"name":"primary","value":"#e0b8da"},{"name":"dark-primary","value":"#e68bbe"}]}' 
+        const salesianTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px black solid"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#throwback","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"visible"}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a6192e"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]}],"colors":[{"name":"light-primary","value":"#baab90"},{"name":"primary","value":"#eddab8"},{"name":"dark-primary","value":"#cc1e38"}]}'
+        const hotdogTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#fff700"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"b","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]}],"colors":[{"name":"light-primary","value":"#ff0000"},{"name":"primary","value":"#fbff00"},{"name":"dark-primary","value":"#050014"}]}'
+        if (themeSelected === "salesian" && !doesCurrentThemeHaveEdits) {
+          loadFromSaved(salesianTheme);
+        }
+        else if (themeSelected === "purple" && !doesCurrentThemeHaveEdits) {
           loadFromSaved(purpleTheme);
+        }
+        else if (themeSelected === "hotdog" && !doesCurrentThemeHaveEdits) {
+          loadFromSaved(hotdogTheme);
         }
         else {
           loadFromSaved();
@@ -696,15 +714,7 @@
     }
   }
   addThemeEditorTag(themeEditor);
-  
-  // Theme Sharing!
-  let params = new URLSearchParams(window.location.search);
-  if (params.get("theme")) {
-    let theme = params.get("theme");
-    isPreviewing = true;
-    loadFromSaved(atob(theme!));
-    (document.querySelector("#preview_menu")! as HTMLElement).style.display = "flex";
-  }
+
 
   document.getElementById("closePreviewTheme")!.addEventListener("click", () => {
     window.open(window.location.origin, '_self')!;
@@ -722,6 +732,7 @@
   });
 
   document.getElementById("shareTheme")!.addEventListener("click", () => {
+    saveProgress();
     let themeData = localStorage.getItem(`savedEditor.${themeSelected}`);
     if (!themeData) return;
     let url = new URL(window.location.href);
