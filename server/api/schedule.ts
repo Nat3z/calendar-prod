@@ -144,12 +144,12 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
     // development
-    return event.summary === "Schedule Change: Early 2:05pm Dismissal";
-    // if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
-    //   if (!schoolToBeClosed) 
-    //     schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
-    //   return event.description.match(matchRegex) != null
-    // }
+    // return event.summary === "Schedule Change: Early 2:05pm Dismissal";
+    if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
+      if (!schoolToBeClosed) 
+        schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
+      return event.description.match(matchRegex) != null
+    }
   })
 
   // if the event is null in normal calendar, go to the fallback calendar
@@ -185,7 +185,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // if the time is below 8am, add 12 hours to it
     time = time.split("-").map(time => {
       if (time.match(/^[0-9]/)) time = time + ":00"
-      
+
       let [hour, minute] = time.split(":").map(Number)
       if (hour < 8 || hour === 12) {
         return `${hour}:${minute < 10 ? "0" + minute : minute} PM`
