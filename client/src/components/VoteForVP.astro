@@ -1,0 +1,17 @@
+---
+
+---
+
+<div class="fixed overflow-hidden w-full h-full flex justify-start flex-row items-start gap-32 flex-wrap z-1 pointer-events-none" id="vp">
+  
+</div>
+
+<script>
+  for (let i = 0; i < 100; i++) {
+    let vp = document.getElementById("vp")!;
+    let h1 = document.createElement("h1");
+    h1.classList.add("text-xl", "-rotate-45", "text-light-primary/25", "font-extrabold");
+    h1.innerText = "Vote Nate for Sophomore Vice President!";
+    vp.appendChild(h1);
+  }
+</script>

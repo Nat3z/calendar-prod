@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
-<div class="fixed opacity-0 bg-green-400 text-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="autosave_update" data-in-theme-editor>
+<div class="fixed opacity-0 bg-green-400 text-white rounded-lg p-4 top-2 right-2 z-40 hidden justify-start items-center gap-4 h-12" id="autosave_update" data-in-theme-editor>
   <span class="material-symbols-outlined">
     save
   </span>
@@ -450,8 +450,11 @@
     if (element.getAttribute("data-theme-type") === "add") {
       addPropertyToElement(element);
     }
+    element.style.outline = "none";
+    element.style.pointerEvents = "auto";
   });
   
+  let hoverTimeouts: number[] = []
   // on hover element put an outline around it
   document.addEventListener("mouseover", (e) => {
     if (!e.target || !eyedropMode) return
@@ -459,6 +462,12 @@
     let element = e.target as HTMLElement;
     if (element.hasAttribute("data-in-theme-editor")) return;
     element.style.outline = "6px solid red";
+    element.style.pointerEvents = "none";
+    let regTimeout = setTimeout(() => {
+      element.style.outline = "none";
+      element.style.pointerEvents = "auto";
+    }, 10000);
+    hoverTimeouts.push(regTimeout);
   });
   // on mouse out remove the outline
   document.addEventListener("mouseout", (e) => {
@@ -466,6 +475,7 @@
     let element = e.target as HTMLElement;
     if (element.hasAttribute("data-in-theme-editor")) return;
     element.style.outline = "none";
+    element.style.pointerEvents = "auto";
   });
   document.getElementById("eyedrop")!.addEventListener("click", () => {
     setTimeout(() => {

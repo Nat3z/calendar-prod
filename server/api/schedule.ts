@@ -1,6 +1,10 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import moment from 'moment';
-const matchRegex_inverse = /(\d{1,2}:\d{2}(?:.*?)(?: - |-|- )\d{1,2}:\d{2})(?:.*?) (.*)/gm;
+const matchRegex_inverse = /(\d{1,2}:\d{2}(?:.*?)(?: - |-|- | -)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
+const matchRegex_ExlcudeColonTime = /(.*?) (\d{1,2}(?: - |-|- | -)\d{1,2}:\d{2})(?:.*?)/gm;
+const matchRegex_ExlcudeColonTime_inverse = /(\d{1,2}(?: - |-|- | -)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
+const matchRegex_ExlcudeColonTimeBOTH = /(\d{1,2}(?: - |-|- | -)\d{1,2})(?:.*?) (.*)/gm;
+const matchRegex_ExlcudeColonTimeBOTH_inverse = /(\d{1,2}(?: - |-|- | -)\d{1,2})(?:.*?) (.*)/gm;
 
 const matchRegex = /(.*?) (\d{1,2}:\d{2}(?: - |-|- )\d{1,2}:\d{2})(?:.*?)/gm;
 import axios from 'axios';
@@ -140,12 +144,12 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
     // development
-    // return event.summary === "Schedule Change: Early 2:20pm Dismissal; PD for Faculty";
-    if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
-      if (!schoolToBeClosed) 
-        schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
-      return event.description.match(matchRegex) != null
-    }
+    return event.summary === "Schedule Change: Early 2:05pm Dismissal";
+    // if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
+    //   if (!schoolToBeClosed) 
+    //     schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
+    //   return event.description.match(matchRegex) != null
+    // }
   })
 
   // if the event is null in normal calendar, go to the fallback calendar
@@ -167,7 +171,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let times = new Map<string, { start: string, end: string }>()
 
   let matchedTime: RegExpExecArray | null
-  while ((matchedTime = matchRegex.exec(event.description)) !== null || (matchedTime = matchRegex_inverse.exec(event.description)) !== null) {
+  while ((matchedTime = matchRegex.exec(event.description)) !== null || (matchedTime = matchRegex_inverse.exec(event.description)) !== null || (matchedTime = matchRegex_ExlcudeColonTime.exec(event.description)) !== null || (matchedTime = matchRegex_ExlcudeColonTime_inverse.exec(event.description)) !== null || (matchedTime = matchRegex_ExlcudeColonTimeBOTH_inverse.exec(event.description)) !== null) {
     let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
 
@@ -180,6 +184,8 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (!time || !period || !time.match(/[0-9]:[0-9]/)) continue;
     // if the time is below 8am, add 12 hours to it
     time = time.split("-").map(time => {
+      if (time.match(/^[0-9]/)) time = time + ":00"
+      
       let [hour, minute] = time.split(":").map(Number)
       if (hour < 8 || hour === 12) {
         return `${hour}:${minute < 10 ? "0" + minute : minute} PM`
