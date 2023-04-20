@@ -144,12 +144,11 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
     // development
-    return event.summary === "Schedule Change: Early 2:05pm Dismissal"
-    // if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
-    //   if (!schoolToBeClosed) 
-    //     schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
-    //   return event.description.match(matchRegex) != null
-    // }
+    if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
+      if (!schoolToBeClosed) 
+        schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
+      return event.description.match(matchRegex) != null
+    }
   })
 
   // if the event is null in normal calendar, go to the fallback calendar
