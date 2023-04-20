@@ -22,6 +22,9 @@ module.exports = {
 				"screen-1/4": "25vh",
 				"screen-3/4": "75vh",
 			},
+			"zIndex": {
+				"1": "1",
+			},
 			/* custom unit .5 */
 			"spacing": {
 				"0.5": "0.125rem",

@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import ThemeModifier from '../components/ThemeModifier.astro';
 import ThemeEditor from '../components/ThemeEditor.astro';
 import ScreenSaver from '../components/ScreenSaver.astro';
+import VoteForVP from '../components/VoteForVP.astro';
 
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
@@ -50,11 +51,12 @@ function parseTime(t: string, offsetTime = new Date()) {
 					<div class="flex justify-center text-white items-center gap-2 m-auto">
 						<!-- <img width="25" height="25" alt="Light mode" src="./sun.svg"/> -->
 						<!-- Powered by <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative"> and made by Nat3z -->
-						Built by Nat3z, using <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> and hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative">
+						<!-- Built by Nat3z, using <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> and hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative"> -->
+						<b>VOTE NATHAN FOR SOPHOMORE VICE PRESIDENT!!!</b>
 					</div>
 				</div>
 			</div>
-	
+			<!-- <VoteForVP /> -->
 			<ThemeModifier />
 		</div>
 	</body>
@@ -62,6 +64,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 	<script>
 		import moment from 'moment';
 		let scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
+		// let scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
 		let events = scheduleData.events;
 		document.dispatchEvent(
 			new CustomEvent("loadComplete", {
@@ -76,7 +79,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 		function replaceShorthands(period: string) {
 			// replace period to Lunch if it's ONLY "L" with regex
 			// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-			return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch").replace(/^Flextime$/, "Flex")
+			return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch").replace(/^Flextime$/, "Flex").replace(/Blk (\d)/, "Block $1")
 		}
 
 		function parseTime(t: string, offsetTime = new Date()) {
@@ -306,9 +309,9 @@ function parseTime(t: string, offsetTime = new Date()) {
 				});
 				document.getElementById("progressbar")!.style.width = `0%`;
 
-				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "flex"
+				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "flex !important"
 			} else {
-				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "none"
+				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "none !important"
 			}
 		}, 100)
 
