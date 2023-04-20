@@ -28,6 +28,14 @@ function parseTime(t: string, offsetTime = new Date()) {
 		<div class="flex justify-start items-center flex-row" data-in-theme-editor>
 			<ScreenSaver />
 			<ThemeEditor />
+			
+			<div class="fixed opacity-0 bg-blue-500 text-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="refresh_notif" data-in-theme-editor>
+				<span class="material-symbols-outlined">
+					refresh
+				</span>
+				<div class="border-l-2 border-white w-1 h-4"></div>
+				<h1 class="text-lg font-mono" data-in-theme-editor>Refreshed Schedule!</h1>
+			</div>
 			<div class="flex justify-center items-center w-screen h-screen gap-4 p-2 relative" id="schedule_page">
 				<div id="throwback" class="absolute top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm">
 					<h1>Originally by C.J.F '22, Rebuilt by Nat3z</h1>
@@ -65,7 +73,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 		import moment from 'moment';
 		let scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
 		// let scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
-		let events = scheduleData.events;
+		let scheduleEvents = scheduleData.events;
 		document.dispatchEvent(
 			new CustomEvent("loadComplete", {
 				bubbles: true,
@@ -89,7 +97,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 			}
 			return momentDate
 		}
-		if (!events || events.length === 0) {
+		if (!scheduleEvents || scheduleEvents.length === 0) {
 			document.getElementById("current")!.innerHTML = "Out of Session"
 			document.getElementById("classes")!.innerHTML += `
 				<h1 id="failed" class="text-center text-lg md:text-3xl">
@@ -152,7 +160,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 		
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
-		setInterval(() => {
+		function updateSchedule(events: any) {
 			// get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
 			let current = new Date()
 			let now = moment(current.getTime()).unix()
@@ -313,13 +321,61 @@ function parseTime(t: string, offsetTime = new Date()) {
 			} else {
 				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "none !important"
 			}
-		}, 100)
+		}
+		let currentScheduleInterval = setInterval(() => updateSchedule(scheduleEvents), 100)
 
-		setInterval(async () => {
-			scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
-			events = scheduleData.events
-			console.log("Refetched schedule")
-		}, 1 * 60 * 60 * 1000);
+		let timeSinceLastFocus = 0
+
+		function animateNotif(text: string, element: HTMLElement) {
+			element.style.display = "flex";
+			element.animate([
+				{ opacity: 0 },
+				{ opacity: 1 }
+			], {
+				duration: 500,
+				easing: "ease-in-out",
+				fill: "forwards"
+			});
+			element.querySelector("h1")!.textContent = text;
+
+			setTimeout(() => {
+				element.animate([
+					{ opacity: 1 },
+					{ opacity: 0 }
+				], {
+					duration: 500,
+					easing: "ease-in-out",
+					iterations: 1,
+					fill: "forwards"
+				});
+				setTimeout(() => {
+					element.style.display = "none";
+				}, 500);
+			}, 4 * 1000);
+		}
+		setInterval(() => {
+			if (!document.hasFocus() && timeSinceLastFocus == 0) {
+				timeSinceLastFocus = moment().unix()
+			}
+			// page has focus
+			// if the page has been unfocused for more than 30 minutes, refetch the schedule
+			else if (document.hasFocus() && timeSinceLastFocus != 0 && moment().unix() - timeSinceLastFocus > 30 * 60) {
+				timeSinceLastFocus = 0
+				fetch('https://api.schedule.nat3z.com/api/schedule')
+					.then(res => res.json())
+					.then(data => {
+						scheduleData = data
+						scheduleEvents = scheduleData.events
+						animateNotif("Schedule Updated", document.querySelector("#refresh_notif")! as HTMLElement)
+						clearInterval(currentScheduleInterval)
+						currentScheduleInterval = setInterval(() => updateSchedule(scheduleEvents), 100)
+						timeSinceLastFocus = 0
+					})
+			}
+			else if (document.hasFocus() && timeSinceLastFocus != 0) {
+				timeSinceLastFocus = 0
+			}
+		}, 1000);
 	</script>
 
 </Layout>
