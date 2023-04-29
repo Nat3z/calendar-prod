@@ -296,6 +296,7 @@
           if (element.hasAttribute("data-in-theme-editor")) continue
           element.setAttribute("style", "");
           animatePulse(element as HTMLElement);
+          updateCSS(element as HTMLElement);
         }
       }
       let elementToExecuteClear: HTMLElement | null = null;
@@ -637,9 +638,6 @@
       }
       if (!isPreviewing) {
         if (window.location !== window.parent.location) {
-          // The page is in an iframe
-          let salesianComTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"},{"rule":"font-family","value":"bebas-neue-pro, sans-serif"},{"rule":"font-weight","value":"500"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"input","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a6192e"},{"rule":"font-family","value":"Source Sans Pro, sans-serif"},{"rule":"border-radius","value":"0px"},{"rule":"border","value":"2px solid black"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#ffffff"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"hidden"}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"hidden"}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a6192e"},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"#progressbar","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#ff0000"}]}],"colors":[{"name":"light-primary","value":"#a6192e"},{"name":"primary","value":"#f8f8f8"},{"name":"dark-primary","value":"#050014"}]}'
-          loadFromSaved(salesianComTheme);
           return;
         }
         let doesCurrentThemeHaveEdits = localStorage.getItem(`savedEditor.${themeSelected}`) !== null;
@@ -748,15 +746,20 @@
     navigator.clipboard.writeText(url.toString());
     animateNotif("Theme URL Copied to Clipboard!", document.getElementById("share_notif")!);
   });
-
+  let onCooldwn = false;
   document.addEventListener("keydown", (ev) => {
     if (ev.key === "Tab") {
       ev.preventDefault();
+      if (onCooldwn) return;
       if ((document.querySelector("#preview_menu")! as HTMLElement).style.display !== "none") {
         return;
       }
 
       const themeEditor = document.getElementById("themeEditor")!;
+      onCooldwn = true
+      setTimeout(() => {
+        onCooldwn = false;
+      }, 500);
       if (themeEditor.style.display === "block") {
         themeEditor.animate([
           { transform: "translateX(0)" },
