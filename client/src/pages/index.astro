@@ -379,7 +379,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 						scheduleData = data
 						scheduleEvents = scheduleData.events
 
-						if ((!scheduleEvents || scheduleEvents.length === 0) && new Date().getHours() > 17) {
+						if (new Date().getHours() > 17) {
 							let currentDate = new Date()
 							currentDate.setDate(currentDate.getDate() + 1)
 
