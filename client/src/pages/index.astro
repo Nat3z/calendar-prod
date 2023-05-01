@@ -100,7 +100,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 			}
 			return momentDate
 		}
-		if ((!scheduleEvents || scheduleEvents.length === 0) && new Date().getHours() > 17) {
+		if (new Date().getHours() > 17) {
 			let currentDate = new Date()
 			currentDate.setDate(currentDate.getDate() + 1)
 
@@ -204,7 +204,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 					}
 					document.getElementById("classes")!.innerHTML += `
 						<h1 id="${key}" class="text-center text-ultramd md:text-3xl">
-							${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replace_shorthand}
+							${parseTime(events[key].start, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replace_shorthand}
 						</h1>
 					`
 				}
@@ -220,7 +220,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 							replace_shorthand = localStorage.getItem("blk_" + block_num)!
 						}
 					}
-					document.getElementById(key)!.textContent = `${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─ ${timeNowCountdown} ─ ${replace_shorthand}`
+					document.getElementById(key)!.textContent = `${parseTime(events[key].start, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─ ${timeNowCountdown} ─ ${replace_shorthand}`
 					// get minutes between end and now time and update the #current element
 
 					if (Math.ceil(minutes * 60) !== 0) {
@@ -262,7 +262,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 							replace_shorthand = localStorage.getItem("blk_" + block_num)!
 						}
 					}
-					document.getElementById(key)!.textContent = `${parseTime(events[key].start).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replace_shorthand}`
+					document.getElementById(key)!.textContent = `${parseTime(events[key].start, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replace_shorthand}`
 				}
 
 				if (startTime - now > 0 && (closestStart == 0 || startTime - now < closestStart)) {
