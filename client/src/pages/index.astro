@@ -70,7 +70,8 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 	<script>
 		import moment from 'moment';
-		const url = "http://localhost:3000/api/schedule"
+		// remember to change this to the production url when you're done testing
+		const url = "https://salesian-git-production-nat3z.vercel.app/"
 
 
 		let scheduleData = await ((await fetch(`${url}?date=${moment().unix()}`)).json());
