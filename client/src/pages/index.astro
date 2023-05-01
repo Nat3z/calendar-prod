@@ -70,7 +70,10 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 	<script>
 		import moment from 'moment';
-		let scheduleData = await ((await fetch('https://api.schedule.nat3z.com/api/schedule')).json())
+		const url = "http://localhost:3000/api/schedule"
+
+
+		let scheduleData = await ((await fetch(`${url}?date=${moment().unix()}`)).json());
 		// let scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
 		let scheduleEvents = scheduleData.events;
 		document.dispatchEvent(
@@ -96,6 +99,15 @@ function parseTime(t: string, offsetTime = new Date()) {
 			}
 			return momentDate
 		}
+		if ((!scheduleEvents || scheduleEvents.length === 0) && new Date().getHours() > 17) {
+			let currentDate = new Date()
+			currentDate.setDate(currentDate.getDate() + 1)
+
+			scheduleData = await ((await fetch(`${url}?date=${Math.round(+currentDate / 1000)}`)).json())
+			scheduleEvents = scheduleData.events
+			console.log("Using tomorrow's schedule")
+		}
+
 		if (!scheduleEvents || scheduleEvents.length === 0) {
 			document.getElementById("current")!.innerHTML = "Out of Session"
 			document.getElementById("classes")!.innerHTML += `
@@ -360,11 +372,30 @@ function parseTime(t: string, offsetTime = new Date()) {
 			// if the page has been unfocused for more than 30 minutes, refetch the schedule
 			else if (document.hasFocus() && timeSinceLastFocus != 0 && moment().unix() - timeSinceLastFocus > 30 * 60) {
 				timeSinceLastFocus = 0
-				fetch('https://api.schedule.nat3z.com/api/schedule')
+				fetch(`${url}?date=${moment().unix()}`)
 					.then(res => res.json())
-					.then(data => {
+					.then(async (data) => {
 						scheduleData = data
 						scheduleEvents = scheduleData.events
+
+						if ((!scheduleEvents || scheduleEvents.length === 0) && new Date().getHours() > 17) {
+							let currentDate = new Date()
+							currentDate.setDate(currentDate.getDate() + 1)
+
+							scheduleData = await ((await fetch(`${url}?date=${Math.round(+currentDate / 1000)}`)).json())
+							scheduleEvents = scheduleData.events
+							console.log("Using tomorrow's schedule")
+						}
+
+						if (!scheduleEvents || scheduleEvents.length === 0) {
+							document.getElementById("current")!.innerHTML = "Out of Session"
+							document.getElementById("classes")!.innerHTML += `
+								<h1 id="failed" class="text-center text-lg md:text-3xl">
+									No classes today
+								</h1>
+							`
+						}
+
 						animateNotif("Schedule Updated", document.querySelector("#refresh_notif")! as HTMLElement)
 						clearInterval(currentScheduleInterval)
 						currentScheduleInterval = setInterval(() => updateSchedule(scheduleEvents), 100)
