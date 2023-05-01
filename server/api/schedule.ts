@@ -45,9 +45,9 @@ function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesd
   const dayOfWeek = ["sun","mon","tue","wed","thu","fri","sat"]
     .indexOf(dayName.slice(0,3).toLowerCase());
   if (dayOfWeek < 0) return;
-  if (process.env.VERCEL_ENV === "production") {
-    refDate = subtractHours(refDate, 2)
-  }
+  // if (process.env.VERCEL_ENV === "production") {
+  //   refDate = subtractHours(refDate, 2)
+  // }
 
   refDate.setHours(0,0,0,0);
   refDate.setDate(refDate.getDate() + +!!excludeToday + 
@@ -132,6 +132,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   )
+  
 
   let ics = (await axios.get("https://www.salesian.com/data/calendar/icalcache/calendar_369.ics")).data
   // parse the ics file with node-ical
@@ -139,6 +140,14 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let vEvents = Object.values(events).filter(event => event.type == "VEVENT")
   // get the current date and find the event in the ics
   let today = new Date()
+  
+  if (req.query.date && typeof req.query.date === "string") {
+    if (!/\d/.test(req.query.date)) {
+      return res.json({ title: null, events: null, code: 500, message: "Invalid date" })
+    }
+    today = new Date(parseFloat(req.query.date) * 1000)
+  }
+  
   let schoolToBeClosed = false;
   /* @ts-ignore */
   let event: ical.VEvent | undefined = vEvents.find(event => {
