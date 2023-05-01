@@ -73,8 +73,11 @@ function parseTime(t: string, offsetTime = new Date()) {
 		// remember to change this to the production url when you're done testing
 		const url = "https://salesian-calendar-git-production-nat3z.vercel.app/api/schedule"
 
+		let dtScheduleFirst = new Date()
+		// don't be influenced by utc
+		dtScheduleFirst.setHours(8)
 
-		let scheduleData = await ((await fetch(`${url}?date=${moment().unix()}`)).json());
+		let scheduleData = await ((await fetch(`${url}?date=${moment(dtScheduleFirst).unix()}`)).json());
 		// let scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
 		let scheduleEvents = scheduleData.events;
 		document.dispatchEvent(
@@ -103,8 +106,10 @@ function parseTime(t: string, offsetTime = new Date()) {
 		if (new Date().getHours() > 17) {
 			let currentDate = new Date()
 			currentDate.setDate(currentDate.getDate() + 1)
+			// don't be influenced by current time and utc rules
+			currentDate.setHours(8)
 
-			scheduleData = await ((await fetch(`${url}?date=${Math.round(+currentDate / 1000)}`)).json())
+			scheduleData = await ((await fetch(`${url}?date=${moment(currentDate).unix()}`)).json())
 			scheduleEvents = scheduleData.events
 			console.log("Using tomorrow's schedule")
 		}
@@ -382,6 +387,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 						if (new Date().getHours() > 17) {
 							let currentDate = new Date()
 							currentDate.setDate(currentDate.getDate() + 1)
+							currentDate.setHours(8)
 
 							scheduleData = await ((await fetch(`${url}?date=${Math.round(+currentDate / 1000)}`)).json())
 							scheduleEvents = scheduleData.events
