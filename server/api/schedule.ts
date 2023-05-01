@@ -132,6 +132,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   )
+  
 
   let ics = (await axios.get("https://www.salesian.com/data/calendar/icalcache/calendar_369.ics")).data
   // parse the ics file with node-ical
@@ -139,6 +140,15 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let vEvents = Object.values(events).filter(event => event.type == "VEVENT")
   // get the current date and find the event in the ics
   let today = new Date()
+  
+  if (req.query.date && typeof req.query.date === "string") {
+    if (!/\d/.test(req.query.date)) {
+      return res.json({ title: null, events: null, code: 500, message: "Invalid date" })
+    }
+    today = new Date(parseFloat(req.query.date) * 1000)
+    console.log(today.toDateString())
+  }
+  
   let schoolToBeClosed = false;
   /* @ts-ignore */
   let event: ical.VEvent | undefined = vEvents.find(event => {
