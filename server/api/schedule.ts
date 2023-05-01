@@ -45,9 +45,9 @@ function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesd
   const dayOfWeek = ["sun","mon","tue","wed","thu","fri","sat"]
     .indexOf(dayName.slice(0,3).toLowerCase());
   if (dayOfWeek < 0) return;
-  if (process.env.VERCEL_ENV === "production") {
-    refDate = subtractHours(refDate, 2)
-  }
+  // if (process.env.VERCEL_ENV === "production") {
+  //   refDate = subtractHours(refDate, 2)
+  // }
 
   refDate.setHours(0,0,0,0);
   refDate.setDate(refDate.getDate() + +!!excludeToday + 
@@ -146,7 +146,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       return res.json({ title: null, events: null, code: 500, message: "Invalid date" })
     }
     today = new Date(parseFloat(req.query.date) * 1000)
-    console.log(today.toDateString())
   }
   
   let schoolToBeClosed = false;
