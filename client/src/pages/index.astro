@@ -71,7 +71,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 	<script>
 		import moment from 'moment';
 		// remember to change this to the production url when you're done testing
-		const url = "https://api.schedule.nat3z.com/api/schedule"
+		const url = "http://salesian-calendar-git-production-nat3z.vercel.app/api/schedule"
 
 		let dtScheduleFirst = new Date()
 		// don't be influenced by utc
@@ -103,11 +103,12 @@ function parseTime(t: string, offsetTime = new Date()) {
 			}
 			return momentDate
 		}
-		if (new Date().getHours() > 17) {
+		if (new Date().getHours() > 16) {
 			let currentDate = new Date()
 			currentDate.setDate(currentDate.getDate() + 1)
 			// don't be influenced by current time and utc rules
 			currentDate.setHours(8)
+			console.log(currentDate)
 
 			scheduleData = await ((await fetch(`${url}?date=${moment(currentDate).unix()}`)).json())
 			scheduleEvents = scheduleData.events
