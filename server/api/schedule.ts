@@ -148,7 +148,20 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // parse unix timestamp with moment
     today = moment.unix(parseInt(req.query.date)).toDate()
     console.log(today)
-    
+    axios.post(process.env.DISCORD_WEBHOOK!, {
+      embeds: [
+        {
+          title: "Schedule Info",
+          description: `UNIX Timestamp Provided: ${req.query.date} | Date Piped: ${today.toDateString()}`,
+          color: 0xff0000,
+          timestamp: new Date().toISOString(),
+          footer: {
+            text: "DynSchedule Alert"
+          },
+        }
+      ],
+      content: ""
+    });
   }
   
   let schoolToBeClosed = false;
