@@ -106,7 +106,7 @@
   document.getElementById("blk_6-input").children[1].value = localStorage.getItem("blk_6") || "Block 6";
   document.getElementById("blk_7-input").children[1].value = localStorage.getItem("blk_7") || "Block 7";
 
-  document.getElementById("dynbackground").textContent = localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme") ? "Disable Dynamic Background" : "Enable Dynamic Background";
+  document.getElementById("dynbackground").textContent = !localStorage.getItem("savedEditor.default") && (localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) ? "Disable Dynamic Background" : "Enable Dynamic Background";
 
   document.getElementById("dynbackground").addEventListener("click", () => {
     const dynbackground = document.getElementById("dynbackground");
@@ -115,6 +115,10 @@
       localStorage.setItem("dynamic_theme", "false");
     }
     else {
+      if (localStorage.getItem("savedEditor.default")) {
+        alert("You currently have a custom theme applied to default. Please remove it before enabling dynamic background.");
+        return;
+      }
       dynbackground.textContent = "Disable Dynamic Background";
       localStorage.setItem("dynamic_theme", "true");
     }

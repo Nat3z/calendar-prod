@@ -21,10 +21,13 @@ function parseTime(t: string, offsetTime = new Date()) {
 	}
 	return momentDate
 }
+const isInDev = import.meta.env.NODE_ENV ? "" : ""
 ---
 
 <Layout title="DynSchedule">
 	<body>
+
+		<div id="isInDev" data-in-dev={import.meta.env.NODE_ENV === "development" ? "true" : "false"}></div>
 		<div class="flex justify-start items-center flex-row" data-in-theme-editor>
 			<ScreenSaver />
 			<ThemeEditor />
@@ -36,23 +39,38 @@ function parseTime(t: string, offsetTime = new Date()) {
 				<div class="border-l-2 border-white w-1 h-4"></div>
 				<h1 class="text-lg font-mono" data-in-theme-editor>Refreshed Schedule!</h1>
 			</div>
-			<div class="flex justify-center items-center w-screen h-screen gap-4 p-2 relative" id="schedule_page">
+			<div class="flex justify-center items-center w-screen h-screen gap-4 p-2 relative" id="schedule_page" data-intro="This is the preview pane that reflects the changes made in the editor." data-step="99">
 				<div id="throwback" class="absolute top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm">
 					<h1>Originally by C.J.F '22, Rebuilt by Nat3z</h1>
 				</div>
 		
 				<Settings />
-				<div class="bg-primary w-11/12 transition-all h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg" id="main_schedule">
+				<div class="bg-primary w-11/12 transition-all relative h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg" id="main_schedule">
 					
-					<div class="w-full h-1/6 sm:h-1/4 flex justify-center items-center rounded-t-lg bg-light-primary transition-all" id="quickpeek">
+					<div class="w-full h-1/6 sm:h-1/4 flex relative justify-center items-center rounded-t-lg bg-light-primary transition-all" id="quickpeek">
 						<h1 class="text-center text-white text-4xl md:text-6xl absolute z-10" id="current">Loading...</h1>
 						<div class="w-full bg-transparent opacity-20 rounded-t-lg h-full">
 							<div class="bg-blue-500 h-full rounded-t-lg rounded-tr-none" style="width: 0%" id="progressbar"></div>
 						</div>
+
+						
+						<div class="absolute w-full z-0 flex justify-center -bottom-2 md:bottom-0 md:top-0 md:left-0 items-center gap-2 h-12 sm:h-full">
+							<button class="w-12 h-12 flex justify-center items-center" id="wayback-back">
+								<span class="material-symbols-outlined sm:!text-4xl">
+									arrow_back
+								</span>
+							</button>
+							<button class="ml-auto w-12 h-12 flex justify-center items-center" id="wayback-forward">
+								<span class="material-symbols-outlined sm:!text-4xl">
+									arrow_forward
+								</span>
+							</button>
+						</div>
 					</div>
 	
-					<div class="flex flex-col justify-center items-center p-4 text-lg" id="classes">
+					<div class="flex flex-col justify-center items-center p-4 text-lg z-1" id="classes">
 					</div>
+
 				</div>
 					
 				<div class="hidden sm:block fixed bottom-4 transition-all" id="vercel">
@@ -70,23 +88,19 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 	<script>
 		import moment from 'moment';
+		let currentDateOffset = new Date()
+		let isInDev = document.getElementById("isInDev")!.dataset.inDev === "true";
+
 		// remember to change this to the production url when you're done testing
-		const url = "https://api.schedule.nat3z.com/api/schedule"
+		const url = isInDev ? "http://localhost:3001/api/schedule" : "https://api.schedule.nat3z.com/api/schedule"
 
 		let dtScheduleFirst = new Date()
 		// don't be influenced by utc
 		dtScheduleFirst.setHours(8, 0, 0, 0)
 
-		let scheduleData = await ((await fetch(`${url}?date=${moment(dtScheduleFirst).unix()}`)).json());
+		let scheduleData: any;
 		// let scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
-		let scheduleEvents = scheduleData.events;
-		document.dispatchEvent(
-			new CustomEvent("loadComplete", {
-				bubbles: true,
-				cancelable: true,
-				composed: false,
-			})
-		);
+		let scheduleEvents: any[] = [];
 
 		console.log("%cCreated by cool people at Salesian lololol!!!!!", "color: grey; text-shadow: 2px 2px white; font-size: 32px;")
 
@@ -104,15 +118,17 @@ function parseTime(t: string, offsetTime = new Date()) {
 			return momentDate
 		}
 		if (new Date().getHours() > 16) {
-			let currentDate = new Date()
-			currentDate.setDate(currentDate.getDate() + 1)
+			currentDateOffset.setDate(currentDateOffset.getDate() + 1)
 			// don't be influenced by current time and utc rules
-			currentDate.setHours(8, 0, 0, 0)
-			console.log(currentDate)
+			currentDateOffset.setHours(8, 0, 0, 0)
 
-			scheduleData = await ((await fetch(`${url}?date=${moment(currentDate).unix()}`)).json())
+			scheduleData = await ((await fetch(`${url}?date=${moment(currentDateOffset).unix()}`)).json())
 			scheduleEvents = scheduleData.events
 			console.log("Using tomorrow's schedule")
+		}
+		else {
+			scheduleData = await ((await fetch(`${url}?date=${moment(dtScheduleFirst).unix()}`)).json())
+			scheduleEvents = scheduleData.events
 		}
 
 		if (!scheduleEvents || scheduleEvents.length === 0) {
@@ -169,7 +185,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 			}, 5000);
 		}
 
-		if ((localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) && (localStorage.getItem("theme") === "default" || !localStorage.getItem("theme"))) {
+		if ((localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) && !localStorage.getItem("savedEditor.default") &&  (localStorage.getItem("theme") === "default" || !localStorage.getItem("theme"))) {
 			document.onmousemove = mouseMove
 			mouseMove()
 		}
@@ -292,6 +308,24 @@ function parseTime(t: string, offsetTime = new Date()) {
 				else {
 					let text = 'Out of Session'
 					
+					// check if currentDateOffset is in the future of now
+					// if it is, then set the offset to the currentDateOffset
+					// if not, then set the offset to the next day
+					if (currentDateOffset.getDate() != current.getDate()) {
+						// calculate how many days it is ahead of now
+						let dayOffset = currentDateOffset.getDate() - current.getDate()
+						if (dayOffset < 0) {
+							if (dayOffset == -1) text = "Yesterday's Schedule"
+							else
+								text = `${dayOffset * -1} Days in the Past`
+						}
+						else {
+							if (dayOffset == 1) text = "Tomorrow's Schedule"
+							else
+								text = `${dayOffset} Days in the Future`
+						}
+					}
+					
 					document.getElementById("current")!.innerHTML = text
 					if (!document.hasFocus()) {
 						document.title = text
@@ -371,6 +405,115 @@ function parseTime(t: string, offsetTime = new Date()) {
 				}, 500);
 			}, 4 * 1000);
 		}
+
+		let loadingWayback = false
+
+		document.querySelector("#wayback-forward")!.addEventListener("click", () => {
+			if (loadingWayback) return
+			let dayOffset = currentDateOffset.getDate() - new Date().getDate()
+			if (dayOffset >= 6) return animateNotif("You can only view schedules up to 7 days in the future", document.querySelector("#refresh_notif")! as HTMLElement)
+			currentDateOffset.setDate(currentDateOffset.getDate() + 1)
+			currentDateOffset.setHours(8, 0, 0, 0)
+			if (currentDateOffset.getMonth() != new Date().getMonth()) {
+				currentDateOffset.setDate(currentDateOffset.getDate() - 1)
+				return animateNotif("You can only view schedules inside of the same month you are currently in.", document.querySelector("#refresh_notif")! as HTMLElement);
+			}
+			let dateSet = currentDateOffset.getDate()
+			clearInterval(currentScheduleInterval)
+			document.getElementById("current")!.innerHTML = "Loading... (" + moment(currentDateOffset).format("dddd, MMMM Do YYYY") + ")"
+			document.getElementById("classes")!.innerHTML = ""
+
+			setTimeout(async () => {
+				if (dateSet == currentDateOffset.getDate()) {
+					loadingWayback = true
+					document.querySelector("#wayback-forward")!.classList.add("animate-spin");
+					await fetch(`${url}?date=${moment(currentDateOffset).unix()}`)
+						.then(res => res.json())
+						.then(async (data) => {
+							scheduleData = data
+							scheduleEvents = scheduleData.events
+
+							if (!scheduleEvents || scheduleEvents.length === 0) {
+								document.getElementById("current")!.innerHTML = "Out of Session"
+								document.getElementById("classes")!.innerHTML = `
+									<h1 id="failed" class="text-center text-lg md:text-3xl w-2/4">
+										No classes today (Either a weekend or a normal school day. Cached schedules are only available for school days)
+									</h1>
+								`
+							}
+							
+							updateSchedule(scheduleEvents)
+							currentScheduleInterval = setInterval(() => updateSchedule(scheduleEvents), 100);
+							loadingWayback = false
+							document.querySelector("#wayback-forward")!.classList.remove("animate-spin");
+							animateNotif("You are now viewing a future schedule", document.querySelector("#refresh_notif")! as HTMLElement)
+					});
+				}
+			}, 250);
+		});
+
+		document.querySelector("#wayback-back")!.addEventListener("click", () => {
+			if (loadingWayback) return
+			let dayOffset = currentDateOffset.getDate() - new Date().getDate()
+			console.log(dayOffset)
+
+			if (dayOffset < -6) return animateNotif("You can only view schedules up to 7 days in the past", document.querySelector("#refresh_notif")! as HTMLElement)
+			currentDateOffset.setDate(currentDateOffset.getDate() - 1)
+			currentDateOffset.setHours(8, 0, 0, 0)
+			if (currentDateOffset.getMonth() != new Date().getMonth()) {
+				currentDateOffset.setDate(currentDateOffset.getDate() + 1)
+				return animateNotif("You can only view schedules inside of the same month you are currently in.", document.querySelector("#refresh_notif")! as HTMLElement);
+			}
+			let dateSet = currentDateOffset.getDate()
+			clearInterval(currentScheduleInterval)
+			document.getElementById("current")!.innerHTML = "Loading... (" + moment(currentDateOffset).format("dddd, MMMM Do YYYY") + ")"
+			document.getElementById("classes")!.innerHTML = ""
+			setTimeout(async () => {
+				if (dateSet == currentDateOffset.getDate()) {
+					loadingWayback = true
+					document.querySelector("#wayback-back")!.classList.add("animate-spin");
+					await fetch(`${url}?date=${moment(currentDateOffset).unix()}`)
+						.then(res => res.json())
+						.then(async (data) => {
+							scheduleData = data
+							scheduleEvents = scheduleData.events
+							
+							if (!scheduleEvents || scheduleEvents.length === 0) {
+								let current = new Date()
+								let text = "";
+
+								if (currentDateOffset.getDate() != current.getDate()) {
+									// calculate how many days it is ahead of now
+									let dayOffset = currentDateOffset.getDate() - current.getDate()
+									if (dayOffset < 0) {
+										if (dayOffset == -1) text = "Yesterday's Schedule"
+										else
+											text = `${dayOffset * -1} Days in the Past`
+									}
+									else {
+										if (dayOffset == 1) text = "Tomorrow's Schedule"
+										else
+											text = `${dayOffset} Days in the Future`
+									}
+								}
+								document.getElementById("current")!.innerHTML = text
+								document.getElementById("classes")!.innerHTML = `
+									<h1 id="failed" class="text-center text-lg md:text-3xl w-2/4">
+										No classes today (Either a weekend or a normal school day. Cached schedules are only available for school days)
+									</h1>
+								`
+							}
+
+							updateSchedule(scheduleEvents)
+							currentScheduleInterval = setInterval(() => updateSchedule(scheduleEvents), 100);
+							loadingWayback = false
+							document.querySelector("#wayback-back")!.classList.remove("animate-spin");
+							animateNotif("You are now viewing a past schedule", document.querySelector("#refresh_notif")! as HTMLElement)
+					});
+				}
+			}, 250);
+		});
+
 		setInterval(() => {
 			if (!document.hasFocus() && timeSinceLastFocus == 0) {
 				timeSinceLastFocus = moment().unix()
@@ -420,6 +563,8 @@ function parseTime(t: string, offsetTime = new Date()) {
 
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hind&family=Nunito+Sans&family=Open+Sans&family=PT+Serif&family=Raleway:wght@500&family=Varela+Round&display=swap');
+	@import "intro.js/introjs.css";
+	@import "../introjs-royale.css";
 	@tailwind base;
 	@tailwind components;
 	@tailwind utilities;
@@ -427,6 +572,11 @@ function parseTime(t: string, offsetTime = new Date()) {
 	body {
 		background-size: cover;
 		color: white;
-		@apply bg-dark-primary transition-all h-screen;
+		@apply bg-dark-primary transition-all h-screen overflow-hidden;
 	}
+
+	.introjs-tooltiptext {
+		color: black !important;
+	}
+
 </style>
