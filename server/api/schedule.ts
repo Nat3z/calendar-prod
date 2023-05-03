@@ -147,7 +147,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     }
     // parse unix timestamp with moment
     today = moment.unix(parseInt(req.query.date)).toDate()
-    console.log(today)
     // axios.post(process.env.DISCORD_WEBHOOK!, {
     //   embeds: [
     //     {
