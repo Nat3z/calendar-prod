@@ -145,8 +145,10 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (!/\d/.test(req.query.date)) {
       return res.json({ title: null, events: null, code: 500, message: "Invalid date" })
     }
-    today = new Date(parseFloat(req.query.date) * 1000)
-    today.setHours(8)
+    // parse unix timestamp with moment
+    today = moment.unix(parseInt(req.query.date)).toDate()
+    console.log(today)
+    
   }
   
   let schoolToBeClosed = false;
