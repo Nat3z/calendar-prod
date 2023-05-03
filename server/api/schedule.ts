@@ -148,20 +148,20 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // parse unix timestamp with moment
     today = moment.unix(parseInt(req.query.date)).toDate()
     console.log(today)
-    axios.post(process.env.DISCORD_WEBHOOK!, {
-      embeds: [
-        {
-          title: "Schedule Info",
-          description: `UNIX Timestamp Provided: ${req.query.date} | Date Piped: ${today.toDateString()}`,
-          color: 0xff0000,
-          timestamp: new Date().toISOString(),
-          footer: {
-            text: "DynSchedule Alert"
-          },
-        }
-      ],
-      content: ""
-    });
+    // axios.post(process.env.DISCORD_WEBHOOK!, {
+    //   embeds: [
+    //     {
+    //       title: "Schedule Info",
+    //       description: `UNIX Timestamp Provided: ${req.query.date} | Date Piped: ${today.toDateString()}`,
+    //       color: 0xff0000,
+    //       timestamp: new Date().toISOString(),
+    //       footer: {
+    //         text: "DynSchedule Alert"
+    //       },
+    //     }
+    //   ],
+    //   content: ""
+    // });
   }
   
   let schoolToBeClosed = false;
@@ -177,7 +177,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   })
 
   // if the event is null in normal calendar, go to the fallback calendar
+  let gotfromCache = false
   if (!event) {
+    gotfromCache = true
     events = await ical.async.parseICS(generateFallbacks())
     vEvents = Object.values(events).filter(event => event.type == "VEVENT")
 
@@ -232,5 +234,5 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return aStart - bStart
   }))
   res = res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
-  return res.json({ title, events: Object.fromEntries(sortedTimes), possiblyClosed: schoolToBeClosed,  code: 200 })
+  return res.json({ title, events: Object.fromEntries(sortedTimes), possiblyClosed: schoolToBeClosed, code: 200, message: gotfromCache ? "This event was received from the local cache." : "This event was received dynamically." })
 }
