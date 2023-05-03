@@ -16,6 +16,8 @@
   <h1 class="text-lg font-mono" data-in-theme-editor>Copied to Clipboard!</h1>
 </div>
 
+
+
 <div class="fixed rounded-none bottom-0 left-0 sm:bottom-0 sm:top-2 sm:left-2 bg-primary z-10 w-full h-24 sm:w-48 sm:h-48 sm:rounded-lg border border-black flex-col gap-2 justify-center items-center" style="display: none;" id="preview_menu" data-in-theme-editor>
   <h1 class="text-center text-xl">Previewing Theme</h1>
   <div class="flex flex-row flex-wrap justify-center items-center gap-2">
@@ -24,7 +26,7 @@
   </div>
 
 </div>
-<div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800" style="display: none;" id="themeEditor">
+<div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800" style="display: none;" data-intro="Welcome to the Theme Editor ✏️" id="themeEditor">
   <div class="flex justify-start items-center pl-4 pr-4 mt-4">
     <h1 class="font-bold font-mono text-center text-xl" id="themeEditor-text">Theme Editor</h1>
     <button class="font-bold font-mono ml-auto text-gray-600 hover:text-red-400 text-xl justify-center items-center flex" id="closeEditor">
@@ -35,9 +37,9 @@
   </div>
 
   <div class="w-full mt-4 flex items-center flex-col gap-4">
-    <div class="flex flex-row justify-center items-center gap-2">
-      <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="eyedrop">Select Element</button>
-      <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg flex justify-center items-center" id="manualeyedrop">
+    <div class="flex flex-row justify-center items-center gap-2" data-intro="This is where you select your elements to theme">
+      <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="eyedrop" data-intro="This is the eyedropper where you select which element you want to theme by clicking it in the preview window.">Select Element</button>
+      <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg flex justify-center items-center" id="manualeyedrop" data-intro="This is the manual input where you manually type in the id, class, or tag of the element to theme">
         <span class="material-symbols-outlined">
           keyboard
         </span>
@@ -47,7 +49,7 @@
 
     <div class="w-11/12 overflow-auto max-h-screen-3/4">
       <h1 class="font-mono text-lg text-gray-600 text-center">Elements</h1>
-      <div class="flex justify-center items-center flex-col gap-4 w-full pb-4 mt-2" id="elements">
+      <div class="flex justify-center items-center flex-col gap-4 w-full pb-4 mt-2" id="elements" data-intro="Under this area is the list of elements you are able to theme.">
 
         <div class="hidden w-full rounded-lg bg-gray-800 p-4" id="element-copy" data-element="abbr">
           <div class="flex flex-row">
@@ -72,6 +74,7 @@
               <select class="w-24 h-8 rounded-lg text-xs text-white pl-2 bg-gray-600">
                 <option value="text-align">text-align</option>
                 <option value="background-color">background-color</option>
+                <option value="background-image">background-image</option>
                 <option value="color">color</option>
                 <option value="font-family">font-family</option>
                 <option value="font-size">font-size</option>
@@ -183,7 +186,7 @@
 
       </div>
       <h1 class="font-mono text-lg text-gray-600 text-center">Color Palette</h1>
-      <div class="flex justify-start items-start flex-col gap-2" id="colorpalette">
+      <div class="flex justify-start items-start flex-col gap-2" id="colorpalette" data-intro="This is the color palatte which you can use to theme certain colors which will change across the entire site.">
         <div class="flex w-full">
           <h1 class="font-mono text-lg text-white" data-color>light-primary</h1>
           <button class="text-gray-600 hover:text-red-500 ml-auto mr-2" data-reset-colors>
@@ -216,8 +219,8 @@
 
       <h1 class="font-mono text-gray-600 text-center">Misc.</h1>
       <div class="flex justify-center items-center flex-row flex-wrap pl-4 pr-4 mt-2 gap-2 pb-24 text-sm">
-        <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="shareTheme">Share Theme</button>
-        <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="preventTheme">Don't Apply Theme</button>
+        <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="shareTheme" data-intro="This is the 'Share Theme' button where you can share you theme with a link.">Share Theme</button>
+        <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="showTutorial" data-intro="Click this button to view the tutorial again!">Show Tutorial</button>
       </div>
     </div>
 
@@ -227,11 +230,20 @@
     <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="saveEditor">Save</button>
     <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg text-sm" id="resetEditor">Reset</button>
   </div>
+
+  <div class="fixed" id="hint">
+
+  </div>
 </div>
 
 <script>
+  import introJs from "intro.js";
+
   let themeSelected = localStorage.getItem("theme") || "default";
   const themeEditor = document.getElementById("themeEditor")!;
+  const addPropertyEvent = new CustomEvent("addPropertyToThemeEditor");
+  let firstRun = localStorage.getItem("firstRun") === null;
+
   let eyedropMode = false;
   function updateColors() {
     const colorDefinitions = document.querySelectorAll("[data-color-selection]");
@@ -260,10 +272,11 @@
 
   function addPropertyToElement(element: HTMLElement, property: string = "", value: string = "") {
     let copyof = document.getElementById("copy")!.cloneNode(true) as HTMLElement;
+    // check if element is already in theme editor
     copyof.classList.remove("hidden");
     copyof.id = "";
     copyof.classList.add("flex");
-    function updateCSS(elementExecute: HTMLElement = copyof) {
+    async function updateCSS(elementExecute: HTMLElement = copyof) {
       if (!elementExecute.parentElement!.parentElement) return;
       let elementToAffect = elementExecute.parentElement!.parentElement!.getAttribute("data-element")!;
       let css = "";
@@ -272,7 +285,19 @@
         const cssRule = item.children[1] as HTMLSelectElement;
         const cssValue = item.children[2] as HTMLInputElement;
         if (!cssRule || !cssValue) return
-        css += cssRule.value + ": " + cssValue.value + " !important;";
+        console.log(cssValue.type)
+        if (cssValue.type === "file") {
+          // encode image url
+          let reader = new FileReader();
+          await new Promise((resolve, reject) => {
+            reader.onload = function (e) {
+              css += cssRule.value + ": url(" + reader.result + ") !important;";
+              resolve(e);
+            };
+            reader.readAsDataURL(cssValue.files![0]);
+          })
+          continue;
+        }
       }
 
       let cssElement = document.getElementById(elementToAffect.replace("#", "")!);
@@ -318,7 +343,11 @@
       if (target && (target as HTMLSelectElement).value != (copyof.children[2]! as HTMLInputElement).value) {
         if (target && (target as HTMLSelectElement).value.includes("color")) {
           copyof.children[2].setAttribute("type", "color");
-        } else
+        }
+        else if (target && (target as HTMLSelectElement).value.includes("image")) {
+          copyof.children[2].setAttribute("type", "file");
+        }
+        else
           copyof.children[2].setAttribute("type", "text");
         return;
       }
@@ -476,7 +505,7 @@
     }, 100);
   });
 
-  function saveProgress() {
+  async function saveProgress() {
     let elements = document.getElementById("elements")!.children;
     let data: { elements: { element: string, css: {rule: string, value: string}[] }[], colors: { name: string, value: string }[] } = { elements: [], colors: [] };
     for (let htmlelement of elements) {
@@ -488,6 +517,21 @@
         let cssRule = tag.children[1] as HTMLSelectElement;
         let cssValue = tag.children[2] as HTMLInputElement;
         if (!cssRule || !cssValue) continue;
+        if (cssValue.type === "file") {
+          let reader = new FileReader();
+          await new Promise((resolve, reject) => {
+            reader.onload = function (e) {
+              cssToPush.push({
+                rule: cssRule.value,
+                value: (e.target as FileReader).result as string
+              });
+              resolve(e);
+              console.log(cssToPush);
+            };
+            reader.readAsDataURL(cssValue.files![0]);
+          })
+          continue;
+        }
         cssToPush.push({
           rule: cssRule.value,
           value: cssValue.value
@@ -615,6 +659,19 @@
           placeholderAlreadyProcessed = true;
           continue;
         }
+
+        if (cssRule.rule.includes("image")) {
+          let url = cssRule.value;
+          let filename = url.split("/").pop()!.split(".")[0];
+          let fileExtension = url.split("/").pop()!.split(".")[1];
+          let file = new File([url], `${filename}.${fileExtension}`, { type: `image/${fileExtension}` });
+          let fileReader = new FileReader();
+          fileReader.onload = (e) => {
+            addPropertyToElement(elementInEditor!.children[3].children[0]! as HTMLElement, cssRule.rule, (e.target as FileReader).result as string);
+          }
+          fileReader.readAsDataURL(file);
+          continue;
+        }
         addPropertyToElement(elementInEditor!.children[3].children[0]! as HTMLElement, cssRule.rule, cssRule.value);
       }
     }
@@ -642,8 +699,9 @@
         }
         let doesCurrentThemeHaveEdits = localStorage.getItem(`savedEditor.${themeSelected}`) !== null;
         const purpleTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a570be"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"#save","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#paste","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#failed","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]}],"colors":[{"name":"light-primary","value":"#ffe4f2"},{"name":"primary","value":"#e0b8da"},{"name":"dark-primary","value":"#e68bbe"}]}' 
-        const salesianTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px black solid"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#throwback","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"visible"}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a6192e"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]}],"colors":[{"name":"light-primary","value":"#baab90"},{"name":"primary","value":"#eddab8"},{"name":"dark-primary","value":"#cc1e38"}]}'
+        const salesianTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#progressbar","css":[{"rule":"background-color","value":"#eddab8"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px black solid"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#throwback","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"visible"}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a6192e"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]}],"colors":[{"name":"light-primary","value":"#baab90"},{"name":"primary","value":"#eddab8"},{"name":"dark-primary","value":"#cc1e38"}]}'
         const hotdogTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#fff700"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"b","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]}],"colors":[{"name":"light-primary","value":"#ff0000"},{"name":"primary","value":"#fbff00"},{"name":"dark-primary","value":"#050014"}]}'
+        
         if (themeSelected === "salesian" && !doesCurrentThemeHaveEdits) {
           loadFromSaved(salesianTheme);
         }
@@ -679,28 +737,6 @@
     localStorage.removeItem(`savedEditor.${themeSelected}`);
     location.reload();
   });
-
-  setTimeout(() => {
-    document.getElementById("preventTheme")!.addEventListener("click", () => {
-      if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
-        localStorage.removeItem(`editorThemeClear.${themeSelected}`);
-        saveProgress();
-        location.reload();
-        return;
-      }
-      let allowed = confirm(
-        "Are you sure you want to prevent this theme from applying?\n" + 
-        "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
-        "➡️ This will allow you to make as many edits to the theme as you like.\n" +
-        "➡️ You can undo this by clicking the button again."
-      );
-      if (!allowed) return;
-
-      localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
-      location.reload();
-    });
-    document.getElementById("preventTheme")!.textContent = localStorage.getItem(`editorThemeClear.${themeSelected}`) ? "Enable Theme" : "Disable Theme";
-  }, 250);
 
   document.querySelectorAll('[data-reset-colors]').forEach((element) => {
     element.addEventListener("click", () => {
@@ -746,6 +782,10 @@
     navigator.clipboard.writeText(url.toString());
     animateNotif("Theme URL Copied to Clipboard!", document.getElementById("share_notif")!);
   });
+
+  document.getElementById("showTutorial")!.addEventListener("click", () => {
+    introJs().start()
+  });
   let onCooldwn = false;
   document.addEventListener("keydown", (ev) => {
     if (ev.key === "Tab") {
@@ -786,5 +826,19 @@
       }, 500);
     }
   })
+  
+  if (firstRun) {
+    let frun = setInterval(() => {
+      // check if theme editor is open
+      if (themeEditor.style.display === "block") {
+        clearInterval(frun);
+        setTimeout(() => {
+          localStorage.setItem("firstRun", "false")
+          document.getElementById("showTutorial")!.click();
+        }, 500);
+      }
+
+    }, 250);
+  }
 
 </script>

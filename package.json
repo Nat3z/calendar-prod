@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "vercel dev --listen 3001",
+    "client": "cd client & cross-env NODE_ENV=development pnpm run dev --listen 3000"
+  }
+}
