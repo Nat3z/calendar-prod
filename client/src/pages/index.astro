@@ -6,6 +6,7 @@ import ThemeModifier from '../components/ThemeModifier.astro';
 import ThemeEditor from '../components/ThemeEditor.astro';
 import ScreenSaver from '../components/ScreenSaver.astro';
 import VoteForVP from '../components/VoteForVP.astro';
+import "../styles/introjs-royale.css";
 
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
@@ -122,12 +123,12 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			// don't be influenced by current time and utc rules
 			currentDateOffset.setHours(8, 0, 0, 0)
 
-			scheduleData = await ((await fetch(`${url}?date=${moment(currentDateOffset).unix()}`)).json())
+			scheduleData = await ((await fetch(`${url}?date=${moment(currentDateOffset).unix()}&refDate=${moment().unix()}`)).json())
 			scheduleEvents = scheduleData.events
 			console.log("Using tomorrow's schedule")
 		}
 		else {
-			scheduleData = await ((await fetch(`${url}?date=${moment(dtScheduleFirst).unix()}`)).json())
+			scheduleData = await ((await fetch(`${url}?date=${moment(dtScheduleFirst).unix()}&refDate=${moment().unix()}`)).json())
 			scheduleEvents = scheduleData.events
 		}
 
@@ -163,7 +164,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 
 			document.body.classList.remove("bg-dark-primary")
 			document.body.style.cursor = "auto"
-			mouseTimeout = setTimeout(() => {
+			mouseTimeout = window.setTimeout(() => {
 				let quickpeek = document.getElementById("quickpeek")!
 				let mainschedule = document.getElementById("main_schedule")!
 
@@ -436,7 +437,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 				if (dateSet == currentDateOffset.getDate()) {
 					loadingWayback = true
 					document.querySelector("#wayback-forward")!.classList.add("animate-spin");
-					await fetch(`${url}?date=${moment(currentDateOffset).unix()}`)
+					await fetch(`${url}?date=${moment(currentDateOffset).unix()}&refDate=${moment().unix()}`)
 						.then(res => res.json())
 						.then(async (data) => {
 							scheduleData = data
@@ -481,7 +482,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 				if (dateSet == currentDateOffset.getDate()) {
 					loadingWayback = true
 					document.querySelector("#wayback-back")!.classList.add("animate-spin");
-					await fetch(`${url}?date=${moment(currentDateOffset).unix()}`)
+					await fetch(`${url}?date=${moment(currentDateOffset).unix()}&refDate=${moment().unix()}`)
 						.then(res => res.json())
 						.then(async (data) => {
 							scheduleData = data
@@ -531,7 +532,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			// if the page has been unfocused for more than 30 minutes, refetch the schedule
 			else if (document.hasFocus() && timeSinceLastFocus != 0 && moment().unix() - timeSinceLastFocus > 30 * 60) {
 				timeSinceLastFocus = 0
-				fetch(`${url}?date=${moment().unix()}`)
+				fetch(`${url}?date=${moment().unix()}&refDate=${moment().unix()}`)
 					.then(res => res.json())
 					.then(async (data) => {
 						scheduleData = data
@@ -542,9 +543,13 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 							currentDate.setDate(currentDate.getDate() + 1)
 							currentDate.setHours(8, 0, 0, 0)
 
-							scheduleData = await ((await fetch(`${url}?date=${Math.round(+currentDate / 1000)}`)).json())
+							scheduleData = await ((await fetch(`${url}?date=${Math.round(+currentDate / 1000)}&refDate=${moment().unix()}`)).json())
 							scheduleEvents = scheduleData.events
 							console.log("Using tomorrow's schedule")
+							currentDateOffset = currentDate
+						}
+						else {
+							currentDateOffset = new Date()
 						}
 
 						if (!scheduleEvents || scheduleEvents.length === 0) {
@@ -555,6 +560,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 								</h1>
 							`
 						}
+
 
 						animateNotif("Schedule Updated", document.querySelector("#refresh_notif")! as HTMLElement)
 						clearInterval(currentScheduleInterval)
@@ -571,7 +577,6 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 </Layout>
 
 <style>
-	@import "../introjs-royale.css";
 	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hind&family=Nunito+Sans&family=Open+Sans&family=PT+Serif&family=Raleway:wght@500&family=Varela+Round&display=swap');
 	@tailwind base;
 	@tailwind components;
