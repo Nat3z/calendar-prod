@@ -7,6 +7,7 @@ import ThemeEditor from '../components/ThemeEditor.astro';
 import ScreenSaver from '../components/ScreenSaver.astro';
 import VoteForVP from '../components/VoteForVP.astro';
 import "../styles/introjs-royale.css";
+import Changelog from '../components/Changelog.astro';
 
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
@@ -29,6 +30,8 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 	<body>
 
 		<div id="isInDev" data-in-dev={import.meta.env.NODE_ENV === "development" ? "true" : "false"}></div>
+		<Changelog />
+		
 		<div class="flex justify-start items-center flex-row" data-in-theme-editor>
 			<ScreenSaver />
 			<ThemeEditor />
