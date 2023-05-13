@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import moment from 'moment';
-const matchRegex_inverse = /(\d{1,2}:\d{2}(?:.*?)(?:\s-\s|-\s|\s-|-)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
+const matchRegex_inverse = /(\d{1,2}:\d{2}(?:\s*-\s*|\s*-\s*|\s-\s*|\s*-\s)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
 const matchRegex_ExlcudeColonTime = /(.*?) (\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2}:\d{2})(?:.*?)/gm;
 const matchRegex_ExlcudeColonTime_inverse = /(\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
 const matchRegex_ExlcudeColonTimeBOTH = /(\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2})(?:.*?) (.*)/gm;
