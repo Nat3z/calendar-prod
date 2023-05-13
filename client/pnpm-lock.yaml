@@ -3,16 +3,22 @@ lockfileVersion: 5.4
 specifiers:
   '@astrojs/tailwind': ^3.0.0-beta.1
   '@types/intro.js': ^5.1.1
+  '@types/marked': ^4.3.0
   astro: ^2.4.5
   intro.js: ^7.0.1
+  marked: ^5.0.2
+  marked-mangle: ^1.0.1
   moment: ^2.29.4
   tailwindcss: ^3.0.24
 
 dependencies:
   '@astrojs/tailwind': 3.1.2_b76qetlk34nzb2cgahj3h5llmq
   '@types/intro.js': 5.1.1
+  '@types/marked': 4.3.0
   astro: 2.4.5
   intro.js: 7.0.1
+  marked: 5.0.2
+  marked-mangle: 1.0.1_marked@5.0.2
   moment: 2.29.4
   tailwindcss: 3.2.4
 
@@ -690,6 +696,10 @@ packages:
 
   /@types/json5/0.0.30:
     resolution: {integrity: sha512-sqm9g7mHlPY/43fcSNrCYfOeX9zkTTK+euO5E6+CVijSMm5tTjkVdwdqRkY3ljjIAf8679vps5jKUoJBCLsMDA==}
+    dev: false
+
+  /@types/marked/4.3.0:
+    resolution: {integrity: sha512-zK4gSFMjgslsv5Lyvr3O1yCjgmnE4pr8jbG8qVn4QglMwtpvPCf4YT2Wma7Nk95OxUUJI8Z+kzdXohbM7mVpGw==}
     dev: false
 
   /@types/mdast/3.0.10:
@@ -1784,6 +1794,20 @@ packages:
 
   /markdown-table/3.0.3:
     resolution: {integrity: sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==}
+    dev: false
+
+  /marked-mangle/1.0.1_marked@5.0.2:
+    resolution: {integrity: sha512-ZmWErsTkfE78OFgrpry2XGh+lYNRePfGy7bGh20l4rWHsH+bciKth1IHQXO9B6Ov5dHmY0jAswvgDxtcxGcFQQ==}
+    peerDependencies:
+      marked: ^4 || ^5
+    dependencies:
+      marked: 5.0.2
+    dev: false
+
+  /marked/5.0.2:
+    resolution: {integrity: sha512-TXksm9GwqXCRNbFUZmMtqNLvy3K2cQHuWmyBDLOrY1e6i9UvZpOTJXoz7fBjYkJkaUFzV9hBFxMuZSyQt8R6KQ==}
+    engines: {node: '>= 18'}
+    hasBin: true
     dev: false
 
   /mdast-util-definitions/5.1.1:
