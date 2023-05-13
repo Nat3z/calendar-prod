@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import moment from 'moment';
-const matchRegex_inverse = /(\d{1,2}:\d{2}(?:\s*-\s*|\s*-\s*|\s-\s*|\s*-\s)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
+const matchRegex_inverse = /(\d{1,2}:\d{2}(?:\s-\s|-\s|\s-|-)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
 const matchRegex_ExlcudeColonTime = /(.*?) (\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2}:\d{2})(?:.*?)/gm;
 const matchRegex_ExlcudeColonTime_inverse = /(\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
 const matchRegex_ExlcudeColonTimeBOTH = /(\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2})(?:.*?) (.*)/gm;
@@ -41,7 +41,7 @@ function addHours(date: Date, hours: number) {
 }
 
 
-function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday", excludeToday = false, refDate = new Date()) {
+function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday", excludeToday = false, refDate: Date) {
   const dayOfWeek = ["sun","mon","tue","wed","thu","fri","sat"]
     .indexOf(dayName.slice(0,3).toLowerCase());
   if (dayOfWeek < 0) return;
@@ -55,12 +55,12 @@ function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesd
   return refDate;
 }
 
-function generateFallbacks() {
-  const monday = getNextDayOfTheWeek("Monday")!
-  const tuesday = getNextDayOfTheWeek("Tuesday")!
-  const wednesday = getNextDayOfTheWeek("Wednesday")!
-  const thursday = getNextDayOfTheWeek("Thursday")!
-  const friday = getNextDayOfTheWeek("Friday")!
+function generateFallbacks(refDate: Date) {
+  const monday = getNextDayOfTheWeek("Monday", false, refDate)!
+  const tuesday = getNextDayOfTheWeek("Tuesday", false, refDate)!
+  const wednesday = getNextDayOfTheWeek("Wednesday", false, refDate)!
+  const thursday = getNextDayOfTheWeek("Thursday", false, refDate)!
+  const friday = getNextDayOfTheWeek("Friday", false, refDate)!
 
   const icsMonday = ics.createEvents([{
     start: [ monday.getFullYear(), monday.getMonth() + 1, monday.getDate(), 6, 0 ],
@@ -140,27 +140,20 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let vEvents = Object.values(events).filter(event => event.type == "VEVENT")
   // get the current date and find the event in the ics
   let today = new Date()
-  
+  let refDate = new Date()
   if (req.query.date && typeof req.query.date === "string") {
     if (!/\d/.test(req.query.date)) {
       return res.json({ title: null, events: null, code: 500, message: "Invalid date" })
     }
     // parse unix timestamp with moment
     today = moment.unix(parseInt(req.query.date)).toDate()
-    // axios.post(process.env.DISCORD_WEBHOOK!, {
-    //   embeds: [
-    //     {
-    //       title: "Schedule Info",
-    //       description: `UNIX Timestamp Provided: ${req.query.date} | Date Piped: ${today.toDateString()}`,
-    //       color: 0xff0000,
-    //       timestamp: new Date().toISOString(),
-    //       footer: {
-    //         text: "DynSchedule Alert"
-    //       },
-    //     }
-    //   ],
-    //   content: ""
-    // });
+  }
+  if (req.query.refDate && typeof req.query.refDate === "string") {
+    if (!/\d/.test(req.query.refDate)) {
+      return res.json({ title: null, events: null, code: 500, message: "Invalid refdate" })
+    }
+    // parse unix timestamp with moment
+    refDate = moment.unix(parseInt(req.query.refDate)).toDate()
   }
   
   let schoolToBeClosed = false;
@@ -179,7 +172,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let gotfromCache = false
   if (!event) {
     gotfromCache = true
-    events = await ical.async.parseICS(generateFallbacks())
+    events = await ical.async.parseICS(generateFallbacks(refDate))
     vEvents = Object.values(events).filter(event => event.type == "VEVENT")
 
     /* @ts-ignore */
@@ -200,7 +193,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
 
-    if (time.match(/^[a-zA-Z]/)) {
+    if (time.match(/^[a-zA-Z]/gm) || time.startsWith("-")) {
       // if this is the case, then just inverse the props
       time = matchedTime[1].replaceAll(" ", "").trim()
       period = matchedTime[2].replace("-", "").replace(":", "").trim()
