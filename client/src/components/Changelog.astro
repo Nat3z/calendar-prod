@@ -5,7 +5,7 @@ const latestChangelogText = await latestChangelog.text();
 marked.use({
   renderer: {
     link(href, title, text) {
-      return `<a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="underline">${text}</a>`;
     },
   },
   headerIds: false,
@@ -13,9 +13,9 @@ marked.use({
 });
 const content = await marked.parse(latestChangelogText);
 ---
-<div class="z-10 fixed justify-center items-center flex bg-black/50 w-screen h-screen hidden" id="changelog">
+<div class="z-10 fixed justify-center items-center flex md:bg-black/50 w-screen h-screen hidden" id="changelog">
   
-  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl bg-primary rounded-lg relative overflow-auto">
+  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl bg-slate-800 md:rounded-lg relative overflow-auto">
     <button class="absolute ml-auto top-2 right-2" id="close_changelog">
       <span class="material-symbols-outlined text-6xl text-white hover:text-red-500">close</span>
     </button>

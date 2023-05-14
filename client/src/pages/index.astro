@@ -96,7 +96,11 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 		let isInDev = document.getElementById("isInDev")!.dataset.inDev === "true";
 
 		// remember to change this to the production url when you're done testing
-		const url = isInDev ? "http://localhost:3001/api/schedule" : "https://api.schedule.nat3z.com/api/schedule"
+		let url = isInDev ? "http://localhost:3001/api/schedule" : "https://api.schedule.nat3z.com/api/schedule"
+
+		if (window.location.href.includes("development.") || window.location.href.includes("preview.")) {
+			url = "https://api.development.schedule.nat3z.com/api/schedule"
+		}
 
 		let dtScheduleFirst = new Date()
 		// don't be influenced by utc
@@ -138,7 +142,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 		if (!scheduleEvents || scheduleEvents.length === 0) {
 			document.getElementById("current")!.innerHTML = "Out of Session"
 			document.getElementById("classes")!.innerHTML += `
-				<h1 id="failed" class="text-center text-lg md:text-3xl">
+				<h1 id="title" class="text-center text-lg md:text-3xl">
 					No classes today
 				</h1>
 			`
@@ -196,7 +200,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 
 		if (!scheduleData.possiblyClosed) localStorage.removeItem("alwaysShowSchedule")
 
-		
+		let currentStyle = "";
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
 		function updateSchedule(events: any) {
 			// get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
@@ -214,7 +218,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 				if (!hasClearedAllDocs && !docKey) {
 					hasClearedAllDocs = true
 					document.getElementById("classes")!.innerHTML = `
-					<h1 class="text-lg md:text-3xl font-bold text-center mb-4" id="title">${replaceShorthands(scheduleData.title)}</h1>
+					<h1 class="text-lg md:text-3xl font-bold text-center mb-4" id="title" style="${currentStyle}">${replaceShorthands(scheduleData.title)}</h1>
 					`
 					
 				}
@@ -229,7 +233,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 						}
 					}
 					document.getElementById("classes")!.innerHTML += `
-						<h1 id="${key}" class="text-center text-ultramd md:text-3xl">
+						<h1 id="${key}" class="text-center text-ultramd md:text-3xl" style="${currentStyle}">
 							${parseTime(events[key].start, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replace_shorthand}
 						</h1>
 					`
@@ -372,7 +376,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 				if (!document.hasFocus()) document.title = `Possibly Closed`
 				document.getElementById("current")!.innerHTML = "No Classes Today"
 				document.getElementById("classes")!.innerHTML = `
-					<h1 id="failed" class="text-center text-lg w-3/4 md:text-3xl text-red-500 font-bold">
+					<h1 id="title" class="text-center text-lg w-3/4 md:text-3xl text-red-500 font-bold">
 						School is most likely closed for the day. Please check the school's website for more information.
 					</h1>
 					<button class="p-2 pl-4 pr-4 bg-light-primary rounded-lg mt-4" id="revealschedule">Show Schedule Anyways (Spam Click)</button>
@@ -434,7 +438,6 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			let dateSet = currentDateOffset.getDate()
 			clearInterval(currentScheduleInterval)
 			document.getElementById("current")!.innerHTML = "Loading... (" + moment(currentDateOffset).format("dddd, MMMM Do YYYY") + ")"
-			document.getElementById("classes")!.innerHTML = ""
 
 			setTimeout(async () => {
 				if (dateSet == currentDateOffset.getDate()) {
@@ -445,11 +448,12 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 						.then(async (data) => {
 							scheduleData = data
 							scheduleEvents = scheduleData.events
+							currentStyle = document.getElementById("title")!.style.cssText;
 
 							if (!scheduleEvents || scheduleEvents.length === 0) {
 								document.getElementById("current")!.innerHTML = "Out of Session"
 								document.getElementById("classes")!.innerHTML = `
-									<h1 id="failed" class="text-center text-lg md:text-3xl w-2/4">
+									<h1 id="title" class="text-center text-lg md:text-3xl w-2/4" style="${currentStyle}">
 										No classes today (Either a weekend or a normal school day. Cached schedules are only available for school days)
 									</h1>
 								`
@@ -468,7 +472,6 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 		document.querySelector("#wayback-back")!.addEventListener("click", () => {
 			if (loadingWayback) return
 			let dayOffset = currentDateOffset.getDate() - new Date().getDate()
-			console.log(dayOffset)
 
 			if (dayOffset < -6) return animateNotif("You can only view schedules up to 7 days in the past", document.querySelector("#refresh_notif")! as HTMLElement)
 			currentDateOffset.setDate(currentDateOffset.getDate() - 1)
@@ -480,7 +483,6 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			let dateSet = currentDateOffset.getDate()
 			clearInterval(currentScheduleInterval)
 			document.getElementById("current")!.innerHTML = "Loading... (" + moment(currentDateOffset).format("dddd, MMMM Do YYYY") + ")"
-			document.getElementById("classes")!.innerHTML = ""
 			setTimeout(async () => {
 				if (dateSet == currentDateOffset.getDate()) {
 					loadingWayback = true
@@ -490,6 +492,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 						.then(async (data) => {
 							scheduleData = data
 							scheduleEvents = scheduleData.events
+							currentStyle = document.getElementById("title")!.style.cssText;
 							
 							if (!scheduleEvents || scheduleEvents.length === 0) {
 								let current = new Date()
@@ -511,7 +514,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 								}
 								document.getElementById("current")!.innerHTML = text
 								document.getElementById("classes")!.innerHTML = `
-									<h1 id="failed" class="text-center text-lg md:text-3xl w-2/4">
+									<h1 id="title" class="text-center text-lg md:text-3xl w-2/4" style="${currentStyle}">
 										No classes today (Either a weekend or a normal school day. Cached schedules are only available for school days)
 									</h1>
 								`
@@ -540,6 +543,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 					.then(async (data) => {
 						scheduleData = data
 						scheduleEvents = scheduleData.events
+						currentStyle = document.getElementById("title")!.style.cssText;
 
 						if (new Date().getHours() > 16) {
 							let currentDate = new Date()
@@ -557,13 +561,12 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 
 						if (!scheduleEvents || scheduleEvents.length === 0) {
 							document.getElementById("current")!.innerHTML = "Out of Session"
-							document.getElementById("classes")!.innerHTML += `
-								<h1 id="failed" class="text-center text-lg md:text-3xl">
+							document.getElementById("classes")!.innerHTML = `
+								<h1 id="title" class="text-center text-lg md:text-3xl">
 									No classes today
 								</h1>
 							`
 						}
-
 
 						animateNotif("Schedule Updated", document.querySelector("#refresh_notif")! as HTMLElement)
 						clearInterval(currentScheduleInterval)

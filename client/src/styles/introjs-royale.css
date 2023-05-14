@@ -1,8 +1,8 @@
 article h1 {
-  @apply text-4xl font-bold mb-4;
+  @apply text-4xl font-bold mb-4 !text-white;
 }
 article p {
-  @apply text-lg mb-4;
+  @apply text-lg mb-4 !text-white;
 }
 article ul {
   @apply list-disc list-inside mb-4;
