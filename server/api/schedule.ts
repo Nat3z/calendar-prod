@@ -150,7 +150,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
   if (req.query.refDate && typeof req.query.refDate === "string") {
     if (!/\d/.test(req.query.refDate)) {
-      return res.json({ title: null, events: null, code: 500, message: "Invalid refdate" })
+      return res.json({ title: null, events: null, code: 500, message: "Invalid reference date" })
     }
     // parse unix timestamp with moment
     refDate = moment.unix(parseInt(req.query.refDate)).toDate()
@@ -164,14 +164,14 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
       if (!schoolToBeClosed) 
         schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
-      return event.description.match(matchRegex) != null
+      return event.description.match(matchRegex) != null || event.description.match(matchRegex_inverse) != null
     }
   })
 
   // if the event is null in normal calendar, go to the fallback calendar
-  let gotfromCache = false
+  let gotFromCache = false
   if (!event) {
-    gotfromCache = true
+    gotFromCache = true
     events = await ical.async.parseICS(generateFallbacks(refDate))
     vEvents = Object.values(events).filter(event => event.type == "VEVENT")
 
@@ -189,7 +189,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let times = new Map<string, { start: string, end: string }>()
 
   let matchedTime: RegExpExecArray | null
-  while ((matchedTime = matchRegex.exec(event.description)) !== null || (matchedTime = matchRegex_inverse.exec(event.description)) !== null || (matchedTime = matchRegex_ExlcudeColonTime.exec(event.description)) !== null || (matchedTime = matchRegex_ExlcudeColonTime_inverse.exec(event.description)) !== null || (matchedTime = matchRegex_ExlcudeColonTimeBOTH_inverse.exec(event.description)) !== null) {
+  let eventDescription = event.description.replaceAll(/\s /gm, " ")
+  console.log(eventDescription)
+  while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTimeBOTH_inverse.exec(eventDescription)) !== null) {
     let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
 
@@ -226,5 +228,5 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return aStart - bStart
   }))
   res = res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
-  return res.json({ title, events: Object.fromEntries(sortedTimes), possiblyClosed: schoolToBeClosed, code: 200, message: gotfromCache ? "This event was received from the local cache." : "This event was received dynamically." })
+  return res.json({ title, events: Object.fromEntries(sortedTimes), possiblyClosed: schoolToBeClosed, code: 200, message: gotFromCache ? "This event was received from the local cache." : "This event was received dynamically." })
 }
