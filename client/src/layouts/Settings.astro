@@ -64,6 +64,13 @@
     </div>
   </div>
 
+  <div class="flex justify-center items-center flex-row gap-2">
+    <img src="/git-branch.svg" width="15" height="15" />
+    <h4 id="branch_name" class="text-gray-400 -mt-1 font-mono">master</h4>
+    <h1 class="-mt-1 font-mono">-</h1>
+    <h1 class="-mt-1 font-mono">"DynSchedule v1.25"</h1>
+  </div>
+
 </div>
 
 <div class="fixed hidden w-screen z-10 h-screen flex justify-center items-center bg-black/25" id="paste_screen">
@@ -98,7 +105,16 @@
         open_in_new
       </span>
     `;
-
+  }
+  let isInDev = document.getElementById("isInDev").dataset.inDev === "true";
+  if (isInDev) {
+    document.getElementById("branch_name").innerHTML = "dev (local)";
+  }
+  else if (window.location.href.includes("dev")) {
+    document.getElementById("branch_name").innerHTML = "dev";
+  }
+  else {
+    document.getElementById("branch_name").innerHTML = "master";
   }
   document.getElementById("blk_1-input").children[1].value = localStorage.getItem("blk_1") || "Block 1";
   document.getElementById("blk_2-input").children[1].value = localStorage.getItem("blk_2") || "Block 2";

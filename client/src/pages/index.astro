@@ -115,7 +115,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 		function replaceShorthands(period: string) {
 			// replace period to Lunch if it's ONLY "L" with regex
 			// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-			return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch").replace(/^Flextime$/, "Flex").replace(/Blk (\d)/, "Block $1")
+			return period.replace(/^(\d) Blk$/, "Block $1").replace(/^L$/, "Lunch").replace(/^Flextime$/, "Flex").replace(/^Blk (\d)$/, "Block $1")
 		}
 
 		function parseTime(t: string, offsetTime = new Date()) {
@@ -428,7 +428,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 		document.querySelector("#wayback-forward")!.addEventListener("click", () => {
 			if (loadingWayback) return
 			let dayOffset = currentDateOffset.getDate() - new Date().getDate()
-			if (dayOffset >= 6) return animateNotif("You can only view schedules up to 7 days in the future", document.querySelector("#refresh_notif")! as HTMLElement)
+			if (dayOffset >= 6 && !isInDev) return animateNotif("You can only view schedules up to 7 days in the future", document.querySelector("#refresh_notif")! as HTMLElement)
 			currentDateOffset.setDate(currentDateOffset.getDate() + 1)
 			currentDateOffset.setHours(8, 0, 0, 0)
 			if (currentDateOffset.getMonth() != new Date().getMonth()) {
@@ -453,7 +453,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 							if (!scheduleEvents || scheduleEvents.length === 0) {
 								document.getElementById("current")!.innerHTML = "Out of Session"
 								document.getElementById("classes")!.innerHTML = `
-									<h1 id="title" class="text-center text-lg md:text-3xl w-2/4" style="${currentStyle}">
+									<h1 id="title" class="text-center text-lg md:text-3xl w-10/12 md:w-2/4" style="${currentStyle}">
 										No classes today (Either a weekend or a normal school day. Cached schedules are only available for school days)
 									</h1>
 								`
@@ -473,7 +473,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			if (loadingWayback) return
 			let dayOffset = currentDateOffset.getDate() - new Date().getDate()
 
-			if (dayOffset < -6) return animateNotif("You can only view schedules up to 7 days in the past", document.querySelector("#refresh_notif")! as HTMLElement)
+			if (dayOffset < -6 && !isInDev) return animateNotif("You can only view schedules up to 7 days in the past", document.querySelector("#refresh_notif")! as HTMLElement)
 			currentDateOffset.setDate(currentDateOffset.getDate() - 1)
 			currentDateOffset.setHours(8, 0, 0, 0)
 			if (currentDateOffset.getMonth() != new Date().getMonth()) {
@@ -514,7 +514,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 								}
 								document.getElementById("current")!.innerHTML = text
 								document.getElementById("classes")!.innerHTML = `
-									<h1 id="title" class="text-center text-lg md:text-3xl w-2/4" style="${currentStyle}">
+									<h1 id="title" class="text-center text-lg md:text-3xl w-10/12 md:w-2/4" style="${currentStyle}">
 										No classes today (Either a weekend or a normal school day. Cached schedules are only available for school days)
 									</h1>
 								`

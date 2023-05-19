@@ -157,6 +157,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
   
   let schoolToBeClosed = false;
+  let endOfSchool = false;
   /* @ts-ignore */
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
@@ -164,6 +165,9 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
       if (!schoolToBeClosed) 
         schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
+      if (event.summary.includes("Last Day of School") && !endOfSchool) {
+        endOfSchool = true;
+      }
       return event.description.match(matchRegex) != null || event.description.match(matchRegex_inverse) != null
     }
   })
@@ -190,7 +194,6 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   let matchedTime: RegExpExecArray | null
   let eventDescription = event.description.replaceAll(/\s /gm, " ")
-  console.log(eventDescription)
   while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTimeBOTH_inverse.exec(eventDescription)) !== null) {
     let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
@@ -228,5 +231,5 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     return aStart - bStart
   }))
   res = res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate')
-  return res.json({ title, events: Object.fromEntries(sortedTimes), possiblyClosed: schoolToBeClosed, code: 200, message: gotFromCache ? "This event was received from the local cache." : "This event was received dynamically." })
+  return res.json({ title, events: Object.fromEntries(sortedTimes), possiblyClosed: schoolToBeClosed, code: 200, message: gotFromCache ? "This event was received from the local cache." : "This event was received dynamically.", endOfSchool })
 }
