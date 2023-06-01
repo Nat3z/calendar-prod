@@ -158,6 +158,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   
   let schoolToBeClosed = false;
   let endOfSchool = false;
+  let eventDescription = "";
   /* @ts-ignore */
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
@@ -167,6 +168,11 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
       if (event.summary.includes("Last Day of School") && !endOfSchool) {
         endOfSchool = true;
+        eventDescription = `
+        8:30 - 9:50 Blk 6 EOSA
+        10:30 - 11:30 Senior Class Farewell
+        `
+        return true;
       }
       return event.description.match(matchRegex) != null || event.description.match(matchRegex_inverse) != null
     }
@@ -186,14 +192,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         return event.description.match(matchRegex) != null
       }
     })
+
+    if (event) eventDescription = event.description
   }
 
-  if (!event) return res.json({ title: null, events: null, code: 500, message: "Did not find VEevent for today." })
+  if (!event) return res.json({ title: null, events: null, code: 500, message: "Event not found." })
   let title = event.summary
   let times = new Map<string, { start: string, end: string }>()
+  if (!eventDescription) eventDescription = event.description.replaceAll(/\s /gm, " ")
 
   let matchedTime: RegExpExecArray | null
-  let eventDescription = event.description.replaceAll(/\s /gm, " ")
   while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTimeBOTH_inverse.exec(eventDescription)) !== null) {
     let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
