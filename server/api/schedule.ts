@@ -41,7 +41,7 @@ function addHours(date: Date, hours: number) {
 }
 
 
-function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday", excludeToday = false, refDate: Date) {
+function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday", excludeToday = false, refDate = new Date()) {
   const dayOfWeek = ["sun","mon","tue","wed","thu","fri","sat"]
     .indexOf(dayName.slice(0,3).toLowerCase());
   if (dayOfWeek < 0) return;
@@ -55,12 +55,12 @@ function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesd
   return refDate;
 }
 
-function generateFallbacks(refDate: Date) {
-  const monday = getNextDayOfTheWeek("Monday", false, refDate)!
-  const tuesday = getNextDayOfTheWeek("Tuesday", false, refDate)!
-  const wednesday = getNextDayOfTheWeek("Wednesday", false, refDate)!
-  const thursday = getNextDayOfTheWeek("Thursday", false, refDate)!
-  const friday = getNextDayOfTheWeek("Friday", false, refDate)!
+function generateFallbacks() {
+  const monday = getNextDayOfTheWeek("Monday", false)!
+  const tuesday = getNextDayOfTheWeek("Tuesday", false)!
+  const wednesday = getNextDayOfTheWeek("Wednesday", false)!
+  const thursday = getNextDayOfTheWeek("Thursday", false)!
+  const friday = getNextDayOfTheWeek("Friday", false)!
 
   const icsMonday = ics.createEvents([{
     start: [ monday.getFullYear(), monday.getMonth() + 1, monday.getDate(), 6, 0 ],
@@ -182,12 +182,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   let gotFromCache = false
   if (!event) {
     gotFromCache = true
-    events = await ical.async.parseICS(generateFallbacks(refDate))
+    events = await ical.async.parseICS(generateFallbacks())
     vEvents = Object.values(events).filter(event => event.type == "VEVENT")
 
     /* @ts-ignore */
     event = vEvents.find(event => {
       if (event.type !== "VEVENT") return false
+      console.log(event.start.getDate(), today.getDate())
       if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
         return event.description.match(matchRegex) != null
       }
