@@ -1,4 +1,8 @@
 {
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "vercel dev --listen 3001",

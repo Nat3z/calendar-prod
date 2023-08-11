@@ -37,8 +37,9 @@
   </section>
 
   <div class="flex justify-center flex-row items-center gap-2 h-fit">
-    <button class="bg-light-primary text-white font-bold text-lg rounded-lg p-2 h-max" id="save">Save</button>
-    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-max" id="paste">Paste from Schoology</button>
+    <button class="bg-light-primary text-white font-bold text-lg rounded-lg p-2 h-12" id="save">Save</button>
+    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12" id="paste">Paste from Schoology</button>
+    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12" id="purge">Purge Cache</button>
   </div>
   
   <div class="flex justify-center items-center flex-col gap-2">
@@ -147,6 +148,11 @@
   document.getElementById("theme").addEventListener("click", () => {
     const theme_select = document.getElementById("theme_select");
     localStorage.setItem("theme", theme_select.value);
+    window.location.reload();
+  });
+
+  document.getElementById("purge").addEventListener("click", () => {
+    sessionStorage.clear();
     window.location.reload();
   });
   

@@ -175,7 +175,7 @@
               <input class="w-14 h-8 rounded-lg text-black ml-auto" type="text" value="" />
             </div>
             <button class="font-mono text-gray-500 bg-gray-700 rounded-lg pl-2 pr-2 pt-1 pb-1 flex justify-center items-center" data-element="abbr" data-theme-type="add">
-              <span class="material-symbols-outlined">
+              <span class="material-symbols-outlined" data-theme-type="add">
                 add
               </span>
             </button>
@@ -298,6 +298,8 @@
           })
           continue;
         }
+
+        css += cssRule.value + ": " + cssValue.value + " !important;";
       }
 
       let cssElement = document.getElementById(elementToAffect.replace("#", "")!);
@@ -478,6 +480,10 @@
     if (!e.target) return
     let element = e.target as HTMLElement;
     if (element.getAttribute("data-theme-type") === "add") {
+      // check if the element is a span, and if so, get the parent
+      if (element.tagName.toLowerCase() === "span") {
+        element = element.parentElement! as HTMLElement;
+      }
       addPropertyToElement(element);
     }
     element.style.outline = "none";
@@ -841,4 +847,11 @@
     }, 250);
   }
 
+  // block the user from leaving the page if they have unsaved changes
+  window.addEventListener("beforeunload", (e) => {
+    if (localStorage.getItem(`savedEditor.${themeSelected}`) !== null) {
+      // save the theme
+      saveProgress();
+    }
+  });
 </script>

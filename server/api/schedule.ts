@@ -1,12 +1,12 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import moment from 'moment';
-const matchRegex_inverse = /(\d{1,2}:\d{2}(?:\s-\s|-\s|\s-|-)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
-const matchRegex_ExlcudeColonTime = /(.*?) (\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2}:\d{2})(?:.*?)/gm;
-const matchRegex_ExlcudeColonTime_inverse = /(\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
-const matchRegex_ExlcudeColonTimeBOTH = /(\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2})(?:.*?) (.*)/gm;
-const matchRegex_ExlcudeColonTimeBOTH_inverse = /(\d{1,2}(?:\s-\s|-\s|\s-|-)\d{1,2})(?:.*?) (.*)/gm;
+const matchRegex_inverse = /(\d{1,2}:\d{2}(?:(?:\s+)?-(?:\s)?)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
+const matchRegex_ExcludeColonTime = /(.*?) (\d{1,2}(?:(?:\s+)?-(?:\s)?)\d{1,2}:\d{2})(?:.*?)/gm;
+const matchRegex_ExcludeColonTime_inverse = /(\d{1,2}(?:(?:\s+)?-(?:\s)?)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
+const matchRegex_ExcludeColonTimeBOTH = /(\d{1,2}(?:(?:\s+)?-(?:\s)?)\d{1,2})(?:.*?) (.*)/gm;
+const matchRegex_ExcludeColonTimeBOTH_inverse = /(\d{1,2}(?:(?:\s+)?-(?:\s)?)\d{1,2})(?:.*?) (.*)/gm;
 
-const matchRegex = /(.*?) (\d{1,2}:\d{2}(?:\s-\s|-|-\s|\s-)\d{1,2}:\d{2})(?:.*?)/gm;
+const matchRegex = /(.*?) (\d{1,2}:\d{2}(?:(?:\s+)?-(?:\s)?)\d{1,2}:\d{2})(?:.*?)/gm;
 import axios from 'axios';
 import * as ical from 'node-ical';
 import * as ics from 'ics';
@@ -200,10 +200,27 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   if (!event) return res.json({ title: null, events: null, code: 500, message: "Event not found." })
   let title = event.summary
   let times = new Map<string, { start: string, end: string }>()
-  if (!eventDescription) eventDescription = event.description.replaceAll(/\s /gm, " ")
+  if (!eventDescription) eventDescription = event.description
 
   let matchedTime: RegExpExecArray | null
-  while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExlcudeColonTimeBOTH_inverse.exec(eventDescription)) !== null) {
+
+  
+  // check if the date is August 16th, 2023
+  if (today.getDate() == 16 && today.getMonth() == 7 && today.getFullYear() == 2023) {
+    eventDescription = `
+    8:30 - 9:05 School Begins (New Students Arrive at the Gym)
+    9:10 - 10:03 Block 1&nbh7 (5 Minutes per Block)
+
+    10:03 - 10:25 Break (Cafeteria)
+
+    10:30- 11:30 Mass
+
+    11:35 - 12:35 Network, ID Card Photos, Schoology
+    `
+    title = "Orientation Day (Freshmen and Transfer Students Only)"
+  }
+  
+  while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH.exec(eventDescription)) !== null) {
     let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
 
