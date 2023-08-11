@@ -200,20 +200,24 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   if (!event) return res.json({ title: null, events: null, code: 500, message: "Event not found." })
   let title = event.summary
   let times = new Map<string, { start: string, end: string }>()
-  if (!eventDescription) eventDescription = event.description.replaceAll(/\s /gm, " ")
+  if (!eventDescription) eventDescription = event.description
 
   let matchedTime: RegExpExecArray | null
+
   
   // check if the date is August 16th, 2023
   if (today.getDate() == 16 && today.getMonth() == 7 && today.getFullYear() == 2023) {
     eventDescription = `
-    8:30 - 10:00 School Begins (New Students Arrive at the Gym)
-    10:03-10:25 Break
+    8:30 - 9:05 School Begins (New Students Arrive at the Gym)
+    9:10 - 10:03 Block 1&nbh7 (5 Minutes per Block)
+
+    10:03 - 10:25 Break (Cafeteria)
 
     10:30- 11:30 Mass
 
     11:35 - 12:35 Network, ID Card Photos, Schoology
     `
+    title = "Orientation Day (Freshmen and Transfer Students Only)"
   }
   
   while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH.exec(eventDescription)) !== null) {

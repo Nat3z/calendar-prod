@@ -80,7 +80,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 				<div class="hidden sm:block fixed bottom-4 transition-all" id="vercel">
 					<div class="flex justify-center text-white items-center gap-2 m-auto">
 						<!-- <img width="25" height="25" alt="Light mode" src="./sun.svg"/> -->
-						Built by <a href="https://github.com/Nat3z/calendar-prod" class="inline -mr-1 underline" target="_blank">Nat3z</a>, using <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> and hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative">
+						Built by <a href="https://github.com/Nat3z/calendar-prod" class="inline -mr-1 -ml-0.5 underline" target="_blank">Nat3z</a>, using <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> and hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative">
 						<!-- <b>VOTE NATHAN FOR SOPHOMORE VICE PRESIDENT!!!</b> -->
 					</div>
 				</div>
@@ -92,6 +92,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 
 	<script>
 		import moment from 'moment';
+		import { fetch } from '../lib/FetchCache';
 		let currentDateOffset = new Date()
 		let isInDev = document.getElementById("isInDev")!.dataset.inDev === "true";
 
@@ -110,12 +111,12 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 		// let scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
 		let scheduleEvents: any[] = [];
 
-		console.log("%cCreated by cool people at Salesian lololol!!!!!", "color: grey; text-shadow: 2px 2px white; font-size: 32px;")
+		console.log("%cCreated by cool people at Salesian!!!", "color: #b8a26d; text-shadow: -2px -2px #ac1f2d; font-size: 32px;")
 
 		function replaceShorthands(period: string) {
 			// replace period to Lunch if it's ONLY "L" with regex
 			// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-			return period.replace(/^(\d) Blk$/, "Block $1").replace(/^L$/, "Lunch").replace(/^Flextime$/, "Flex").replace(/^Blk (\d)$/, "Block $1")
+			return period.replace("&nbh", "-").replace(/^(\d) Blk$/, "Block $1").replace(/^L$/, "Lunch").replace(/^Flextime$/, "Flex").replace(/^Blk (\d)$/, "Block $1").replace(/^FaithFam$/, "Faith Family").replace(/^EmrDrills$/, "Emergancy Drills")
 		}
 
 		function parseTime(t: string, offsetTime = new Date()) {
@@ -129,7 +130,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			currentDateOffset.setDate(currentDateOffset.getDate() + 1)
 			// don't be influenced by current time and utc rules
 			currentDateOffset.setHours(8, 0, 0, 0)
-
+			
 			scheduleData = await ((await fetch(`${url}?date=${moment(currentDateOffset).unix()}&refDate=${moment().unix()}`)).json())
 			scheduleEvents = scheduleData.events
 			console.log("Using tomorrow's schedule")
@@ -443,6 +444,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 				if (dateSet == currentDateOffset.getDate()) {
 					loadingWayback = true
 					document.querySelector("#wayback-forward")!.classList.add("animate-spin");
+					// make the moment date into a unix timestamp and round it to be consistent with the other unix timestamps
 					await fetch(`${url}?date=${moment(currentDateOffset).unix()}&refDate=${moment().unix()}`)
 						.then(res => res.json())
 						.then(async (data) => {
