@@ -16,6 +16,13 @@
   <h1 class="text-lg font-mono" data-in-theme-editor>Copied to Clipboard!</h1>
 </div>
 
+<div class="fixed opacity-0 bg-yellow-400 text-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="warn_notif" data-in-theme-editor>
+  <span class="material-symbols-outlined">
+    warning
+  </span>
+  <div class="border-l-2 border-white w-1 h-4"></div>
+  <h1 class="text-lg font-mono" data-in-theme-editor>Warning!</h1>
+</div>
 
 
 <div class="fixed rounded-none bottom-0 left-0 sm:bottom-0 sm:top-2 sm:left-2 bg-primary z-10 w-full h-24 sm:w-48 sm:h-48 sm:rounded-lg border border-black flex-col gap-2 justify-center items-center" style="display: none;" id="preview_menu" data-in-theme-editor>
@@ -51,7 +58,7 @@
       <h1 class="font-mono text-lg text-gray-600 text-center">Elements</h1>
       <div class="flex justify-center items-center flex-col gap-4 w-full pb-4 mt-2" id="elements" data-intro="Under this area is the list of elements you are able to theme.">
 
-        <div class="hidden w-full rounded-lg bg-gray-800 p-4" id="element-copy" data-element="abbr">
+        <div class="hidden w-full rounded-lg bg-gray-800 p-4" id="element-copy" data-element="abbr" data-in-theme-editor="">
           <div class="flex flex-row">
             <h1 class="font-mono bg-gray-700 p-1 w-fit" data-theme-type="tag-name">abbr</h1>
             <button class="font-mono ml-auto text-2xl text-gray-700 hover:text-red-500 font-extrabold">
@@ -310,10 +317,13 @@
           animatePulse(element as HTMLElement)
           element.setAttribute("style", css);
         }
+
         return 
       }
       animatePulse(cssElement);
       cssElement.setAttribute("style", css);
+
+      updateColors();
     }
 
     copyof.children[0].addEventListener("click", (e) => {
@@ -331,12 +341,13 @@
         elementToExecuteClear = copyof.parentElement!.children[1] as HTMLElement;
       }
       copyof.parentElement!.removeChild(copyof);
+      
       // remove the css from the element
       if (elementToExecuteClear) {
         updateCSS(elementToExecuteClear);
       }
       else if (cssElement) {
-        cssElement.setAttribute("style", "");
+        updateCSS(cssElement);
         animatePulse(cssElement);
       }
 
@@ -473,6 +484,8 @@
       animatePulse(document.getElementById("themedef-" + tag)!)
       return;
     }
+    if (!tag.includes("#"))
+      animateNotif("Please be careful when using greedy selectors.", document.getElementById("warn_notif")!);
     addElementToEditor(tag);
   });
 
@@ -612,8 +625,13 @@
 
   function loadFromSaved(saveData: any = null, forceCSS: boolean = false) {
     let savedData = saveData || localStorage.getItem(`savedEditor.${themeSelected}`);
+    
     if (!savedData) return;
     console.log("Loading Saved Theme...")
+    // clear all existing info inside of the theme editor
+    let elementCopy = document.getElementById("element-copy")!.cloneNode(true) as HTMLElement;
+    document.getElementById("elements")!.innerHTML = "";
+    document.getElementById("elements")!.appendChild(elementCopy);
     let data = JSON.parse(savedData);
     for (let element of data.elements) {
       let elementToAffect = document.getElementById(element.element.replace("#", ""));
@@ -699,31 +717,35 @@
         loadFromSaved(atob(theme!));
         (document.querySelector("#preview_menu")! as HTMLElement).style.display = "flex";
       }
-      if (!isPreviewing) {
-        if (window.location !== window.parent.location) {
-          return;
-        }
-        let doesCurrentThemeHaveEdits = localStorage.getItem(`savedEditor.${themeSelected}`) !== null;
-        const purpleTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a570be"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"#save","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#paste","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#failed","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]}],"colors":[{"name":"light-primary","value":"#ffe4f2"},{"name":"primary","value":"#e0b8da"},{"name":"dark-primary","value":"#e68bbe"}]}' 
-        const salesianTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#progressbar","css":[{"rule":"background-color","value":"#eddab8"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px black solid"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#throwback","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"visible"}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a6192e"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]}],"colors":[{"name":"light-primary","value":"#baab90"},{"name":"primary","value":"#eddab8"},{"name":"dark-primary","value":"#cc1e38"}]}'
-        const hotdogTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#fff700"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"b","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]}],"colors":[{"name":"light-primary","value":"#ff0000"},{"name":"primary","value":"#fbff00"},{"name":"dark-primary","value":"#050014"}]}'
-        
-        if (themeSelected === "salesian" && !doesCurrentThemeHaveEdits) {
-          loadFromSaved(salesianTheme);
-        }
-        else if (themeSelected === "purple" && !doesCurrentThemeHaveEdits) {
-          loadFromSaved(purpleTheme);
-        }
-        else if (themeSelected === "hotdog" && !doesCurrentThemeHaveEdits) {
-          loadFromSaved(hotdogTheme);
-        }
-        else {
-          loadFromSaved();
-        }
-      }
+      loadSelectedTheme();
     }
   }, 100);
 
+  function loadSelectedTheme() {
+    document.getElementById("throwback")!!.style.visibility = "hidden";
+    if (!isPreviewing) {
+      if (window.location !== window.parent.location) {
+        return;
+      }
+      let doesCurrentThemeHaveEdits = localStorage.getItem(`savedEditor.${themeSelected}`) !== null;
+      const purpleTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a570be"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"#save","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#paste","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#failed","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#quickpeek","css":[{"rule":"background-color","value":"#ffe4f2"}]},{"element":"#progressbar","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#c533d0"}]}],"colors":[{"name":"light-primary","value":"#ffe4f2"},{"name":"primary","value":"#e0b8da"},{"name":"dark-primary","value":"#e68bbe"}]}' 
+      const salesianTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#progressbar","css":[{"rule":"background-color","value":"#eddab8"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px black solid"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#throwback","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"visible"}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a6192e"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]}],"colors":[{"name":"light-primary","value":"#baab90"},{"name":"primary","value":"#eddab8"},{"name":"dark-primary","value":"#cc1e38"}]}'
+      const hotdogTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#fff700"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"b","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]}],"colors":[{"name":"light-primary","value":"#ff0000"},{"name":"primary","value":"#fbff00"},{"name":"dark-primary","value":"#050014"}]}'
+      
+      if (themeSelected === "salesian" && !doesCurrentThemeHaveEdits) {
+        loadFromSaved(salesianTheme);
+      }
+      else if (themeSelected === "purple" && !doesCurrentThemeHaveEdits) {
+        loadFromSaved(purpleTheme);
+      }
+      else if (themeSelected === "hotdog" && !doesCurrentThemeHaveEdits) {
+        loadFromSaved(hotdogTheme);
+      }
+      else {
+        loadFromSaved();
+      }
+    }
+  }
   document.getElementById("closeEditor")!.addEventListener("click", () => {
     themeEditor.animate([
       { transform: "translateX(0)" },
@@ -731,8 +753,27 @@
     ], {
       duration: 500,
       easing: "ease-in-out",
+      fill: "forwards"
     });
+    // animate the schedule page so that it moves with the close editor animation to fill the space where the editor was using marginLeft
+    document.getElementById("schedule_page")!!.animate([
+      { marginLeft: "0" },
+      { marginLeft: "-33.33%" }
+    ], {
+      duration: 500,
+      easing: "ease-in-out",
+      fill: "forwards"
+    });
+
     setTimeout(() => {
+      document.getElementById("schedule_page")!!.animate([
+        { marginLeft: "-33.33%" },
+        { marginLeft: "0" }
+      ], {
+        duration: 0,
+        fill: "forwards"
+      });
+
       themeEditor.style.display = "none";
     }, 490);
   });
@@ -813,10 +854,30 @@
         ], {
           duration: 500,
           easing: "ease-in-out",
+          fill: "forwards"
         });
+        // animate the schedule page so that it moves with the close editor animation to fill the space where the editor was using marginLeft
+        document.getElementById("schedule_page")!!.animate([
+          { marginLeft: "0" },
+          { marginLeft: "-33.33%" }
+        ], {
+          duration: 500,
+          easing: "ease-in-out",
+          fill: "forwards"
+        });
+
         setTimeout(() => {
+          document.getElementById("schedule_page")!!.animate([
+            { marginLeft: "-33.33%" },
+            { marginLeft: "0" }
+          ], {
+            duration: 0,
+            fill: "forwards"
+          });
+          
           themeEditor.style.display = "none";
         }, 490);
+
         return;
       }
       themeEditor.style.display = "block";
@@ -824,11 +885,28 @@
         { transform: "translateX(-100%)" },
         { transform: "translateX(0)" }
       ], {
-        duration: 510,
-        easing: "ease-in-out"
+        duration: 500,
+        easing: "ease-in-out",
+        fill: "forwards"
       });
+
+      document.getElementById("schedule_page")!!.animate([
+        { marginLeft: "-33.33%" },
+        { marginLeft: "0" }
+      ], {
+        duration: 500,
+        easing: "ease-in-out",
+        fill: "forwards"
+      });
+      
       setTimeout(() => {
         themeEditor.style.display = "block";
+        document.getElementById("schedule_page")!!.animate([
+          { marginLeft: "0" }
+        ], {
+          duration: 0,
+          fill: "forwards"
+        });
       }, 500);
     }
   })
@@ -853,5 +931,16 @@
       // save the theme
       saveProgress();
     }
+  });
+
+  // create a custom dom event called "refresh theme" and make an event listener that triggers the loadFromSaved function
+  document.addEventListener("refreshTheme", (ev) => {
+    // get the detail of the event to see if we should allow refresh
+    let detail = (ev as CustomEvent).detail || { disallowRefresh: false };
+    const allowsRefresh = detail.disallowRefresh != null ? !detail.disallowRefresh : true;
+    console.log("Theme refresh caught!")
+    themeSelected = localStorage.getItem("theme") || "default";
+    if (themeSelected === "default" && allowsRefresh) window.location.reload();
+    loadSelectedTheme();
   });
 </script>
