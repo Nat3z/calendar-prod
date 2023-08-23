@@ -601,7 +601,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			})
 			setTimeout(() => {
 				document.getElementById("loading-splash")!.style.display = "none"
-			}, 1000)
+			}, 900)
 
 			clearInterval(loadingInterval)
 		}, 250);
@@ -611,6 +611,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 </Layout>
 
 <style>
+	/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'); */
 	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hind&family=Nunito+Sans&family=Open+Sans&family=PT+Serif&family=Raleway:wght@500&family=Varela+Round&display=swap');
 	@tailwind base;
 	@tailwind components;
@@ -619,6 +620,8 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 	body {
 		background-size: cover;
 		color: white;
+		/* font-family: 'Inter', sans-serif; */
+		/* font-family: Arial, Helvetica, sans-serif; */
 		@apply bg-dark-primary transition-all h-screen;
 	}
 
