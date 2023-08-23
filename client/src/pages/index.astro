@@ -30,7 +30,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 <Layout title="DynSchedule">
 	<body>
 
-		<div class="fixed w-full h-full backdrop-blur-2xl shadow-lg z-50 text-4xl flex justify-center items-center" id="loading-splash">
+		<div class="fixed w-full h-full backdrop-blur-lg shadow-lg z-50 text-4xl flex justify-center items-center" id="loading-splash">
 			<img src="/grad_logo.png" alt="🎓" class="w-24 h-24 text-4xl text-center animate-pulse" />
 		</div>
 		<div id="isInDev" data-in-dev={import.meta.env.NODE_ENV === "development" ? "true" : "false"}></div>
@@ -76,9 +76,10 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 						</div>
 					</div>
 	
-					<div class="flex flex-col justify-center items-center p-4 text-lg z-1" id="classes">
+					<div class="overflow-y-auto" style="height: calc(83.33% - 8%);">
+						<div class="flex flex-col justify-center items-center p-4 text-lg z-1 overflow-y-auto flex-wrap" id="classes">
+						</div>
 					</div>
-
 				</div>
 					
 				<div class="hidden sm:block fixed bottom-4 transition-all" id="vercel">
