@@ -245,6 +245,8 @@
     let themeSelected = localStorage.getItem("theme") || "default";
     let editorButton = document.getElementById("edit");
     editorButton.id = "preventTheme2";
+    editorButton.classList.remove("flex");
+    editorButton.classList.add("hidden");
     document.getElementById("preventTheme2").addEventListener("click", () => {
       if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
         localStorage.removeItem(`editorThemeClear.${themeSelected}`);

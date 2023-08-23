@@ -20,5 +20,8 @@
     "marked-mangle": "^1.0.1",
     "moment": "^2.29.4",
     "tailwindcss": "^3.0.24"
+  },
+  "devDependencies": {
+    "@vite-pwa/astro": "^0.1.1"
   }
 }

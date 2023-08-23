@@ -625,6 +625,7 @@
 
   function loadFromSaved(saveData: any = null, forceCSS: boolean = false) {
     let savedData = saveData || localStorage.getItem(`savedEditor.${themeSelected}`);
+    
     if (!savedData) return;
     console.log("Loading Saved Theme...")
     // clear all existing info inside of the theme editor
