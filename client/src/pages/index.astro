@@ -8,6 +8,7 @@ import ScreenSaver from '../components/ScreenSaver.astro';
 import VoteForVP from '../components/VoteForVP.astro';
 import "../styles/introjs-royale.css";
 import Changelog from '../components/Changelog.astro';
+import Spinner from '../components/Spinner.astro';
 
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
@@ -29,6 +30,9 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 <Layout title="DynSchedule">
 	<body>
 
+		<div class="fixed w-full h-full backdrop-blur-2xl shadow-lg z-50 text-4xl flex justify-center items-center" id="loading-splash">
+			<img src="/grad_logo.png" alt="🎓" class="w-24 h-24 text-4xl text-center animate-pulse" />
+		</div>
 		<div id="isInDev" data-in-dev={import.meta.env.NODE_ENV === "development" ? "true" : "false"}></div>
 		<Changelog />
 		
@@ -580,6 +584,26 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 				timeSinceLastFocus = 0
 			}
 		}, 1000);
+		// make it expand slowly and also fade out		
+		const loadingInterval = setInterval(() => {
+			if (document.getElementById("classes")!.innerHTML === "") {
+				return
+			}
+			document.getElementById("loading-splash").animate([
+				{ opacity: 1, transform: "scale(1)" },
+				{ opacity: 0, transform: "scale(1.5)" }
+			], {
+				duration: 1000,
+				easing: "ease-in-out",
+				fill: "forwards"
+			})
+			setTimeout(() => {
+				document.getElementById("loading-splash")!.style.display = "none"
+			}, 1000)
+
+			clearInterval(loadingInterval)
+		}, 250);
+		
 	</script>
 
 </Layout>
