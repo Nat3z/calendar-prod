@@ -37,9 +37,9 @@
   </section>
 
   <div class="flex justify-center flex-row items-center gap-2 h-fit">
-    <button class="bg-light-primary text-white font-bold text-lg rounded-lg p-2 h-12" id="save">Save</button>
-    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12" id="paste">Paste from Schoology</button>
-    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12" id="purge">Purge Cache</button>
+    <button class="bg-light-primary text-white font-bold text-lg rounded-lg p-2 h-12 hidden"id="save">Save</button>
+    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center" id="paste">Paste from Schoology</button>
+    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center" id="purge">Purge Cache</button>
   </div>
   
   <div class="flex justify-center items-center flex-col gap-2">
@@ -56,7 +56,7 @@
         <option value="custom-2">Custom Theme 2</option>
         <option value="custom-3">Custom Theme 3</option>
       </select>
-      <button class="bg-light-primary text-white p-2 rounded-lg" id="theme">Change Theme</button>
+      <button class="bg-light-primary text-white p-2 rounded-lg hidden" id="theme">Change Theme</button>
       <button class="bg-light-primary text-white p-2 rounded-lg flex justify-center items-center" id="edit">
         <span class="material-symbols-outlined">
           edit
@@ -125,20 +125,20 @@
   document.getElementById("blk_6-input").children[1].value = localStorage.getItem("blk_6") || "Block 6";
   document.getElementById("blk_7-input").children[1].value = localStorage.getItem("blk_7") || "Block 7";
 
-  document.getElementById("dynbackground").textContent = !localStorage.getItem("savedEditor.default") && (localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) ? "Disable Dynamic Background" : "Enable Dynamic Background";
+  document.getElementById("dynbackground").textContent = !localStorage.getItem("savedEditor.default") && (localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) ? "Disable Adaptive Background" : "Enable Adaptive Background";
 
   document.getElementById("dynbackground").addEventListener("click", () => {
     const dynbackground = document.getElementById("dynbackground");
-    if (dynbackground.textContent === "Disable Dynamic Background") {
-      dynbackground.textContent = "Enable Dynamic Background";
+    if (dynbackground.textContent === "Disable Adaptive Background") {
+      dynbackground.textContent = "Enable Adaptive Background";
       localStorage.setItem("dynamic_theme", "false");
     }
     else {
       if (localStorage.getItem("savedEditor.default")) {
-        alert("You currently have a custom theme applied to default. Please remove it before enabling dynamic background.");
+        alert("You currently have a custom theme applied to default. Please remove it before enabling adaptive background.");
         return;
       }
-      dynbackground.textContent = "Disable Dynamic Background";
+      dynbackground.textContent = "Disable Adaptive Background";
       localStorage.setItem("dynamic_theme", "true");
     }
     window.location.reload();
@@ -148,7 +148,13 @@
   document.getElementById("theme").addEventListener("click", () => {
     const theme_select = document.getElementById("theme_select");
     localStorage.setItem("theme", theme_select.value);
-    window.location.reload();
+    document.dispatchEvent(new CustomEvent("refreshTheme"));
+  });
+
+  document.getElementById("theme_select").addEventListener("change", () => {
+    const theme_select = document.getElementById("theme_select");
+    localStorage.setItem("theme", theme_select.value);
+    document.dispatchEvent(new CustomEvent("refreshTheme"));
   });
 
   document.getElementById("purge").addEventListener("click", () => {
@@ -196,9 +202,14 @@
       let block = match_found[1].split(" ")[1];
       let block_name = match_found[0];
       document.getElementById(`blk_${block}-input`).children[1].value = block_name;
+      localStorage.setItem(`blk_${block}`, block_name);
     })
     const paste_screen = document.getElementById("paste_screen")
     paste_screen.classList.add("hidden");
+    document.getElementById("classes").innerHTML = "";
+    setTimeout(() => {
+      document.dispatchEvent(new CustomEvent("refreshTheme", { detail: { disallowRefresh: true } }));
+    }, 100);
   });
 
   document.getElementById("close_paste").addEventListener("click", () => {
@@ -270,9 +281,30 @@
         { transform: "translateX(-100%)" },
         { transform: "translateX(0)" }
       ], {
-        duration: 510,
-        easing: "ease-in-out"
+        duration: 500,
+        easing: "ease-in-out",
+        fill: "forwards"
       });
+
+      document.getElementById("schedule_page").animate([
+        { marginLeft: "-33.33%" },
+        { marginLeft: "0" }
+      ], {
+        duration: 500,
+        easing: "ease-in-out",
+        fill: "forwards"
+      });
+      
+      setTimeout(() => {
+        themeEditor.style.display = "block";
+        document.getElementById("schedule_page").animate([
+          { marginLeft: "0" }
+        ], {
+          duration: 0,
+          fill: "forwards"
+        });
+      }, 500);
+
     });
   
   document.getElementById("removeCustomTheme").addEventListener("click", () => {
@@ -280,4 +312,21 @@
     localStorage.removeItem(`savedEditor.${themeSelected}`);
     location.reload();
   });
+
+
+  // for each input in the children of the settings div, add an event listener to the change event
+  for (const child of document.getElementById("settings").children) {
+    if (child.nodeName === "SECTION") {
+      child.children[1].addEventListener("change", () => {
+        let block = child.children[0].innerHTML.split(" ")[1];
+        localStorage.setItem(`blk_${block}`, child.children[1].value);
+        document.getElementById("classes").innerHTML = "";
+        // refresh the theme using the refreshTheme custom event
+        setTimeout(() => {
+          console.log("refreshing theme");
+          document.dispatchEvent(new CustomEvent("refreshTheme", { detail: { disallowRefresh: true } }));
+        }, 100);
+      });
+    }
+  }
 </script>
