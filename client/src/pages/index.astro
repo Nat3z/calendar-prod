@@ -158,6 +158,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 		let mouseTimeout: number | undefined;
 
 		function mouseMove() {
+			if (localStorage.getItem("theme") !== "default" && localStorage.getItem("theme")) return
 			clearTimeout(mouseTimeout)
 			let quickpeek = document.getElementById("quickpeek")!
 			let mainschedule = document.getElementById("main_schedule")!
@@ -179,6 +180,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			document.body.classList.remove("bg-dark-primary")
 			document.body.style.cursor = "auto"
 			mouseTimeout = window.setTimeout(() => {
+				
 				let quickpeek = document.getElementById("quickpeek")!
 				let mainschedule = document.getElementById("main_schedule")!
 
