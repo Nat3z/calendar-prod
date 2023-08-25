@@ -4,9 +4,25 @@ module.exports = {
 	theme: {
 		extend: {
 			"colors": {
-				"dark-primary": "#050014",
-				"primary": "#0e003a",
-				"light-primary": "#1a0066",
+				"dark-primary": "var(--dark-primary)",
+				"primary": "var(--primary)",
+				"light-primary": "var(--light-primary)",
+				"background": "var(--background)",
+				"progressbar": "var(--progress-bar)",
+				"quickpeek": "var(--quickpeek)",
+			},
+			"opacity": {
+				"progress-bar": "var(--progress-bar-opacity)",
+			},
+			"textColor": {
+				"white": "var(--text-color)",
+				"true-white": "white",
+			},
+			"borderWidth": {
+				"custom": "var(--border-width)",
+			},
+			"borderColor": {
+				"custom-color": "var(--border-color)",
 			},
 			"backgroundImage": {
 				"dark": "url('/dark.gif')",

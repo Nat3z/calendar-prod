@@ -1,6 +1,11 @@
+---
+import ResetColor from "./ResetColor.astro";
+
+---
+
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
-<div class="fixed opacity-0 bg-green-400 text-white rounded-lg p-4 top-2 right-2 z-40 hidden justify-start items-center gap-4 h-12" id="autosave_update" data-in-theme-editor>
+<div class="fixed opacity-0 bg-green-400 text-true-white rounded-lg p-4 top-2 right-2 z-40 hidden justify-start items-center gap-4 h-12" id="autosave_update" data-in-theme-editor>
   <span class="material-symbols-outlined">
     save
   </span>
@@ -8,7 +13,7 @@
   <h1 class="text-lg font-mono" data-in-theme-editor>Autosaved at </h1>
 </div>
 
-<div class="fixed opacity-0 bg-blue-400 text-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="share_notif" data-in-theme-editor>
+<div class="fixed opacity-0 bg-blue-400 text-true-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="share_notif" data-in-theme-editor>
   <span class="material-symbols-outlined">
     share
   </span>
@@ -16,7 +21,7 @@
   <h1 class="text-lg font-mono" data-in-theme-editor>Copied to Clipboard!</h1>
 </div>
 
-<div class="fixed opacity-0 bg-yellow-400 text-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="warn_notif" data-in-theme-editor>
+<div class="fixed opacity-0 bg-yellow-400 text-true-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="warn_notif" data-in-theme-editor>
   <span class="material-symbols-outlined">
     warning
   </span>
@@ -33,7 +38,7 @@
   </div>
 
 </div>
-<div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800" style="display: none;" data-intro="Welcome to the Theme Editor ✏️" id="themeEditor">
+<div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800 text-true-white" style="display: none;" data-intro="Welcome to the Theme Editor ✏️" id="themeEditor">
   <div class="flex justify-start items-center pl-4 pr-4 mt-4">
     <h1 class="font-bold font-mono text-center text-xl" id="themeEditor-text">Theme Editor</h1>
     <button class="font-bold font-mono ml-auto text-gray-600 hover:text-red-400 text-xl justify-center items-center flex" id="closeEditor">
@@ -78,7 +83,7 @@
                 </span>
               </button>
 
-              <select class="w-24 h-8 rounded-lg text-xs text-white pl-2 bg-gray-600">
+              <select class="w-24 h-8 rounded-lg text-xs text-true-white pl-2 bg-gray-600">
                 <option value="text-align">text-align</option>
                 <option value="background-color">background-color</option>
                 <option value="background-image">background-image</option>
@@ -192,36 +197,58 @@
 
 
       </div>
-      <h1 class="font-mono text-lg text-gray-600 text-center">Color Palette</h1>
-      <div class="flex justify-start items-start flex-col gap-2" id="colorpalette" data-intro="This is the color palatte which you can use to theme certain colors which will change across the entire site.">
+      <h1 class="font-mono text-lg text-gray-600 text-center">Palette</h1>
+      <div class="flex justify-start items-start flex-col gap-2 pl-2 pr-2" id="colorpalette" data-intro="This is the palatte which you can use to theme a general element of the stylesheet which will change across the entire site.">
         <div class="flex w-full">
-          <h1 class="font-mono text-lg text-white" data-color>light-primary</h1>
-          <button class="text-gray-600 hover:text-red-500 ml-auto mr-2" data-reset-colors>
-            <span class="material-symbols-outlined">
-              restart_alt
-            </span>
-          </button>
+          <h1 class="font-mono text-lg text-true-white" data-color>light-primary</h1>
+          <ResetColor />
           <input class="w-12 h-8 rounded-lg text-black" data-color-selection="light-primary" type="color" data-default="#1a0066" value="#1a0066" />
         </div>
         <div class="flex w-full">
-          <h1 class="font-mono text-lg text-white" data-color>primary</h1>
-          <button class="text-gray-600 hover:text-red-500 ml-auto mr-2" data-reset-colors>
-            <span class="material-symbols-outlined">
-              restart_alt
-            </span>
-          </button>
+          <h1 class="font-mono text-lg text-true-white" data-color>primary</h1>
+          <ResetColor />
           <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="primary" data-default="#0e003a" value="#0e003a"/>
         </div>
         <div class="flex w-full">
-          <h1 class="font-mono text-lg text-white" data-color>dark-primary</h1>
-          <button class="text-gray-600 hover:text-red-500 ml-auto mr-2" data-reset-colors>
-            <span class="material-symbols-outlined">
-              restart_alt
-            </span>
-          </button>
+          <h1 class="font-mono text-lg text-true-white" data-color>dark-primary</h1>
+          <ResetColor /> 
           <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="dark-primary" data-default="#050014" value="#050014" />
         </div>
-
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-true-white" data-color>background</h1>
+          <ResetColor />
+          <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="background" data-default="#050014" value="#050014" />
+        </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-true-white" data-color>text color</h1>
+          <ResetColor />
+          <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="text-color" data-default="#ffffff" value="#ffffff" />
+        </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-true-white" data-color>border width</h1>
+          <ResetColor />
+          <input class="w-12 h-8 rounded-lg text-black" type="number" data-color-selection="border-width" data-default="0" data-suffix="px" value="0" />
+        </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-true-white" data-color>border color</h1>
+          <ResetColor />
+          <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="border-color" data-default="#000000" value="#000000" />
+        </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-true-white" data-color>progress-bar color</h1>
+          <ResetColor />
+          <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="progress-bar" data-default="#3B82F6" value="#3B82F6" />
+        </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-true-white" data-color>progress-bar opacity</h1>
+          <ResetColor />
+          <input class="w-12 h-8 rounded-lg text-black" type="number" data-suffix="%" data-color-selection="progress-bar-opacity" data-default="20" value="20" />
+        </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-true-white" data-color>countdown color</h1>
+          <ResetColor />
+          <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="quickpeek" data-default="#1a0066" value="#1a0066" />
+        </div>
       </div>
 
       <h1 class="font-mono text-gray-600 text-center">Misc.</h1>
@@ -250,7 +277,6 @@
   const themeEditor = document.getElementById("themeEditor")!;
   const addPropertyEvent = new CustomEvent("addPropertyToThemeEditor");
   let firstRun = localStorage.getItem("firstRun") === null;
-
   let eyedropMode = false;
   function updateColors() {
     const colorDefinitions = document.querySelectorAll("[data-color-selection]");
@@ -261,13 +287,14 @@
     const head = document.getElementsByTagName("head")[0];
     const style = document.createElement("style");
     style.id = "color-definitions";
+    style.innerHTML += `:root {\n`
     colorDefinitions.forEach((colorDefinitionRaw) => {
       const colorDefinition = colorDefinitionRaw as HTMLInputElement;
       const color = colorDefinition.getAttribute("data-color-selection");
       const colorValue = colorDefinition.value;
-      style.innerHTML += `.bg-${color} { background-color: ${colorValue} !important; }`;
-      style.innerHTML += `.text-${color} { color: ${colorValue} !important; }`;
+      style.innerHTML += `--${color}: ${colorValue}${colorDefinition.type === "number" ? colorDefinition.getAttribute("data-suffix")! : ""} !important;\n`;
     });
+    style.innerHTML += `\n}`;
     head.appendChild(style);
   }
 
@@ -565,12 +592,11 @@
     }
     let colors = document.getElementById("colorpalette")!.children;
     for (let color of colors) {
-      let colorName = color.children[0] as HTMLHeadingElement;
       let colorValue = color.children[2] as HTMLInputElement;
-      if (!colorName || !colorValue) continue;
+      if (!colorValue) continue;
       data.colors.push({
-        name: colorName.textContent!,
-        value: colorValue.value
+        name: colorValue.getAttribute("data-color-selection")!,
+        value: colorValue.value + (colorValue.type === "number" ? colorValue.getAttribute("data-suffix") : "")
       });
     }
     localStorage.setItem(`savedEditor.${themeSelected}`, JSON.stringify(data));
@@ -625,14 +651,27 @@
 
   function loadFromSaved(saveData: any = null, forceCSS: boolean = false) {
     let savedData = saveData || localStorage.getItem(`savedEditor.${themeSelected}`);
-    
-    if (!savedData) return;
-    console.log("Loading Saved Theme...")
-    // clear all existing info inside of the theme editor
+    // split by the :root { } and the rest of the css
+    if (document.getElementById("color-definitions")) {
+      document.getElementById("color-definitions")!.remove();
+    }
+
+    // for each of the color definitions, revert them to the default color palette
+    for (let childPalette of document.querySelector("#colorpalette")!.children) {
+      const colorDefinition = childPalette.children[2] as HTMLInputElement;
+      let color = colorDefinition.getAttribute("data-color-selection")!;
+      let colorValue = colorDefinition.getAttribute("data-default")!;
+      colorDefinition.value = colorValue;
+    }
     let elementCopy = document.getElementById("element-copy")!.cloneNode(true) as HTMLElement;
     document.getElementById("elements")!.innerHTML = "";
     document.getElementById("elements")!.appendChild(elementCopy);
-    let data = JSON.parse(savedData);
+ 
+
+    if (!savedData) return;
+    console.log("Loading Saved Theme...")
+    // clear all existing info inside of the theme editor
+   let data = JSON.parse(savedData);
     for (let element of data.elements) {
       let elementToAffect = document.getElementById(element.element.replace("#", ""));
       let css = "";
@@ -651,10 +690,14 @@
     }
     const head = document.getElementsByTagName("head")[0];
     const style = document.createElement("style");
+
+    style.id = "color-definitions";
+    style.innerHTML += `:root {\n`;
     for (let color of data.colors) {
-      style.innerHTML += `.bg-${color.name} { background-color: ${color.value} ${forceCSS ? "!important" : ""}; }`
-      style.innerHTML += `.text-${color.name} { color: ${color.value} ${forceCSS ? "!important" : ""}; }`
+      style.innerHTML += `--${color.name}: ${color.value} !important;\n`;
     }
+    style.innerHTML += `\n}`;
+
     head.appendChild(style);
 
     // apply saved colors to color palette
@@ -664,13 +707,12 @@
       let colorValue = color.children[2] as HTMLInputElement;
       if (!colorName || !colorValue) continue;
       for (let savedColor of data.colors) {
-        if (savedColor.name === colorName.textContent) {
-          colorValue.value = savedColor.value;
+        if (savedColor.name === colorValue.getAttribute("data-color-selection")!) {
+          colorValue.value = savedColor.value.replace(colorValue.getAttribute("data-suffix")!, "");
           break;
         }
       }
     }
-
     for (const elementCSSData of data.elements) {
       if (elementCSSData.element === "abbr") continue;
       // for each element, get the corresponding element in the dom, then fire the 'click' event in the dom to add it
@@ -723,14 +765,15 @@
 
   function loadSelectedTheme() {
     document.getElementById("throwback")!!.style.visibility = "hidden";
+    document.getElementById("vercel")!!.style.visibility = "visible";
     if (!isPreviewing) {
       if (window.location !== window.parent.location) {
         return;
       }
       let doesCurrentThemeHaveEdits = localStorage.getItem(`savedEditor.${themeSelected}`) !== null;
-      const purpleTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a570be"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"#save","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#paste","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#failed","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#quickpeek","css":[{"rule":"background-color","value":"#ffe4f2"}]},{"element":"#progressbar","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#c533d0"}]}],"colors":[{"name":"light-primary","value":"#ffe4f2"},{"name":"primary","value":"#e0b8da"},{"name":"dark-primary","value":"#e68bbe"}]}' 
-      const salesianTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#progressbar","css":[{"rule":"background-color","value":"#eddab8"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px black solid"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#throwback","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"visible"}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#a6192e"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#eddab8"},{"rule":"border","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]}],"colors":[{"name":"light-primary","value":"#baab90"},{"name":"primary","value":"#eddab8"},{"name":"dark-primary","value":"#cc1e38"}]}'
-      const hotdogTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"h1","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"button","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#theme_select","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]},{"element":"#schedule_page","css":[{"rule":"text-align","value":""},{"rule":"background-color","value":"#fff700"}]},{"element":"#main_schedule","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#quickpeek","css":[{"rule":"text-align","value":""},{"rule":"border-bottom","value":"2px solid black"}]},{"element":"#settings","css":[{"rule":"text-align","value":""},{"rule":"border","value":"2px solid black"}]},{"element":"#settings_cog","css":[{"rule":"text-align","value":""},{"rule":"border","value":"1px solid black"}]},{"element":"b","css":[{"rule":"text-align","value":""},{"rule":"color","value":"#000000"}]}],"colors":[{"name":"light-primary","value":"#ff0000"},{"name":"primary","value":"#fbff00"},{"name":"dark-primary","value":"#050014"}]}'
+      const purpleTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"hidden"}]}],"colors":[{"name":"light-primary","value":"#ffe4f2"},{"name":"primary","value":"#e0b8da"},{"name":"dark-primary","value":"#e68bbe"},{"name":"background","value":"#a570be"},{"name":"text-color","value":"#000000"},{"name":"border-width","value":"1px"},{"name":"border-color","value":"#000000"},{"name":"progress-bar","value":"#c533d0"},{"name":"progress-bar-opacity","value":"20%"},{"name":"quickpeek","value":"#ffe4f2"}]}' 
+      const salesianTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"hidden"}]},{"element":"#throwback","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"visible"}]}],"colors":[{"name":"light-primary","value":"#baab90"},{"name":"primary","value":"#eddab8"},{"name":"dark-primary","value":"#cc1e38"},{"name":"background","value":"#a5192e"},{"name":"text-color","value":"#000000"},{"name":"border-width","value":"2px"},{"name":"border-color","value":"#000000"},{"name":"progress-bar","value":"#000000"},{"name":"progress-bar-opacity","value":"20%"},{"name":"quickpeek","value":"#eddab8"}]}'
+      const hotdogTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"hidden"}]}],"colors":[{"name":"light-primary","value":"#ff0000"},{"name":"primary","value":"#fbff00"},{"name":"dark-primary","value":"#050014"},{"name":"background","value":"#ffff00"},{"name":"text-color","value":"#000000"},{"name":"border-width","value":"2px"},{"name":"border-color","value":"#000000"},{"name":"progress-bar","value":"#000000"},{"name":"progress-bar-opacity","value":"20%"},{"name":"quickpeek","value":"#ff0000"}]}'
       
       if (themeSelected === "salesian" && !doesCurrentThemeHaveEdits) {
         loadFromSaved(salesianTheme);
@@ -934,13 +977,12 @@
   });
 
   // create a custom dom event called "refresh theme" and make an event listener that triggers the loadFromSaved function
-  document.addEventListener("refreshTheme", (ev) => {
+  document.addEventListener("refreshTheme", async (ev) => {
     // get the detail of the event to see if we should allow refresh
     let detail = (ev as CustomEvent).detail || { disallowRefresh: false };
     const allowsRefresh = detail.disallowRefresh != null ? !detail.disallowRefresh : true;
     console.log("Theme refresh caught!")
     themeSelected = localStorage.getItem("theme") || "default";
-    if (themeSelected === "default" && allowsRefresh) window.location.reload();
     loadSelectedTheme();
   });
 </script>

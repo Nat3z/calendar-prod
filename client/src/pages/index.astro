@@ -27,6 +27,7 @@ function parseTime(t: string, offsetTime = new Date()) {
 const isInDev = import.meta.env.NODE_ENV ? "" : ""
 ---
 
+
 <Layout title="DynSchedule">
 	<body>
 
@@ -53,12 +54,12 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 				</div>
 		
 				<Settings />
-				<div class="bg-primary w-11/12 transition-all relative h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg" id="main_schedule">
+				<div class="bg-primary w-11/12 transition-all relative h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg border-custom border-custom-color" id="main_schedule">
 					
-					<div class="w-full h-1/6 sm:h-1/4 flex relative justify-center items-center rounded-t-lg bg-light-primary transition-all" id="quickpeek">
+					<div class="w-full h-1/6 sm:h-1/4 flex relative justify-center border-b-custom border-custom-color items-center rounded-t-lg bg-quickpeek transition-all" id="quickpeek">
 						<h1 class="text-center text-white text-4xl md:text-6xl absolute z-10" id="current">Loading...</h1>
-						<div class="w-full bg-transparent opacity-20 rounded-t-lg h-full">
-							<div class="bg-blue-500 h-full rounded-t-lg rounded-tr-none" style="width: 0%" id="progressbar"></div>
+						<div class="w-full bg-transparent opacity-progress-bar rounded-t-lg h-full">
+							<div class="bg-progressbar h-full rounded-t-lg rounded-tr-none" style="width: 0%" id="progressbar"></div>
 						</div>
 
 						
@@ -328,7 +329,11 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 					if (!document.hasFocus()) {
 						document.title = text
 					}
-					document.getElementById("progressbar")!.style.width = `0%`
+
+					if (document.getElementById("themeEditor").style.display === "none")
+						document.getElementById("progressbar")!.style.width = `0%`
+					else 
+						document.getElementById("progressbar")!.style.width = `50%`
 					success = true
 				}
 
@@ -371,7 +376,10 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 
 				document.getElementById("current")!.innerHTML = text
 				// percentage
-				document.getElementById("progressbar")!.style.width = `0%`
+				if (document.getElementById("themeEditor").style.display === "none")
+					document.getElementById("progressbar")!.style.width = `0%`
+				else
+					document.getElementById("progressbar")!.style.width = `50%`
 				if (!document.hasFocus()) {
 					document.title = text
 				}	
@@ -607,26 +615,37 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 		}, 250);
 		
 	</script>
+	<style --data-og-styles>
+		/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'); */
+		@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hind&family=Nunito+Sans&family=Open+Sans&family=PT+Serif&family=Raleway:wght@500&family=Varela+Round&display=swap');
+		@tailwind base;
+		@tailwind components;
+		@tailwind utilities;
 
+		:root {
+			--dark-primary: #050014;
+			--light-primary: #1a0066;
+			--primary: #0e003a;
+			--background: #050014;
+			--text-color: #ffffff;
+			--border-width: 0px;
+			--progress-bar: #3B82F6;
+			--border-color: black;
+			--progress-bar-opacity: 20%;
+			--quickpeek: var(--light-primary);
+		}
+
+		body {
+			background-size: cover;
+			/* font-family: 'Inter', sans-serif; */
+			/* font-family: Arial, Helvetica, sans-serif; */
+			@apply bg-background transition-all h-screen text-white;
+		}
+
+		.introjs-tooltiptext {
+			color: black !important;
+		}
+
+	</style>
 </Layout>
 
-<style>
-	/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'); */
-	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hind&family=Nunito+Sans&family=Open+Sans&family=PT+Serif&family=Raleway:wght@500&family=Varela+Round&display=swap');
-	@tailwind base;
-	@tailwind components;
-	@tailwind utilities;
-
-	body {
-		background-size: cover;
-		color: white;
-		/* font-family: 'Inter', sans-serif; */
-		/* font-family: Arial, Helvetica, sans-serif; */
-		@apply bg-dark-primary transition-all h-screen;
-	}
-
-	.introjs-tooltiptext {
-		color: black !important;
-	}
-
-</style>
