@@ -1,0 +1,10 @@
+<script>
+  const storageVersion = localStorage.getItem('storageVersion') || "0.0"
+  
+  if (storageVersion !== "1.0") {
+    localStorage.removeItem("savedEditor.salesian")
+    localStorage.removeItem("savedEditor.hotdog")
+    localStorage.removeItem("savedEditor.purple")
+  }
+  localStorage.setItem('storageVersion', "1.0")
+</script>

@@ -9,6 +9,7 @@ import VoteForVP from '../components/VoteForVP.astro';
 import "../styles/introjs-royale.css";
 import Changelog from '../components/Changelog.astro';
 import Spinner from '../components/Spinner.astro';
+import StorageVersion from '../components/StorageVersion.astro';
 
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
@@ -93,6 +94,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			</div>
 			<!-- <VoteForVP /> -->
 			<ThemeModifier />
+			<StorageVersion />
 		</div>
 	</body>
 
@@ -158,7 +160,6 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 		let mouseTimeout: number | undefined;
 
 		function mouseMove() {
-			if (localStorage.getItem("theme") !== "default" && localStorage.getItem("theme")) return
 			clearTimeout(mouseTimeout)
 			let quickpeek = document.getElementById("quickpeek")!
 			let mainschedule = document.getElementById("main_schedule")!
@@ -180,7 +181,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			document.body.classList.remove("bg-dark-primary")
 			document.body.style.cursor = "auto"
 			mouseTimeout = window.setTimeout(() => {
-				
+				if (localStorage.getItem("theme") !== "default" && localStorage.getItem("theme")) return
 				let quickpeek = document.getElementById("quickpeek")!
 				let mainschedule = document.getElementById("main_schedule")!
 
