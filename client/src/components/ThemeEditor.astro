@@ -5,7 +5,7 @@ import ResetColor from "./ResetColor.astro";
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
-<div class="fixed opacity-0 bg-green-400 text-true-white rounded-lg p-4 top-2 right-2 z-40 hidden justify-start items-center gap-4 h-12" id="autosave_update" data-in-theme-editor>
+<div class="fixed opacity-0 bg-green-400 text-true-white rounded-lg p-4 top-2 right-2 z-40 hidden justify-start items-center gap-4 h-12 pointer-events-none" id="autosave_update" data-in-theme-editor>
   <span class="material-symbols-outlined">
     save
   </span>
@@ -13,7 +13,7 @@ import ResetColor from "./ResetColor.astro";
   <h1 class="text-lg font-mono" data-in-theme-editor>Autosaved at </h1>
 </div>
 
-<div class="fixed opacity-0 bg-blue-400 text-true-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="share_notif" data-in-theme-editor>
+<div class="fixed opacity-0 bg-blue-400 text-true-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12 pointer-events-none" id="share_notif" data-in-theme-editor>
   <span class="material-symbols-outlined">
     share
   </span>
@@ -21,7 +21,7 @@ import ResetColor from "./ResetColor.astro";
   <h1 class="text-lg font-mono" data-in-theme-editor>Copied to Clipboard!</h1>
 </div>
 
-<div class="fixed opacity-0 bg-yellow-400 text-true-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="warn_notif" data-in-theme-editor>
+<div class="fixed opacity-0 bg-yellow-400 text-true-white rounded-lg p-4 top-2 right-2 pointer-events-none z-10 hidden justify-start items-center gap-4 h-12" id="warn_notif" data-in-theme-editor>
   <span class="material-symbols-outlined">
     warning
   </span>
