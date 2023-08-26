@@ -1,10 +1,20 @@
 <script>
-  const storageVersion = localStorage.getItem('storageVersion') || "0.0"
+  const storageVersion = localStorage.getItem('storageVersion') || "0.0";
   
   if (storageVersion !== "1.0") {
-    localStorage.removeItem("savedEditor.salesian")
-    localStorage.removeItem("savedEditor.hotdog")
-    localStorage.removeItem("savedEditor.purple")
+    if (localStorage.getItem("savedEditor.salesian") !== null) {
+      localStorage.setItem("savedEditorBACKUP.salesian", localStorage.getItem("savedEditor.salesian")!!);
+    }
+    if (localStorage.getItem("savedEditor.hotdog") !== null) {
+      localStorage.setItem("savedEditorBACKUP.hotdog", localStorage.getItem("savedEditor.hotdog")!!);
+    }
+    if (localStorage.getItem("savedEditor.purple") !== null) {
+      localStorage.setItem("savedEditorBACKUP.purple", localStorage.getItem("savedEditor.purple")!!);
+    }
+
+    localStorage.removeItem("savedEditor.salesian");
+    localStorage.removeItem("savedEditor.hotdog");
+    localStorage.removeItem("savedEditor.purple");
   }
-  localStorage.setItem('storageVersion', "1.0")
+  localStorage.setItem('storageVersion', "1.0");
 </script>

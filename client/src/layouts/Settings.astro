@@ -40,6 +40,7 @@
     <button class="bg-light-primary text-white font-bold text-lg rounded-lg p-2 h-12 hidden"id="save">Save</button>
     <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center" id="paste">Paste from Schoology</button>
     <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center" id="purge">Purge Cache</button>
+    <button class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center" id="open_changelog">View Changelog</button>
   </div>
   
   <div class="flex justify-center items-center flex-col gap-2">
@@ -52,6 +53,7 @@
         <option value="salesian">Original Schedulology</option>
         <option value="hotdog">Hot Dog Stand</option>
         <option value="purple">Purple</option>
+        <option value="green">Green</option>
         <option value="custom-1">Custom Theme 1</option>
         <option value="custom-2">Custom Theme 2</option>
         <option value="custom-3">Custom Theme 3</option>
@@ -68,16 +70,16 @@
   <div class="hidden sm:flex justify-center items-center flex-row flex-wrap gap-2">
     <h4 id="branch_name" class="text-light-primary drop-shadow-lg -mt-1 font-mono">master</h4>
     <h4 class="-mt-1 font-mono text-light-primary drop-shadow-lg">-</h1>
-    <h4 class="-mt-1 font-mono text-light-primary drop-shadow-lg">"DynSchedule v1.3"</h1>
+    <h4 class="-mt-1 font-mono text-light-primary drop-shadow-lg">"DynSchedule v1.4"</h1>
   </div>
 
 </div>
 
 <div class="fixed hidden w-screen z-10 h-screen flex justify-center items-center bg-black/25" id="paste_screen">
-  <div class="rounded-lg w-3/4 sm:w-7/12 flex justify-center items-center flex-col bg-primary">
-    <div class="w-full text-left text-white text-lg bg-light-primary flex justify-center items-center flex-row p-2">
+  <div class="rounded-lg w-3/4 sm:w-7/12 flex justify-center items-center flex-col bg-primary border-custom border-custom-color shadow-lg">
+    <div class="w-full text-left text-white text-lg bg-primary flex justify-center items-center flex-row p-2 rounded-t-lg">
       <h1>Paste from Schoology</h1>
-      <button class="relative ml-auto bg-light-primary rounded-lg w-12 h-full text-white flex justify-center items-center" id="close_paste">
+      <button class="relative ml-auto rounded-lg w-12 h-full -mr-2 text-white flex justify-center items-center" id="close_paste">
         <span class="material-symbols-outlined hover:text-red-500 text-white">
           close
         </span>
@@ -91,7 +93,7 @@
         <textarea class="text-black" id="pasted_text" />
       </div>
 
-      <button class="bg-light-primary text-white font-bold text-lg rounded-lg h-8 w-24" id="paste_confirm">Confirm</button>
+      <button class="bg-light-primary text-white text-lg rounded-lg h-8 w-24" id="paste_confirm">Confirm</button>
     </div>
   </div>
 </div>
@@ -126,6 +128,9 @@
 
   document.getElementById("dynbackground").textContent = !localStorage.getItem("savedEditor.default") && (localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) ? "Disable Adaptive Background" : "Enable Adaptive Background";
 
+  document.getElementById("open_changelog").addEventListener("click", () => {
+    document.dispatchEvent(new Event("openChangelog")); 
+  });
   document.getElementById("dynbackground").addEventListener("click", () => {
     const dynbackground = document.getElementById("dynbackground");
     if (dynbackground.textContent === "Disable Adaptive Background") {
