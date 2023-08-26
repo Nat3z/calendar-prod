@@ -14,7 +14,7 @@
 
 <script>
   import { marked } from 'marked';
-  const latestChangelog = await fetch('https://raw.githubusercontent.com/wiki/Nat3z/calendar-prod/Latest-Changelog.md');
+  const latestChangelog = await fetch('https://raw.githubusercontent.com/wiki/Nat3z/calendar-prod/Latest-Changelog.md?' + Date.now());
   const latestChangelogText = await latestChangelog.text();
 
   marked.use({
