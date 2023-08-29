@@ -309,6 +309,23 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			mouseMove();
 		}
 
+		if (localStorage.getItem("theme") === "blurred-img") {
+			let quickpeek = document.getElementById("quickpeek")!;
+			let mainschedule = document.getElementById("main_schedule")!;
+
+			quickpeek.classList.add("backdrop-blur");
+			quickpeek.classList.add("bg-white/0");
+			document.getElementById("settings_cog")!.classList.add("backdrop-blur");
+			document.getElementById("settings_cog")!.classList.add("bg-white/5");
+
+			mainschedule.classList.add("backdrop-blur");
+			mainschedule.classList.add("dark:bg-white/5");
+			mainschedule.classList.add("bg-black/5");
+
+			document.getElementById("vercel")!.classList.add("-bottom-8");
+
+			document.body.classList.remove("bg-dark-primary");
+		}
 		if (!scheduleData.possiblyClosed)
 			localStorage.removeItem("alwaysShowSchedule");
 

@@ -281,7 +281,7 @@ import ResetColor from "./ResetColor.astro";
 
 <script>
   import introJs from "intro.js";
-
+  import { blurredTheme } from "../lib/bigthemes";
   let themeSelected = localStorage.getItem("theme") || "default";
   const themeEditor = document.getElementById("themeEditor")!;
   const addPropertyEvent = new CustomEvent("addPropertyToThemeEditor");
@@ -814,6 +814,9 @@ import ResetColor from "./ResetColor.astro";
       else if (themeSelected === "hotdog" && !doesCurrentThemeHaveEdits) {
         loadFromSaved(hotdogTheme);
       }
+      else if (themeSelected === "blurred-img" && !doesCurrentThemeHaveEdits) {
+        loadFromSaved(blurredTheme);
+      }
       else {
         loadFromSaved();
       }
@@ -1029,6 +1032,10 @@ import ResetColor from "./ResetColor.astro";
     const allowsRefresh = detail.disallowRefresh != null ? !detail.disallowRefresh : true;
     console.log("Theme refresh caught!")
     themeSelected = localStorage.getItem("theme") || "default";
+
+    if (allowsRefresh && themeSelected === "blurred-img") {
+      window.location.reload();
+    }
     loadSelectedTheme();
   });
 </script>
