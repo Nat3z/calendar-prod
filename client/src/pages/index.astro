@@ -1,94 +1,158 @@
 ---
-import moment from 'moment';
-import Settings from '../layouts/Settings.astro';
-import Layout from '../layouts/Layout.astro';
-import ThemeModifier from '../components/ThemeModifier.astro';
-import ThemeEditor from '../components/ThemeEditor.astro';
-import ScreenSaver from '../components/ScreenSaver.astro';
-import VoteForVP from '../components/VoteForVP.astro';
+import moment from "moment";
+import Settings from "../layouts/Settings.astro";
+import Layout from "../layouts/Layout.astro";
+import ThemeModifier from "../components/ThemeModifier.astro";
+import ThemeEditor from "../components/ThemeEditor.astro";
+import ScreenSaver from "../components/ScreenSaver.astro";
+import VoteForVP from "../components/VoteForVP.astro";
 import "../styles/introjs-royale.css";
-import Changelog from '../components/Changelog.astro';
-import Spinner from '../components/Spinner.astro';
-import StorageVersion from '../components/StorageVersion.astro';
+import Changelog from "../components/Changelog.astro";
+import Spinner from "../components/Spinner.astro";
+import StorageVersion from "../components/StorageVersion.astro";
 
 function replaceShorthands(period: string) {
 	// replace period to Lunch if it's ONLY "L" with regex
 	// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-	return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch")
+	return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch");
 }
 
 function parseTime(t: string, offsetTime = new Date()) {
-	let momentDate = moment(t, "h:mm A").toDate()
+	let momentDate = moment(t, "h:mm A").toDate();
 	if (momentDate.getHours() < 8) {
-		momentDate.setHours(momentDate.getHours() + 12)
-		
+		momentDate.setHours(momentDate.getHours() + 12);
 	}
-	return momentDate
+	return momentDate;
 }
-const isInDev = import.meta.env.NODE_ENV ? "" : ""
+const isInDev = import.meta.env.NODE_ENV ? "" : "";
 ---
-
 
 <Layout title="DynSchedule">
 	<body>
-
-		<div class="fixed w-full h-full backdrop-blur-lg shadow-lg z-50 text-4xl flex justify-center items-center" id="loading-splash">
-			<img src="/grad_logo.png" alt="🎓" class="w-24 h-24 text-4xl text-center animate-pulse" />
+		<div
+			class="fixed w-full h-full backdrop-blur-lg shadow-lg z-50 text-4xl flex justify-center items-center"
+			id="loading-splash"
+		>
+			<img
+				src="/grad_logo.png"
+				alt="🎓"
+				class="w-24 h-24 text-4xl text-center animate-pulse"
+			/>
 		</div>
-		<div id="isInDev" data-in-dev={import.meta.env.NODE_ENV === "development" ? "true" : "false"}></div>
+		<div
+			id="isInDev"
+			data-in-dev={import.meta.env.NODE_ENV === "development"
+				? "true"
+				: "false"}
+		>
+		</div>
 		<Changelog />
-		
+
 		<div class="flex justify-start items-center flex-row" data-in-theme-editor>
 			<ScreenSaver />
 			<ThemeEditor />
-			
-			<div class="fixed opacity-0 bg-blue-500 text-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12 pointer-events-none" id="refresh_notif" data-in-theme-editor>
-				<span class="material-symbols-outlined text-true-white">
-					refresh
-				</span>
+
+			<div
+				class="fixed opacity-0 bg-blue-500 text-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12 pointer-events-none"
+				id="refresh_notif"
+				data-in-theme-editor
+			>
+				<span class="material-symbols-outlined text-true-white"> refresh</span>
 				<div class="border-l-2 border-white w-1 h-4"></div>
-				<h1 class="text-lg font-mono text-true-white" data-in-theme-editor>Refreshed Schedule!</h1>
+				<h1 class="text-lg font-mono text-true-white" data-in-theme-editor>
+					Refreshed Schedule!
+				</h1>
 			</div>
-			<div class="flex justify-center items-center w-screen h-screen gap-4 p-2 relative" id="schedule_page" data-intro="This is the preview pane that reflects the changes made in the editor." data-step="99">
-				<div id="throwback" class="absolute top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm">
+			<div
+				class="flex justify-center items-center w-screen h-screen gap-4 p-2 relative"
+				id="schedule_page"
+				data-intro="This is the preview pane that reflects the changes made in the editor."
+				data-step="99"
+			>
+				<div
+					id="throwback"
+					class="absolute top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm"
+				>
 					<h1>Originally by C.J.F '22, Rebuilt by Nat3z</h1>
 				</div>
-		
+
 				<Settings />
-				<div class="bg-primary w-11/12 transition-all relative h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg border-custom border-custom-color" id="main_schedule">
-					
-					<div class="w-full h-1/6 sm:h-1/4 flex relative justify-center border-b-custom border-custom-color items-center rounded-t-lg bg-quickpeek transition-all" id="quickpeek">
-						<h1 class="text-center text-white text-4xl md:text-6xl absolute z-10" id="current">Loading...</h1>
-						<div class="w-full bg-transparent opacity-progress-bar rounded-t-lg h-full">
-							<div class="bg-progressbar h-full rounded-t-lg rounded-tr-none" style="width: 0%" id="progressbar"></div>
+				<div
+					class="bg-primary w-11/12 transition-all relative h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg border-custom border-custom-color"
+					id="main_schedule"
+				>
+					<div
+						class="w-full h-1/6 sm:h-1/4 flex relative justify-center border-b-custom border-custom-color items-center rounded-t-lg bg-quickpeek transition-all"
+						id="quickpeek"
+					>
+						<h1
+							class="text-center text-white text-4xl md:text-6xl absolute z-10"
+							id="current"
+						>
+							Loading...
+						</h1>
+						<div
+							class="w-full bg-transparent opacity-progress-bar rounded-t-lg h-full"
+						>
+							<div
+								class="bg-progressbar h-full rounded-t-lg rounded-tr-none"
+								style="width: 0%"
+								id="progressbar"
+							>
+							</div>
 						</div>
 
-						
-						<div class="absolute w-full z-0 flex justify-center -bottom-2 md:bottom-0 md:top-0 md:left-0 items-center gap-2 h-12 sm:h-full">
-							<button class="w-12 h-12 flex justify-center items-center" id="wayback-back">
+						<div
+							class="absolute w-full z-0 flex justify-center -bottom-2 md:bottom-0 md:top-0 md:left-0 items-center gap-2 h-12 sm:h-full"
+						>
+							<button
+								class="w-12 h-12 flex justify-center items-center"
+								id="wayback-back"
+							>
 								<span class="material-symbols-outlined sm:!text-4xl">
 									arrow_back
 								</span>
 							</button>
-							<button class="ml-auto w-12 h-12 flex justify-center items-center" id="wayback-forward">
+							<button
+								class="ml-auto w-12 h-12 flex justify-center items-center"
+								id="wayback-forward"
+							>
 								<span class="material-symbols-outlined sm:!text-4xl">
 									arrow_forward
 								</span>
 							</button>
 						</div>
 					</div>
-	
+
 					<div class="overflow-y-auto" style="height: calc(83.33% - 8%);">
-						<div class="flex flex-col justify-center items-center p-4 text-lg z-1 overflow-y-auto flex-wrap" id="classes">
+						<div
+							class="flex flex-col justify-center items-center p-4 text-lg z-1 overflow-y-auto flex-wrap"
+							id="classes"
+						>
 						</div>
 					</div>
 				</div>
-					
+
 				<div class="hidden sm:block fixed bottom-4 transition-all" id="vercel">
 					<div class="flex justify-center text-white items-center gap-2 m-auto">
 						<!-- <img width="25" height="25" alt="Light mode" src="./sun.svg"/> -->
-						Built by <a href="https://github.com/Nat3z/calendar-prod" class="inline -mr-1 -ml-0.5 underline" target="_blank">Nat3z</a>, using <img alt="Astro" src="/astro-logo.png" width="75" height="24.7167" class="top-1 relative"> and hosted on <img alt="Vercel" height="16.9" src="/vercel-logo.png" width="75" class="top-0.5 relative">
-						<!-- <b>VOTE NATHAN FOR SOPHOMORE VICE PRESIDENT!!!</b> -->
+						Built by <a
+							href="https://github.com/Nat3z/calendar-prod"
+							class="inline -mr-1 -ml-0.5 underline"
+							target="_blank">Nat3z</a
+						>, using <img
+							alt="Astro"
+							src="/astro-logo.png"
+							width="75"
+							height="24.7167"
+							class="top-1 relative"
+						/> and hosted on <img
+							alt="Vercel"
+							height="16.9"
+							src="/vercel-logo.png"
+							width="75"
+							class="top-0.5 relative"
+						/>
 					</div>
 				</div>
 			</div>
@@ -99,271 +163,350 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 	</body>
 
 	<script>
-		import moment from 'moment';
-		import { fetch } from '../lib/FetchCache';
-		let currentDateOffset = new Date()
+		import moment from "moment";
+		import { fetch } from "../lib/FetchCache";
+		let currentDateOffset = new Date();
 		let isInDev = document.getElementById("isInDev")!.dataset.inDev === "true";
 
 		// remember to change this to the production url when you're done testing
-		let url = isInDev ? "http://localhost:3001/api/schedule" : "https://api.schedule.nat3z.com/api/schedule"
+		let url = isInDev
+			? "http://localhost:3001/api/schedule"
+			: "https://api.schedule.nat3z.com/api/schedule";
 
-		if (window.location.href.includes("development.") || window.location.href.includes("preview.")) {
-			url = "https://api.development.schedule.nat3z.com/api/schedule"
+		if (
+			window.location.href.includes("development.") ||
+			window.location.href.includes("preview.")
+		) {
+			url = "https://api.development.schedule.nat3z.com/api/schedule";
 		}
-
-		let dtScheduleFirst = new Date()
+		let dtScheduleFirst = new Date();
 		// don't be influenced by utc
-		dtScheduleFirst.setHours(8, 0, 0, 0)
+		dtScheduleFirst.setHours(8, 0, 0, 0);
 
 		let scheduleData: any;
 		// let scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
 		let scheduleEvents: any[] = [];
 
-		console.log("%cCreated by cool people at Salesian!!!", "color: #b8a26d; text-shadow: -2px -2px #ac1f2d; font-size: 32px;")
+		console.log(
+			"%cCreated by cool people at Salesian!!!",
+			"color: #b8a26d; text-shadow: -2px -2px #ac1f2d; font-size: 32px;"
+		);
 
 		function replaceShorthands(period: string) {
 			// replace period to Lunch if it's ONLY "L" with regex
 			// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-			return period.replace("&nbh", "-").replace(/^(\d) Blk$/, "Block $1").replace(/^L$/, "Lunch").replace(/^Flextime$/, "Flex").replace(/^Blk (\d)$/, "Block $1").replace(/^FaithFam$/, "Faith Family").replace(/^EmrDrills$/, "Emergancy Drills")
+			return period
+				.replace("&nbh", "-")
+				.replace(/^(\d) Blk$/, "Block $1")
+				.replace(/^L$/, "Lunch")
+				.replace(/^Flextime$/, "Flex")
+				.replace(/^Blk (\d)$/, "Block $1")
+				.replace(/^FaithFam$/, "Faith Family")
+				.replace(/^EmrDrills$/, "Emergancy Drills");
 		}
 
 		function parseTime(t: string, offsetTime = new Date()) {
-			let momentDate = moment(t, "h:mm A").toDate()
+			let momentDate = moment(t, "h:mm A").toDate();
 			if (momentDate.getHours() < 8) {
-				momentDate.setHours(momentDate.getHours() + 12)
+				momentDate.setHours(momentDate.getHours() + 12);
 			}
-			return momentDate
+			return momentDate;
 		}
 		if (new Date().getHours() > 16) {
-			currentDateOffset.setDate(currentDateOffset.getDate() + 1)
+			currentDateOffset.setDate(currentDateOffset.getDate() + 1);
 			// don't be influenced by current time and utc rules
-			currentDateOffset.setHours(8, 0, 0, 0)
-			
-			scheduleData = await ((await fetch(`${url}?date=${moment(currentDateOffset).unix()}&refDate=${moment().unix()}`)).json())
-			scheduleEvents = scheduleData.events
-			console.log("Using tomorrow's schedule")
-		}
-		else {
-			scheduleData = await ((await fetch(`${url}?date=${moment(dtScheduleFirst).unix()}&refDate=${moment().unix()}`)).json())
-			scheduleEvents = scheduleData.events
+			currentDateOffset.setHours(8, 0, 0, 0);
+
+			scheduleData = await (
+				await fetch(
+					`${url}?date=${moment(
+						currentDateOffset
+					).unix()}&refDate=${moment().unix()}`
+				)
+			).json();
+			scheduleEvents = scheduleData.events;
+			console.log("Using tomorrow's schedule");
+		} else {
+			scheduleData = await (
+				await fetch(
+					`${url}?date=${moment(
+						dtScheduleFirst
+					).unix()}&refDate=${moment().unix()}`
+				)
+			).json();
+			scheduleEvents = scheduleData.events;
 		}
 
 		if (!scheduleEvents || scheduleEvents.length === 0) {
-			document.getElementById("current")!.innerHTML = "Out of Session"
+			document.getElementById("current")!.innerHTML = "Out of Session";
 			document.getElementById("classes")!.innerHTML += `
 				<h1 id="title" class="text-center text-lg md:text-3xl">
 					No classes today
 				</h1>
-			`
+			`;
 		}
 
 		let mouseTimeout: number | undefined;
 
 		function mouseMove() {
-			clearTimeout(mouseTimeout)
-			let quickpeek = document.getElementById("quickpeek")!
-			let mainschedule = document.getElementById("main_schedule")!
+			clearTimeout(mouseTimeout);
+			let quickpeek = document.getElementById("quickpeek")!;
+			let mainschedule = document.getElementById("main_schedule")!;
 
-			quickpeek.classList.remove("backdrop-blur")
-			quickpeek.classList.remove("bg-white/0")
+			quickpeek.classList.remove("backdrop-blur");
+			quickpeek.classList.remove("bg-white/0");
 
-			mainschedule.classList.remove("backdrop-blur")
-			mainschedule.classList.remove("dark:bg-white/5")
-			mainschedule.classList.remove("bg-black/5")
+			mainschedule.classList.remove("backdrop-blur");
+			mainschedule.classList.remove("dark:bg-white/5");
+			mainschedule.classList.remove("bg-black/5");
 
-			document.getElementById("settings_cog")!.classList.remove("backdrop-blur")
-			document.getElementById("settings_cog")!.classList.remove("bg-white/5")
+			document
+				.getElementById("settings_cog")!
+				.classList.remove("backdrop-blur");
+			document.getElementById("settings_cog")!.classList.remove("bg-white/5");
 
-			document.body.classList.remove("bg-light")
-			document.body.classList.remove("dark:bg-dark")
-			document.getElementById("vercel")!.classList.remove("-bottom-8")
+			document.body.classList.remove("bg-light");
+			document.body.classList.remove("dark:bg-dark");
+			document.getElementById("vercel")!.classList.remove("-bottom-8");
 
-			document.body.classList.remove("bg-dark-primary")
-			document.body.style.cursor = "auto"
+			document.body.classList.remove("bg-dark-primary");
+			document.body.style.cursor = "auto";
 			mouseTimeout = window.setTimeout(() => {
-				if (localStorage.getItem("theme") !== "default" && localStorage.getItem("theme")) return
-				let quickpeek = document.getElementById("quickpeek")!
-				let mainschedule = document.getElementById("main_schedule")!
+				if (
+					localStorage.getItem("theme") !== "default" &&
+					localStorage.getItem("theme")
+				)
+					return;
+				let quickpeek = document.getElementById("quickpeek")!;
+				let mainschedule = document.getElementById("main_schedule")!;
 
-				quickpeek.classList.add("backdrop-blur")
-				quickpeek.classList.add("bg-white/0")
-				document.getElementById("settings_cog")!.classList.add("backdrop-blur")
-				document.getElementById("settings_cog")!.classList.add("bg-white/5")
+				quickpeek.classList.add("backdrop-blur");
+				quickpeek.classList.add("bg-white/0");
+				document.getElementById("settings_cog")!.classList.add("backdrop-blur");
+				document.getElementById("settings_cog")!.classList.add("bg-white/5");
 
-				mainschedule.classList.add("backdrop-blur")
-				mainschedule.classList.add("dark:bg-white/5")
-				mainschedule.classList.add("bg-black/5")
+				mainschedule.classList.add("backdrop-blur");
+				mainschedule.classList.add("dark:bg-white/5");
+				mainschedule.classList.add("bg-black/5");
 
-				document.body.classList.add("bg-light")
-				document.getElementById("vercel")!.classList.add("-bottom-8")
-				document.body.classList.add("dark:bg-dark")
-			
-				document.body.classList.remove("bg-dark-primary")
-				document.body.style.cursor = "none"
+				document.body.classList.add("bg-light");
+				document.getElementById("vercel")!.classList.add("-bottom-8");
+				document.body.classList.add("dark:bg-dark");
+
+				document.body.classList.remove("bg-dark-primary");
+				document.body.style.cursor = "none";
 			}, 5000);
 		}
 
-		if ((localStorage.getItem("dynamic_theme") === "true" || !localStorage.getItem("dynamic_theme")) && !localStorage.getItem("savedEditor.default") &&  (localStorage.getItem("theme") === "default" || !localStorage.getItem("theme"))) {
-			document.onmousemove = mouseMove
-			mouseMove()
+		if (
+			(localStorage.getItem("dynamic_theme") === "true" ||
+				!localStorage.getItem("dynamic_theme")) &&
+			!localStorage.getItem("savedEditor.default") &&
+			(localStorage.getItem("theme") === "default" ||
+				!localStorage.getItem("theme"))
+		) {
+			document.onmousemove = mouseMove;
+			mouseMove();
 		}
 
-		if (!scheduleData.possiblyClosed) localStorage.removeItem("alwaysShowSchedule")
+		if (!scheduleData.possiblyClosed)
+			localStorage.removeItem("alwaysShowSchedule");
 
 		let currentStyle = "";
 		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
 		function updateSchedule(events: any) {
 			// get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
-			let current = new Date()
-			let now = moment(current.getTime()).unix()
-			let success = false
-			let closestStart = 0
-			let lastEndedBlock = 0
-			let hasClearedAllDocs = false
+			let current = new Date();
+			let now = moment(current.getTime()).unix();
+			let success = false;
+			let closestStart = 0;
+			let lastEndedBlock = 0;
+			let hasClearedAllDocs = false;
 
 			if (!events) {
 				if (document.getElementById("themeEditor").style.display === "block")
-					document.getElementById("progressbar")!.style.width = `50%`
-				else
-					document.getElementById("progressbar")!.style.width = `0%`
+					document.getElementById("progressbar")!.style.width = `50%`;
+				else document.getElementById("progressbar")!.style.width = `0%`;
 
-				return
+				return;
 			}
 			Object.entries(events).map(([key, value]) => {
-				let startTime = moment(parseTime(events[key].start, current)).unix()
-				let endTime = moment(parseTime(events[key].end, current)).unix()
-				let docKey = document.getElementById(key)
+				let startTime = moment(parseTime(events[key].start, current)).unix();
+				let endTime = moment(parseTime(events[key].end, current)).unix();
+				let docKey = document.getElementById(key);
 				if (!hasClearedAllDocs && !docKey) {
-					hasClearedAllDocs = true
+					hasClearedAllDocs = true;
 					document.getElementById("classes")!.innerHTML = `
-					<h1 class="text-lg md:text-3xl font-bold text-center mb-4" id="title" style="${currentStyle}">${replaceShorthands(scheduleData.title)}</h1>
-					`
-					
+					<h1 class="text-lg md:text-3xl font-bold text-center mb-4" id="title" style="${currentStyle}">${replaceShorthands(
+						scheduleData.title
+					)}</h1>
+					`;
 				}
 
 				if (!docKey) {
 					// add to classes the current period
-					let replace_shorthand = replaceShorthands(key)
+					let replace_shorthand = replaceShorthands(key);
 					if (replace_shorthand.startsWith("Block ")) {
-						let block_num = replace_shorthand.split(" ")[1]
+						let block_num = replace_shorthand.split(" ")[1];
 						if (localStorage.getItem("blk_" + block_num)) {
-							replace_shorthand = localStorage.getItem("blk_" + block_num)!
+							replace_shorthand = localStorage.getItem("blk_" + block_num)!;
 						}
 					}
 					document.getElementById("classes")!.innerHTML += `
 						<h1 id="${key}" class="text-center text-ultramd md:text-3xl" style="${currentStyle}">
-							${parseTime(events[key].start, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replace_shorthand}
+							${parseTime(events[key].start, current).toLocaleTimeString("en-us", {
+								hour12: true,
+								minute: "2-digit",
+								hour: "numeric",
+							})} - ${parseTime(events[key].end, current).toLocaleTimeString(
+						"en-us",
+						{ hour12: true, minute: "2-digit", hour: "numeric" }
+					)} ── ${replace_shorthand}
 						</h1>
-					`
+					`;
 				}
 
 				if (now >= startTime && now <= endTime) {
-					document.getElementById(key)!.classList.add("font-bold")					 
-					const minutes = Math.ceil((endTime - now) / 60)
-					let timeNowCountdown = moment().startOf('day').seconds(endTime - now).format('H:mm:ss')
-					let replace_shorthand = replaceShorthands(key)
+					document.getElementById(key)!.classList.add("font-bold");
+					const minutes = Math.ceil((endTime - now) / 60);
+					let timeNowCountdown = moment()
+						.startOf("day")
+						.seconds(endTime - now)
+						.format("H:mm:ss");
+					let replace_shorthand = replaceShorthands(key);
 					if (replace_shorthand.startsWith("Block ")) {
-						let block_num = replace_shorthand.split(" ")[1]
+						let block_num = replace_shorthand.split(" ")[1];
 						if (localStorage.getItem("blk_" + block_num)) {
-							replace_shorthand = localStorage.getItem("blk_" + block_num)!
+							replace_shorthand = localStorage.getItem("blk_" + block_num)!;
 						}
 					}
-					document.getElementById(key)!.textContent = `${parseTime(events[key].start, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ─ ${timeNowCountdown} ─ ${replace_shorthand}`
+					document.getElementById(key)!.textContent = `${parseTime(
+						events[key].start,
+						current
+					).toLocaleTimeString("en-us", {
+						hour12: true,
+						minute: "2-digit",
+						hour: "numeric",
+					})} - ${parseTime(events[key].end, current).toLocaleTimeString(
+						"en-us",
+						{ hour12: true, minute: "2-digit", hour: "numeric" }
+					)} ─ ${timeNowCountdown} ─ ${replace_shorthand}`;
 					// get minutes between end and now time and update the #current element
 
 					if (Math.ceil(minutes * 60) !== 0) {
-						let text = ''
+						let text = "";
 						// if the minutes is below 1, then instead of minutes, show seconds
-						let replace_shorthand = replaceShorthands(key)
+						let replace_shorthand = replaceShorthands(key);
 						if (replace_shorthand.startsWith("Block ")) {
-							let block_num = replace_shorthand.split(" ")[1]
+							let block_num = replace_shorthand.split(" ")[1];
 							if (localStorage.getItem("blk_" + block_num)) {
-								replace_shorthand = localStorage.getItem("blk_" + block_num)!
+								replace_shorthand = localStorage.getItem("blk_" + block_num)!;
 							}
 						}
 
 						if (minutes <= 1) {
-							text += `${replace_shorthand} (${Math.ceil((endTime - now))}")`
+							text += `${replace_shorthand} (${Math.ceil(endTime - now)}")`;
 						} else {
-							text += `${replace_shorthand} (${Math.ceil(minutes)}')`
+							text += `${replace_shorthand} (${Math.ceil(minutes)}')`;
 						}
 						// get the seconds between now and endtime and convert it into a percentage
 						// then set the width of the progress bar to that percentage
-						let percentage = (endTime - now) / (endTime - startTime) * 100
-						document.getElementById("progressbar")!.style.width = `${percentage}%`
+						let percentage = ((endTime - now) / (endTime - startTime)) * 100;
+						document.getElementById(
+							"progressbar"
+						)!.style.width = `${percentage}%`;
 
-						document.getElementById("current")!.innerHTML = text
+						document.getElementById("current")!.innerHTML = text;
 						if (!document.hasFocus()) {
-							document.title = text
+							document.title = text;
 						}
-						
-						success = true
-					}
 
-				}
-				else {
-					document.getElementById(key)!.classList.remove("font-bold")
-					let replace_shorthand = replaceShorthands(key)
+						success = true;
+					}
+				} else {
+					document.getElementById(key)!.classList.remove("font-bold");
+					let replace_shorthand = replaceShorthands(key);
 					if (replace_shorthand.startsWith("Block ")) {
-						let block_num = replace_shorthand.split(" ")[1]
+						let block_num = replace_shorthand.split(" ")[1];
 						if (localStorage.getItem("blk_" + block_num)) {
-							replace_shorthand = localStorage.getItem("blk_" + block_num)!
+							replace_shorthand = localStorage.getItem("blk_" + block_num)!;
 						}
 					}
-					document.getElementById(key)!.textContent = `${parseTime(events[key].start, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} - ${parseTime(events[key].end, current).toLocaleTimeString("en-us", { hour12: true, minute: '2-digit', hour: 'numeric' })} ── ${replace_shorthand}`
+					document.getElementById(key)!.textContent = `${parseTime(
+						events[key].start,
+						current
+					).toLocaleTimeString("en-us", {
+						hour12: true,
+						minute: "2-digit",
+						hour: "numeric",
+					})} - ${parseTime(events[key].end, current).toLocaleTimeString(
+						"en-us",
+						{ hour12: true, minute: "2-digit", hour: "numeric" }
+					)} ── ${replace_shorthand}`;
 				}
 
-				if (startTime - now > 0 && (closestStart == 0 || startTime - now < closestStart)) {
-					closestStart = startTime - now
+				if (
+					startTime - now > 0 &&
+					(closestStart == 0 || startTime - now < closestStart)
+				) {
+					closestStart = startTime - now;
 				}
-				if (endTime - now < 0 && (lastEndedBlock == 0 || endTime - now > lastEndedBlock)) {
-					lastEndedBlock = endTime - now
+				if (
+					endTime - now < 0 &&
+					(lastEndedBlock == 0 || endTime - now > lastEndedBlock)
+				) {
+					lastEndedBlock = endTime - now;
 				}
-			})
+			});
 
 			if (!success) {
 				// if it is still before 3:00 and after 8, most likely just passing period.
-				let text = ''
-				let offset = 0
-				// if it is 8:00 AM, and before 20 minutes, then it is NOT passing period and is instead the start of the day. 
+				let text = "";
+				let offset = 0;
+				// if it is 8:00 AM, and before 20 minutes, then it is NOT passing period and is instead the start of the day.
 				// Set offset to 10 to make the nearest event 10 minutes away from 8:30 AM, thus being the actual "Welcome Bell"
-				if (current.getHours() === 8 && current.getMinutes() < 20) { text = "Welcome Bell"; offset = 10 }
+				if (current.getHours() === 8 && current.getMinutes() < 20) {
+					text = "Welcome Bell";
+					offset = 10;
+				}
 				// if it is before 3:00 PM, and after or equal to 8:00 AM, then it is a passing period
-				else if (closestStart != 0 && current.getHours() > 7) text = "Passing Period"
+				else if (closestStart != 0 && current.getHours() > 7)
+					text = "Passing Period";
 				// if not, then most likely just out of session
 				else {
-					let text = 'Out of Session'
-					
-					
-					
-					document.getElementById("current")!.innerHTML = text
+					let text = "Out of Session";
+
+					document.getElementById("current")!.innerHTML = text;
 					if (!document.hasFocus()) {
-						document.title = text
+						document.title = text;
 					}
 
 					if (document.getElementById("themeEditor").style.display === "none")
-						document.getElementById("progressbar")!.style.width = `0%`
-					else 
-						document.getElementById("progressbar")!.style.width = `50%`
-					success = true
+						document.getElementById("progressbar")!.style.width = `0%`;
+					else document.getElementById("progressbar")!.style.width = `50%`;
+					success = true;
 				}
 
 				if (!success) {
 					// if the minutes is below 1, then instead of minutes, show seconds
-				
+
 					if (closestStart / 60 - offset < 1) {
-						text += ` (${Math.ceil(closestStart) - (offset * 60)}")`
+						text += ` (${Math.ceil(closestStart) - offset * 60}")`;
 					} else {
-						text += ` (${Math.ceil(closestStart / 60) - (offset)}')`
+						text += ` (${Math.ceil(closestStart / 60) - offset}')`;
 					}
-					document.getElementById("current")!.innerHTML = text
+					document.getElementById("current")!.innerHTML = text;
 					// percentage
-					let percentage = (closestStart - offset * 60) / (closestStart - lastEndedBlock) * 100
-					document.getElementById("progressbar")!.style.width = `${percentage}%`
+					let percentage =
+						((closestStart - offset * 60) / (closestStart - lastEndedBlock)) *
+						100;
+					document.getElementById(
+						"progressbar"
+					)!.style.width = `${percentage}%`;
 
 					if (!document.hasFocus()) {
-						document.title = text
-					}	
+						document.title = text;
+					}
 				}
 			}
 
@@ -371,76 +514,78 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			// if it is, then set the offset to the currentDateOffset
 			// if not, then set the offset to the next day
 			if (currentDateOffset.getDate() != current.getDate()) {
-				let text = ""
+				let text = "";
 				// calculate how many days it is ahead of now
-				let dayOffset = currentDateOffset.getDate() - current.getDate()
+				let dayOffset = currentDateOffset.getDate() - current.getDate();
 				if (dayOffset < 0) {
-					if (dayOffset == -1) text = "Yesterday's Schedule"
-					else
-						text = `${dayOffset * -1} Days in the Past`
-				}
-				else {
-					if (dayOffset == 1) text = "Tomorrow's Schedule"
-					else
-						text = `${dayOffset} Days in the Future`
+					if (dayOffset == -1) text = "Yesterday's Schedule";
+					else text = `${dayOffset * -1} Days in the Past`;
+				} else {
+					if (dayOffset == 1) text = "Tomorrow's Schedule";
+					else text = `${dayOffset} Days in the Future`;
 				}
 
-				document.getElementById("current")!.innerHTML = text
+				document.getElementById("current")!.innerHTML = text;
 				// percentage
 				if (document.getElementById("themeEditor").style.display === "none")
-					document.getElementById("progressbar")!.style.width = `0%`
-				else
-					document.getElementById("progressbar")!.style.width = `50%`
+					document.getElementById("progressbar")!.style.width = `0%`;
+				else document.getElementById("progressbar")!.style.width = `50%`;
 				if (!document.hasFocus()) {
-					document.title = text
-				}	
+					document.title = text;
+				}
 			}
 
-			if (document.hasFocus()) document.title = `DynSchedule`
-			if (scheduleData.possiblyClosed && !localStorage.getItem("alwaysShowSchedule")) {
-				if (!document.hasFocus()) document.title = `Possibly Closed`
-				document.getElementById("current")!.innerHTML = "No Classes Today"
+			if (document.hasFocus()) document.title = `DynSchedule`;
+			if (
+				scheduleData.possiblyClosed &&
+				!localStorage.getItem("alwaysShowSchedule")
+			) {
+				if (!document.hasFocus()) document.title = `Possibly Closed`;
+				document.getElementById("current")!.innerHTML = "No Classes Today";
 				document.getElementById("classes")!.innerHTML = `
 					<h1 id="title" class="text-center text-lg w-3/4 md:text-3xl text-red-500 font-bold">
 						School is most likely closed for the day. Please check the school's website for more information.
 					</h1>
 					<button class="p-2 pl-4 pr-4 bg-light-primary rounded-lg mt-4" id="revealschedule">Show Schedule Anyways (Spam Click)</button>
-				`
-				document.querySelector("#revealschedule")!.addEventListener("click", () => {
-					localStorage.setItem("alwaysShowSchedule", "true");
-				});
+				`;
+				document
+					.querySelector("#revealschedule")!
+					.addEventListener("click", () => {
+						localStorage.setItem("alwaysShowSchedule", "true");
+					});
 				document.getElementById("progressbar")!.style.width = `0%`;
 
-				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "flex !important"
+				(
+					document.querySelector("#showScreenSaver")! as HTMLElement
+				).style.display = "flex !important";
 			} else {
-				(document.querySelector("#showScreenSaver")! as HTMLElement).style.display = "none !important"
+				(
+					document.querySelector("#showScreenSaver")! as HTMLElement
+				).style.display = "none !important";
 			}
 		}
-		let currentScheduleInterval = setInterval(() => updateSchedule(scheduleEvents), 100)
+		let currentScheduleInterval = setInterval(
+			() => updateSchedule(scheduleEvents),
+			100
+		);
 
-		let timeSinceLastFocus = 0
+		let timeSinceLastFocus = 0;
 
 		function animateNotif(text: string, element: HTMLElement) {
 			element.style.display = "flex";
-			element.animate([
-				{ opacity: 0 },
-				{ opacity: 1 }
-			], {
+			element.animate([{ opacity: 0 }, { opacity: 1 }], {
 				duration: 500,
 				easing: "ease-in-out",
-				fill: "forwards"
+				fill: "forwards",
 			});
 			element.querySelector("h1")!.textContent = text;
 
 			setTimeout(() => {
-				element.animate([
-					{ opacity: 1 },
-					{ opacity: 0 }
-				], {
+				element.animate([{ opacity: 1 }, { opacity: 0 }], {
 					duration: 500,
 					easing: "ease-in-out",
 					iterations: 1,
-					fill: "forwards"
+					fill: "forwards",
 				});
 				setTimeout(() => {
 					element.style.display = "none";
@@ -448,187 +593,252 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			}, 4 * 1000);
 		}
 
-		let loadingWayback = false
+		let loadingWayback = false;
 
-		document.querySelector("#wayback-forward")!.addEventListener("click", () => {
-			if (loadingWayback) return
-			let dayOffset = currentDateOffset.getDate() - new Date().getDate()
-			if (dayOffset >= 6 && !isInDev) return animateNotif("You can only view schedules up to 7 days in the future", document.querySelector("#refresh_notif")! as HTMLElement)
-			currentDateOffset.setDate(currentDateOffset.getDate() + 1)
-			currentDateOffset.setHours(8, 0, 0, 0)
-			if (currentDateOffset.getMonth() != new Date().getMonth()) {
-				currentDateOffset.setDate(currentDateOffset.getDate() - 1)
-				return animateNotif("You can only view schedules inside of the same month you are currently in.", document.querySelector("#refresh_notif")! as HTMLElement);
-			}
-			let dateSet = currentDateOffset.getDate()
-			clearInterval(currentScheduleInterval)
-			document.getElementById("current")!.innerHTML = "Loading... (" + moment(currentDateOffset).format("dddd, MMMM Do YYYY") + ")"
+		document
+			.querySelector("#wayback-forward")!
+			.addEventListener("click", () => {
+				if (loadingWayback) return;
+				let dayOffset = currentDateOffset.getDate() - new Date().getDate();
+				if (dayOffset >= 6 && !isInDev)
+					return animateNotif(
+						"You can only view schedules up to 7 days in the future",
+						document.querySelector("#refresh_notif")! as HTMLElement
+					);
+				currentDateOffset.setDate(currentDateOffset.getDate() + 1);
+				currentDateOffset.setHours(8, 0, 0, 0);
+				if (currentDateOffset.getMonth() != new Date().getMonth()) {
+					currentDateOffset.setDate(currentDateOffset.getDate() - 1);
+					return animateNotif(
+						"You can only view schedules inside of the same month you are currently in.",
+						document.querySelector("#refresh_notif")! as HTMLElement
+					);
+				}
+				let dateSet = currentDateOffset.getDate();
+				clearInterval(currentScheduleInterval);
+				document.getElementById("current")!.innerHTML =
+					"Loading... (" +
+					moment(currentDateOffset).format("dddd, MMMM Do YYYY") +
+					")";
 
-			setTimeout(async () => {
-				if (dateSet == currentDateOffset.getDate()) {
-					loadingWayback = true
-					document.querySelector("#wayback-forward")!.classList.add("animate-spin");
-					// make the moment date into a unix timestamp and round it to be consistent with the other unix timestamps
-					await fetch(`${url}?date=${moment(currentDateOffset).unix()}&refDate=${moment().unix()}`)
-						.then(res => res.json())
-						.then(async (data) => {
-							scheduleData = data
-							scheduleEvents = scheduleData.events
-							currentStyle = document.getElementById("title")!.style.cssText;
+				setTimeout(async () => {
+					if (dateSet == currentDateOffset.getDate()) {
+						loadingWayback = true;
+						document
+							.querySelector("#wayback-forward")!
+							.classList.add("animate-spin");
+						// make the moment date into a unix timestamp and round it to be consistent with the other unix timestamps
+						await fetch(
+							`${url}?date=${moment(
+								currentDateOffset
+							).unix()}&refDate=${moment().unix()}`
+						)
+							.then((res) => res.json())
+							.then(async (data) => {
+								scheduleData = data;
+								scheduleEvents = scheduleData.events;
+								currentStyle = document.getElementById("title")!.style.cssText;
 
-							if (!scheduleEvents || scheduleEvents.length === 0) {
-								document.getElementById("current")!.innerHTML = "Out of Session"
-								document.getElementById("classes")!.innerHTML = `
+								if (!scheduleEvents || scheduleEvents.length === 0) {
+									document.getElementById("current")!.innerHTML =
+										"Out of Session";
+									document.getElementById("classes")!.innerHTML = `
 									<h1 id="title" class="text-center text-lg md:text-3xl w-10/12 md:w-2/4" style="${currentStyle}">
 										No classes today (Either a weekend or a normal school day)
 									</h1>
-								`
-							}
-							
-							updateSchedule(scheduleEvents)
-							currentScheduleInterval = setInterval(() => updateSchedule(scheduleEvents), 100);
-							loadingWayback = false
-							document.querySelector("#wayback-forward")!.classList.remove("animate-spin");
-							animateNotif("You are now viewing a future schedule", document.querySelector("#refresh_notif")! as HTMLElement)
-					});
-				}
-			}, 250);
-		});
+								`;
+								}
+
+								updateSchedule(scheduleEvents);
+								currentScheduleInterval = setInterval(
+									() => updateSchedule(scheduleEvents),
+									100
+								);
+								loadingWayback = false;
+								document
+									.querySelector("#wayback-forward")!
+									.classList.remove("animate-spin");
+								animateNotif(
+									"You are now viewing a future schedule",
+									document.querySelector("#refresh_notif")! as HTMLElement
+								);
+							});
+					}
+				}, 250);
+			});
 
 		document.querySelector("#wayback-back")!.addEventListener("click", () => {
-			if (loadingWayback) return
-			let dayOffset = currentDateOffset.getDate() - new Date().getDate()
+			if (loadingWayback) return;
+			let dayOffset = currentDateOffset.getDate() - new Date().getDate();
 
-			if (dayOffset < -6 && !isInDev) return animateNotif("You can only view schedules up to 7 days in the past", document.querySelector("#refresh_notif")! as HTMLElement)
-			currentDateOffset.setDate(currentDateOffset.getDate() - 1)
-			currentDateOffset.setHours(8, 0, 0, 0)
+			if (dayOffset < -6 && !isInDev)
+				return animateNotif(
+					"You can only view schedules up to 7 days in the past",
+					document.querySelector("#refresh_notif")! as HTMLElement
+				);
+			currentDateOffset.setDate(currentDateOffset.getDate() - 1);
+			currentDateOffset.setHours(8, 0, 0, 0);
 			if (currentDateOffset.getMonth() != new Date().getMonth()) {
-				currentDateOffset.setDate(currentDateOffset.getDate() + 1)
-				return animateNotif("You can only view schedules inside of the same month you are currently in.", document.querySelector("#refresh_notif")! as HTMLElement);
+				currentDateOffset.setDate(currentDateOffset.getDate() + 1);
+				return animateNotif(
+					"You can only view schedules inside of the same month you are currently in.",
+					document.querySelector("#refresh_notif")! as HTMLElement
+				);
 			}
-			let dateSet = currentDateOffset.getDate()
-			clearInterval(currentScheduleInterval)
-			document.getElementById("current")!.innerHTML = "Loading... (" + moment(currentDateOffset).format("dddd, MMMM Do YYYY") + ")"
+			let dateSet = currentDateOffset.getDate();
+			clearInterval(currentScheduleInterval);
+			document.getElementById("current")!.innerHTML =
+				"Loading... (" +
+				moment(currentDateOffset).format("dddd, MMMM Do YYYY") +
+				")";
 			setTimeout(async () => {
 				if (dateSet == currentDateOffset.getDate()) {
-					loadingWayback = true
-					document.querySelector("#wayback-back")!.classList.add("animate-spin");
-					await fetch(`${url}?date=${moment(currentDateOffset).unix()}&refDate=${moment().unix()}`)
-						.then(res => res.json())
+					loadingWayback = true;
+					document
+						.querySelector("#wayback-back")!
+						.classList.add("animate-spin");
+					await fetch(
+						`${url}?date=${moment(
+							currentDateOffset
+						).unix()}&refDate=${moment().unix()}`
+					)
+						.then((res) => res.json())
 						.then(async (data) => {
-							scheduleData = data
-							scheduleEvents = scheduleData.events
+							scheduleData = data;
+							scheduleEvents = scheduleData.events;
 							currentStyle = document.getElementById("title")!.style.cssText;
-							
+
 							if (!scheduleEvents || scheduleEvents.length === 0) {
-								let current = new Date()
+								let current = new Date();
 								let text = "";
 
 								if (currentDateOffset.getDate() != current.getDate()) {
 									// calculate how many days it is ahead of now
-									let dayOffset = currentDateOffset.getDate() - current.getDate()
+									let dayOffset =
+										currentDateOffset.getDate() - current.getDate();
 									if (dayOffset < 0) {
-										if (dayOffset == -1) text = "Yesterday's Schedule"
-										else
-											text = `${dayOffset * -1} Days in the Past`
-									}
-									else {
-										if (dayOffset == 1) text = "Tomorrow's Schedule"
-										else
-											text = `${dayOffset} Days in the Future`
+										if (dayOffset == -1) text = "Yesterday's Schedule";
+										else text = `${dayOffset * -1} Days in the Past`;
+									} else {
+										if (dayOffset == 1) text = "Tomorrow's Schedule";
+										else text = `${dayOffset} Days in the Future`;
 									}
 								}
-								document.getElementById("current")!.innerHTML = text
+								document.getElementById("current")!.innerHTML = text;
 								document.getElementById("classes")!.innerHTML = `
 									<h1 id="title" class="text-center text-lg md:text-3xl w-10/12 md:w-2/4" style="${currentStyle}">
 										No classes today (Either a weekend or a normal school day. Cached schedules are only available for school days)
 									</h1>
-								`
+								`;
 							}
 
-							updateSchedule(scheduleEvents)
-							currentScheduleInterval = setInterval(() => updateSchedule(scheduleEvents), 100);
-							loadingWayback = false
-							document.querySelector("#wayback-back")!.classList.remove("animate-spin");
-							animateNotif("You are now viewing a past schedule", document.querySelector("#refresh_notif")! as HTMLElement)
-					});
+							updateSchedule(scheduleEvents);
+							currentScheduleInterval = setInterval(
+								() => updateSchedule(scheduleEvents),
+								100
+							);
+							loadingWayback = false;
+							document
+								.querySelector("#wayback-back")!
+								.classList.remove("animate-spin");
+							animateNotif(
+								"You are now viewing a past schedule",
+								document.querySelector("#refresh_notif")! as HTMLElement
+							);
+						});
 				}
 			}, 250);
 		});
 
 		setInterval(() => {
 			if (!document.hasFocus() && timeSinceLastFocus == 0) {
-				timeSinceLastFocus = moment().unix()
+				timeSinceLastFocus = moment().unix();
 			}
 			// page has focus
 			// if the page has been unfocused for more than 30 minutes, refetch the schedule
-			else if (document.hasFocus() && timeSinceLastFocus != 0 && moment().unix() - timeSinceLastFocus > 30 * 60) {
-				timeSinceLastFocus = 0
+			else if (
+				document.hasFocus() &&
+				timeSinceLastFocus != 0 &&
+				moment().unix() - timeSinceLastFocus > 30 * 60
+			) {
+				timeSinceLastFocus = 0;
 				fetch(`${url}?date=${moment().unix()}&refDate=${moment().unix()}`)
-					.then(res => res.json())
+					.then((res) => res.json())
 					.then(async (data) => {
-						scheduleData = data
-						scheduleEvents = scheduleData.events
+						scheduleData = data;
+						scheduleEvents = scheduleData.events;
 						currentStyle = document.getElementById("title")!.style.cssText;
 
 						if (new Date().getHours() > 16) {
-							let currentDate = new Date()
-							currentDate.setDate(currentDate.getDate() + 1)
-							currentDate.setHours(8, 0, 0, 0)
+							let currentDate = new Date();
+							currentDate.setDate(currentDate.getDate() + 1);
+							currentDate.setHours(8, 0, 0, 0);
 
-							scheduleData = await ((await fetch(`${url}?date=${Math.round(+currentDate / 1000)}&refDate=${moment().unix()}`)).json())
-							scheduleEvents = scheduleData.events
-							console.log("Using tomorrow's schedule")
-							currentDateOffset = currentDate
-						}
-						else {
-							currentDateOffset = new Date()
+							scheduleData = await (
+								await fetch(
+									`${url}?date=${Math.round(
+										+currentDate / 1000
+									)}&refDate=${moment().unix()}`
+								)
+							).json();
+							scheduleEvents = scheduleData.events;
+							console.log("Using tomorrow's schedule");
+							currentDateOffset = currentDate;
+						} else {
+							currentDateOffset = new Date();
 						}
 
 						if (!scheduleEvents || scheduleEvents.length === 0) {
-							document.getElementById("current")!.innerHTML = "Out of Session"
+							document.getElementById("current")!.innerHTML = "Out of Session";
 							document.getElementById("classes")!.innerHTML = `
 								<h1 id="title" class="text-center text-lg md:text-3xl">
 									No classes today
 								</h1>
-							`
+							`;
 						}
 
-						animateNotif("Schedule Updated", document.querySelector("#refresh_notif")! as HTMLElement)
-						clearInterval(currentScheduleInterval)
-						currentScheduleInterval = setInterval(() => updateSchedule(scheduleEvents), 100)
-						timeSinceLastFocus = 0
-					})
-			}
-			else if (document.hasFocus() && timeSinceLastFocus != 0) {
-				timeSinceLastFocus = 0
+						animateNotif(
+							"Schedule Updated",
+							document.querySelector("#refresh_notif")! as HTMLElement
+						);
+						clearInterval(currentScheduleInterval);
+						currentScheduleInterval = setInterval(
+							() => updateSchedule(scheduleEvents),
+							100
+						);
+						timeSinceLastFocus = 0;
+					});
+			} else if (document.hasFocus() && timeSinceLastFocus != 0) {
+				timeSinceLastFocus = 0;
 			}
 		}, 1000);
-		// make it expand slowly and also fade out		
+		// make it expand slowly and also fade out
 		const loadingInterval = setInterval(async () => {
 			if (document.getElementById("classes")!.innerHTML === "") {
-				return
+				return;
 			}
-			await new Promise(resolve => setTimeout(resolve, 150))
-			document.getElementById("loading-splash").animate([
-				{ opacity: 1, transform: "scale(1)" },
-				{ opacity: 0, transform: "scale(1.5)" }
-			], {
-				duration: 1000,
-				easing: "ease-in-out",
-				fill: "forwards"
-			})
+			await new Promise((resolve) => setTimeout(resolve, 150));
+			document.getElementById("loading-splash").animate(
+				[
+					{ opacity: 1, transform: "scale(1)" },
+					{ opacity: 0, transform: "scale(1.5)" },
+				],
+				{
+					duration: 1000,
+					easing: "ease-in-out",
+					fill: "forwards",
+				}
+			);
 			setTimeout(() => {
-				document.getElementById("loading-splash")!.style.display = "none"
-			}, 900)
+				document.getElementById("loading-splash")!.style.display = "none";
+			}, 900);
 
-			clearInterval(loadingInterval)
+			clearInterval(loadingInterval);
 		}, 250);
-		
 	</script>
 	<style --data-og-styles>
 		/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'); */
-		@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hind&family=Nunito+Sans&family=Open+Sans&family=PT+Serif&family=Raleway:wght@500&family=Varela+Round&display=swap');
+		@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hind&family=Nunito+Sans&family=Open+Sans&family=PT+Serif&family=Raleway:wght@500&family=Varela+Round&display=swap");
 		@tailwind base;
 		@tailwind components;
 		@tailwind utilities;
@@ -640,23 +850,23 @@ const isInDev = import.meta.env.NODE_ENV ? "" : ""
 			--background: #050014;
 			--text-color: #ffffff;
 			--border-width: 0px;
-			--progress-bar: #3B82F6;
+			--progress-bar: #3b82f6;
 			--border-color: black;
 			--progress-bar-opacity: 20%;
 			--quickpeek: var(--light-primary);
 		}
 
 		body {
-			background-size: cover;
 			/* font-family: 'Inter', sans-serif; */
 			/* font-family: Arial, Helvetica, sans-serif; */
-			@apply bg-background transition-all h-screen text-white;
+			background: var(--background);
+			background-size: cover;
+			background-repeat: no-repeat;
+			@apply transition-all h-screen text-white;
 		}
 
 		.introjs-tooltiptext {
 			color: black !important;
 		}
-
 	</style>
 </Layout>
-

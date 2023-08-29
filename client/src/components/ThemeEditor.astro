@@ -36,7 +36,6 @@ import ResetColor from "./ResetColor.astro";
     <button class="bg-light-primary p-2 pl-4 pr-4 rounded-lg" id="applyPreviewTheme">Apply</button>
     <button class="bg-light-primary p-2 pl-4 pr-4 rounded-lg" id="closePreviewTheme">Close</button>
   </div>
-
 </div>
 <div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800 text-true-white" style="display: none;" data-intro="Welcome to the Theme Editor ✏️" id="themeEditor">
   <div class="flex justify-start items-center pl-4 pr-4 mt-4">
@@ -217,7 +216,17 @@ import ResetColor from "./ResetColor.astro";
         <div class="flex w-full">
           <h1 class="font-mono text-lg text-true-white" data-color>background</h1>
           <ResetColor />
-          <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="background" data-default="#050014" value="#050014" />
+          <button class="text-gray-600 hover:text-yellow-500 mr-2" data-switch-to-file>
+            <span class="material-symbols-outlined">
+              swap_horiz
+            </span>
+          </button>
+          <input id="set_background" class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="background" data-default="#050014" value="#050014" />
+          <label for="set_background" class="text-gray-600 hover:text-green-500 hover:cursor-pointer w-12 h-8 justify-center item-center flex" style="display: none;">
+            <span class="material-symbols-outlined">
+              file_upload
+            </span>
+          </label>
         </div>
         <div class="flex w-full">
           <h1 class="font-mono text-lg text-true-white" data-color>text color</h1>
@@ -278,7 +287,7 @@ import ResetColor from "./ResetColor.astro";
   const addPropertyEvent = new CustomEvent("addPropertyToThemeEditor");
   let firstRun = localStorage.getItem("firstRun") === null;
   let eyedropMode = false;
-  function updateColors() {
+  async function updateColors() {
     const colorDefinitions = document.querySelectorAll("[data-color-selection]");
     if (document.getElementById("color-definitions")) {
       document.getElementById("color-definitions")!.remove();
@@ -288,12 +297,24 @@ import ResetColor from "./ResetColor.astro";
     const style = document.createElement("style");
     style.id = "color-definitions";
     style.innerHTML += `:root {\n`
-    colorDefinitions.forEach((colorDefinitionRaw) => {
+    for (const colorDefinitionRaw of colorDefinitions) {
       const colorDefinition = colorDefinitionRaw as HTMLInputElement;
       const color = colorDefinition.getAttribute("data-color-selection");
       const colorValue = colorDefinition.value;
-      style.innerHTML += `--${color}: ${colorValue}${colorDefinition.type === "number" ? colorDefinition.getAttribute("data-suffix")! : ""} !important;\n`;
-    });
+      if (colorDefinition.type === "file") {
+        await new Promise<void>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            style.innerHTML += `--${color}: url(${reader.result}) !important;\n`;
+            resolve();
+          }
+          reader.readAsDataURL(colorDefinition.files![0]);
+        });
+      }
+      else {
+        style.innerHTML += `--${color}: ${colorValue}${colorDefinition.type === "number" ? colorDefinition.getAttribute("data-suffix")! : ""} !important;\n`;
+      }
+    }
     style.innerHTML += `\n}`;
     head.appendChild(style);
   }
@@ -567,22 +588,24 @@ import ResetColor from "./ResetColor.astro";
           let reader = new FileReader();
           await new Promise((resolve, reject) => {
             reader.onload = function (e) {
-              cssToPush.push({
+              // convert image file to base64 string and save to localStorage
+             cssToPush.push({
                 rule: cssRule.value,
-                value: (e.target as FileReader).result as string
+                value: `url(${reader.result as string})`
               });
               resolve(e);
-              console.log(cssToPush);
+              cssArray.push(...cssToPush);
             };
             reader.readAsDataURL(cssValue.files![0]);
           })
-          continue;
+        } else {
+          cssToPush.push({
+            rule: cssRule.value,
+            value: cssValue.value
+          });
+          cssArray.push(...cssToPush);
         }
-        cssToPush.push({
-          rule: cssRule.value,
-          value: cssValue.value
-        });
-        cssArray.push(...cssToPush);
+        
 
       }
       data.elements.push({
@@ -592,12 +615,27 @@ import ResetColor from "./ResetColor.astro";
     }
     let colors = document.getElementById("colorpalette")!.children;
     for (let color of colors) {
-      let colorValue = color.children[2] as HTMLInputElement;
+      let colorValue = color.querySelector("input")!!;
       if (!colorValue) continue;
-      data.colors.push({
-        name: colorValue.getAttribute("data-color-selection")!,
-        value: colorValue.value + (colorValue.type === "number" ? colorValue.getAttribute("data-suffix") : "")
-      });
+
+      if (colorValue.type === "file") {
+        let reader = new FileReader();
+        await new Promise((resolve, reject) => {
+          reader.onload = function (e) {
+            // convert image file to base64 string and save to localStorage
+            data.colors.push({
+              name: colorValue.getAttribute("data-color-selection")!,
+              value: `url(${reader.result as string})`
+            });
+            resolve(e);
+          };
+          reader.readAsDataURL(colorValue.files![0]);
+        })
+      } else 
+        data.colors.push({
+          name: colorValue.getAttribute("data-color-selection")!,
+          value: colorValue.value + (colorValue.type === "number" ? colorValue.getAttribute("data-suffix") : "")
+        });
     }
     localStorage.setItem(`savedEditor.${themeSelected}`, JSON.stringify(data));
     console.log("Saved at " + new Date().toLocaleTimeString());
@@ -704,11 +742,16 @@ import ResetColor from "./ResetColor.astro";
     let colors = document.getElementById("colorpalette")!.children;
     for (let color of colors) {
       let colorName = color.children[0] as HTMLHeadingElement;
-      let colorValue = color.children[2] as HTMLInputElement;
+      let colorValue = color.querySelector("input")!!;
       if (!colorName || !colorValue) continue;
       for (let savedColor of data.colors) {
         if (savedColor.name === colorValue.getAttribute("data-color-selection")!) {
           colorValue.value = savedColor.value.replace(colorValue.getAttribute("data-suffix")!, "");
+          if (savedColor.value.startsWith("url(")) {
+            colorValue.type = "file";
+            colorValue.style.display = "none";
+            color.querySelector("label")!!.style.display = "flex";
+          }
           break;
         }
       }
@@ -721,23 +764,6 @@ import ResetColor from "./ResetColor.astro";
       let elementInEditor = document.getElementById("themedef-" + elementCSSData.element);
       let placeholderAlreadyProcessed = false;
       for (const cssRule of elementCSSData.css) {
-        if (cssRule.rule === "text-align" && !placeholderAlreadyProcessed) {
-          placeholderAlreadyProcessed = true;
-          continue;
-        }
-
-        if (cssRule.rule.includes("image")) {
-          let url = cssRule.value;
-          let filename = url.split("/").pop()!.split(".")[0];
-          let fileExtension = url.split("/").pop()!.split(".")[1];
-          let file = new File([url], `${filename}.${fileExtension}`, { type: `image/${fileExtension}` });
-          let fileReader = new FileReader();
-          fileReader.onload = (e) => {
-            addPropertyToElement(elementInEditor!.children[3].children[0]! as HTMLElement, cssRule.rule, (e.target as FileReader).result as string);
-          }
-          fileReader.readAsDataURL(file);
-          continue;
-        }
         addPropertyToElement(elementInEditor!.children[3].children[0]! as HTMLElement, cssRule.rule, cssRule.value);
       }
     }
@@ -834,14 +860,30 @@ import ResetColor from "./ResetColor.astro";
 
   document.querySelectorAll('[data-reset-colors]').forEach((element) => {
     element.addEventListener("click", () => {
-      let colorInput = element.parentElement!.children[2] as HTMLInputElement;
+      let colorInput = element.parentElement!.querySelector("input")!!;
       colorInput.value = colorInput.getAttribute("data-default")!;
       updateColors();
     });
   });
+
+  document.querySelectorAll('[data-switch-to-file]').forEach((element) => {
+    element.addEventListener("click", () => {
+      let fileInput = element.parentElement!.querySelector("input")!!;
+      const label = element.parentElement!.querySelector("label")!!;
+      if (fileInput.type === "color") {
+        label.style.display = 'flex';
+        fileInput.style.display = 'none';
+        fileInput.type = "file";
+      }
+      else if (fileInput.type === "file") {
+        label.style.display = 'none';
+        fileInput.style.display = 'block'; 
+        fileInput.type = "color"; 
+      } 
+    })
+  })
   
   themeEditor.style.display = "none";
-
   // prevent theme editor from being themed
   function addThemeEditorTag(element: HTMLElement) {
     element.setAttribute("data-in-theme-editor", "")
