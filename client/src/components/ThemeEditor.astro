@@ -264,6 +264,9 @@ import ResetColor from "./ResetColor.astro";
       <div class="flex justify-center items-center flex-row flex-wrap pl-4 pr-4 mt-2 gap-2 pb-24 text-sm">
         <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="shareTheme" data-intro="This is the 'Share Theme' button where you can share you theme with a link.">Share Theme</button>
         <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="showTutorial" data-intro="Click this button to view the tutorial again!">Show Tutorial</button>
+        <a href="https://forms.gle/z3C5rCcsQxQd9Dnu6" target="_blank">
+          <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" data-intro="This is where you can submit your theme to our form for a chance to be added to the site.">Submit Theme</button>
+        </a>
       </div>
     </div>
 
@@ -696,7 +699,7 @@ import ResetColor from "./ResetColor.astro";
 
     // for each of the color definitions, revert them to the default color palette
     for (let childPalette of document.querySelector("#colorpalette")!.children) {
-      const colorDefinition = childPalette.children[2] as HTMLInputElement;
+      const colorDefinition = childPalette.querySelector("input")!!;
       let color = colorDefinition.getAttribute("data-color-selection")!;
       let colorValue = colorDefinition.getAttribute("data-default")!;
       colorDefinition.value = colorValue;
@@ -784,12 +787,14 @@ import ResetColor from "./ResetColor.astro";
         
         loadFromSaved(atob(theme!));
         (document.querySelector("#preview_menu")! as HTMLElement).style.display = "flex";
+        return;
       }
       loadSelectedTheme();
     }
   }, 100);
 
   function loadSelectedTheme() {
+    if (isPreviewing) return;
     document.getElementById("throwback")!!.style.visibility = "hidden";
     document.getElementById("vercel")!!.style.visibility = "visible";
     if (!isPreviewing) {
@@ -883,6 +888,7 @@ import ResetColor from "./ResetColor.astro";
         fileInput.style.display = 'block'; 
         fileInput.type = "color"; 
       } 
+      updateColors();
     })
   })
   
@@ -1024,18 +1030,21 @@ import ResetColor from "./ResetColor.astro";
       saveProgress();
     }
   });
-
   // create a custom dom event called "refresh theme" and make an event listener that triggers the loadFromSaved function
   document.addEventListener("refreshTheme", async (ev) => {
     // get the detail of the event to see if we should allow refresh
     let detail = (ev as CustomEvent).detail || { disallowRefresh: false };
     const allowsRefresh = detail.disallowRefresh != null ? !detail.disallowRefresh : true;
+    if (themeSelected === "blurred-img" || localStorage.getItem("theme") === "blurred-img") {
+      // if the theme is blurred-img, we need to reload the page to refresh the blurred image
+      if (allowsRefresh) {
+        window.location.reload();
+      }
+      return;
+    } 
     console.log("Theme refresh caught!")
     themeSelected = localStorage.getItem("theme") || "default";
-
-    if (allowsRefresh && themeSelected === "blurred-img") {
-      window.location.reload();
-    }
+    
     loadSelectedTheme();
   });
 </script>
