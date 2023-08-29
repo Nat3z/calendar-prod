@@ -1,17 +1,26 @@
 ---
 import Layout from "../layouts/Layout.astro";
-
 ---
 
 <Layout title="Restore Theme Backups">
-  <div class="w-screen h-screen bg-slate-800 flex justify-center items-center flex-col gap-4">
-    <h1 class="text-true-white text-2xl">Theme backups will now be restored.</h1>
-    <button id="restore" class="text-true-white p-2 pr-4 pl-4 rounded-lg bg-slate-600">Restore</button>
+  <div
+    class="w-screen h-screen bg-slate-800 flex justify-center items-center flex-col gap-4"
+  >
+    <h1 class="text-true-white text-2xl">
+      Theme backups will now be restored.
+    </h1>
+    <button
+      id="restore"
+      class="text-true-white p-2 pr-4 pl-4 rounded-lg bg-slate-600"
+      >Restore</button
+    >
   </div>
 
   <script>
     function restore() {
-      const backupOfSalesian = localStorage.getItem("savedEditorBACKUP.salesian");
+      const backupOfSalesian = localStorage.getItem(
+        "savedEditorBACKUP.salesian"
+      );
       const backupOfHotdog = localStorage.getItem("savedEditorBACKUP.hotdog");
       const backupOfPurple = localStorage.getItem("savedEditorBACKUP.purple");
       if (backupOfSalesian)
@@ -25,7 +34,9 @@ import Layout from "../layouts/Layout.astro";
       localStorage.removeItem("savedEditorBACKUP.hotdog");
       localStorage.removeItem("savedEditorBACKUP.purple");
 
-      alert("Theme backups have been restored. Reload the main page to see the changes.");
+      alert(
+        "Theme backups have been restored. Reload the main page to see the changes."
+      );
       window.close();
     }
 

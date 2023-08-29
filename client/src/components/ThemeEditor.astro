@@ -1,11 +1,10 @@
 ---
 import ResetColor from "./ResetColor.astro";
-
 ---
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
-<div class="fixed opacity-0 bg-green-400 text-true-white rounded-lg p-4 top-2 right-2 z-40 hidden justify-start items-center gap-4 h-12" id="autosave_update" data-in-theme-editor>
+<div class="fixed opacity-0 bg-green-400 text-true-white rounded-lg p-4 top-2 right-2 z-40 hidden justify-start items-center gap-4 h-12 pointer-events-none" id="autosave_update" data-in-theme-editor>
   <span class="material-symbols-outlined">
     save
   </span>
@@ -13,7 +12,7 @@ import ResetColor from "./ResetColor.astro";
   <h1 class="text-lg font-mono" data-in-theme-editor>Autosaved at </h1>
 </div>
 
-<div class="fixed opacity-0 bg-blue-400 text-true-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="share_notif" data-in-theme-editor>
+<div class="fixed opacity-0 bg-blue-400 text-true-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12 pointer-events-none" id="share_notif" data-in-theme-editor>
   <span class="material-symbols-outlined">
     share
   </span>
@@ -21,7 +20,7 @@ import ResetColor from "./ResetColor.astro";
   <h1 class="text-lg font-mono" data-in-theme-editor>Copied to Clipboard!</h1>
 </div>
 
-<div class="fixed opacity-0 bg-yellow-400 text-true-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12" id="warn_notif" data-in-theme-editor>
+<div class="fixed opacity-0 bg-yellow-400 text-true-white rounded-lg p-4 top-2 right-2 pointer-events-none z-10 hidden justify-start items-center gap-4 h-12" id="warn_notif" data-in-theme-editor>
   <span class="material-symbols-outlined">
     warning
   </span>
@@ -36,7 +35,6 @@ import ResetColor from "./ResetColor.astro";
     <button class="bg-light-primary p-2 pl-4 pr-4 rounded-lg" id="applyPreviewTheme">Apply</button>
     <button class="bg-light-primary p-2 pl-4 pr-4 rounded-lg" id="closePreviewTheme">Close</button>
   </div>
-
 </div>
 <div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800 text-true-white" style="display: none;" data-intro="Welcome to the Theme Editor ✏️" id="themeEditor">
   <div class="flex justify-start items-center pl-4 pr-4 mt-4">
@@ -217,7 +215,17 @@ import ResetColor from "./ResetColor.astro";
         <div class="flex w-full">
           <h1 class="font-mono text-lg text-true-white" data-color>background</h1>
           <ResetColor />
-          <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="background" data-default="#050014" value="#050014" />
+          <button class="text-gray-600 hover:text-yellow-500 mr-2" data-switch-to-file>
+            <span class="material-symbols-outlined">
+              swap_horiz
+            </span>
+          </button>
+          <input id="set_background" class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="background" data-default="#050014" value="#050014" />
+          <label for="set_background" class="text-gray-600 hover:text-green-500 hover:cursor-pointer w-12 h-8 justify-center item-center flex" style="display: none;">
+            <span class="material-symbols-outlined">
+              file_upload
+            </span>
+          </label>
         </div>
         <div class="flex w-full">
           <h1 class="font-mono text-lg text-true-white" data-color>text color</h1>
@@ -235,12 +243,12 @@ import ResetColor from "./ResetColor.astro";
           <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="border-color" data-default="#000000" value="#000000" />
         </div>
         <div class="flex w-full">
-          <h1 class="font-mono text-lg text-true-white" data-color>progress-bar color</h1>
+          <h1 class="font-mono text-lg text-true-white" data-color>progressbar color</h1>
           <ResetColor />
           <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="progress-bar" data-default="#3B82F6" value="#3B82F6" />
         </div>
         <div class="flex w-full">
-          <h1 class="font-mono text-lg text-true-white" data-color>progress-bar opacity</h1>
+          <h1 class="font-mono text-lg text-true-white" data-color>progressbar opacity</h1>
           <ResetColor />
           <input class="w-12 h-8 rounded-lg text-black" type="number" data-suffix="%" data-color-selection="progress-bar-opacity" data-default="20" value="20" />
         </div>
@@ -255,6 +263,9 @@ import ResetColor from "./ResetColor.astro";
       <div class="flex justify-center items-center flex-row flex-wrap pl-4 pr-4 mt-2 gap-2 pb-24 text-sm">
         <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="shareTheme" data-intro="This is the 'Share Theme' button where you can share you theme with a link.">Share Theme</button>
         <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="showTutorial" data-intro="Click this button to view the tutorial again!">Show Tutorial</button>
+        <a href="https://forms.gle/z3C5rCcsQxQd9Dnu6" target="_blank">
+          <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" data-intro="This is where you can submit your theme to our form for a chance to be added to the site.">Submit Theme</button>
+        </a>
       </div>
     </div>
 
@@ -272,13 +283,13 @@ import ResetColor from "./ResetColor.astro";
 
 <script>
   import introJs from "intro.js";
-
+  import { blurredTheme } from "../lib/bigthemes";
   let themeSelected = localStorage.getItem("theme") || "default";
   const themeEditor = document.getElementById("themeEditor")!;
   const addPropertyEvent = new CustomEvent("addPropertyToThemeEditor");
   let firstRun = localStorage.getItem("firstRun") === null;
   let eyedropMode = false;
-  function updateColors() {
+  async function updateColors() {
     const colorDefinitions = document.querySelectorAll("[data-color-selection]");
     if (document.getElementById("color-definitions")) {
       document.getElementById("color-definitions")!.remove();
@@ -288,12 +299,24 @@ import ResetColor from "./ResetColor.astro";
     const style = document.createElement("style");
     style.id = "color-definitions";
     style.innerHTML += `:root {\n`
-    colorDefinitions.forEach((colorDefinitionRaw) => {
+    for (const colorDefinitionRaw of colorDefinitions) {
       const colorDefinition = colorDefinitionRaw as HTMLInputElement;
       const color = colorDefinition.getAttribute("data-color-selection");
       const colorValue = colorDefinition.value;
-      style.innerHTML += `--${color}: ${colorValue}${colorDefinition.type === "number" ? colorDefinition.getAttribute("data-suffix")! : ""} !important;\n`;
-    });
+      if (colorDefinition.type === "file") {
+        await new Promise<void>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            style.innerHTML += `--${color}: url(${reader.result}) !important;\n`;
+            resolve();
+          }
+          reader.readAsDataURL(colorDefinition.files![0]);
+        });
+      }
+      else {
+        style.innerHTML += `--${color}: ${colorValue}${colorDefinition.type === "number" ? colorDefinition.getAttribute("data-suffix")! : ""} !important;\n`;
+      }
+    }
     style.innerHTML += `\n}`;
     head.appendChild(style);
   }
@@ -353,7 +376,7 @@ import ResetColor from "./ResetColor.astro";
       updateColors();
     }
 
-    copyof.children[0].addEventListener("click", (e) => {
+    copyof.children[0].addEventListener("click", () => {
       let cssElement = document.getElementById(copyof.parentElement!.parentElement!.getAttribute("data-element")!.replace("#", ""));
       if (!cssElement) {
         for (const element of document.querySelectorAll(copyof.parentElement!.parentElement!.getAttribute("data-element")!)) {
@@ -567,22 +590,24 @@ import ResetColor from "./ResetColor.astro";
           let reader = new FileReader();
           await new Promise((resolve, reject) => {
             reader.onload = function (e) {
-              cssToPush.push({
+              // convert image file to base64 string and save to localStorage
+             cssToPush.push({
                 rule: cssRule.value,
-                value: (e.target as FileReader).result as string
+                value: `url(${reader.result as string})`
               });
               resolve(e);
-              console.log(cssToPush);
+              cssArray.push(...cssToPush);
             };
             reader.readAsDataURL(cssValue.files![0]);
           })
-          continue;
+        } else {
+          cssToPush.push({
+            rule: cssRule.value,
+            value: cssValue.value
+          });
+          cssArray.push(...cssToPush);
         }
-        cssToPush.push({
-          rule: cssRule.value,
-          value: cssValue.value
-        });
-        cssArray.push(...cssToPush);
+        
 
       }
       data.elements.push({
@@ -592,12 +617,27 @@ import ResetColor from "./ResetColor.astro";
     }
     let colors = document.getElementById("colorpalette")!.children;
     for (let color of colors) {
-      let colorValue = color.children[2] as HTMLInputElement;
+      let colorValue = color.querySelector("input")!!;
       if (!colorValue) continue;
-      data.colors.push({
-        name: colorValue.getAttribute("data-color-selection")!,
-        value: colorValue.value + (colorValue.type === "number" ? colorValue.getAttribute("data-suffix") : "")
-      });
+
+      if (colorValue.type === "file") {
+        let reader = new FileReader();
+        await new Promise((resolve, reject) => {
+          reader.onload = function (e) {
+            // convert image file to base64 string and save to localStorage
+            data.colors.push({
+              name: colorValue.getAttribute("data-color-selection")!,
+              value: `url(${reader.result as string})`
+            });
+            resolve(e);
+          };
+          reader.readAsDataURL(colorValue.files![0]);
+        })
+      } else 
+        data.colors.push({
+          name: colorValue.getAttribute("data-color-selection")!,
+          value: colorValue.value + (colorValue.type === "number" ? colorValue.getAttribute("data-suffix") : "")
+        });
     }
     localStorage.setItem(`savedEditor.${themeSelected}`, JSON.stringify(data));
     console.log("Saved at " + new Date().toLocaleTimeString());
@@ -658,7 +698,7 @@ import ResetColor from "./ResetColor.astro";
 
     // for each of the color definitions, revert them to the default color palette
     for (let childPalette of document.querySelector("#colorpalette")!.children) {
-      const colorDefinition = childPalette.children[2] as HTMLInputElement;
+      const colorDefinition = childPalette.querySelector("input")!!;
       let color = colorDefinition.getAttribute("data-color-selection")!;
       let colorValue = colorDefinition.getAttribute("data-default")!;
       colorDefinition.value = colorValue;
@@ -704,11 +744,16 @@ import ResetColor from "./ResetColor.astro";
     let colors = document.getElementById("colorpalette")!.children;
     for (let color of colors) {
       let colorName = color.children[0] as HTMLHeadingElement;
-      let colorValue = color.children[2] as HTMLInputElement;
+      let colorValue = color.querySelector("input")!!;
       if (!colorName || !colorValue) continue;
       for (let savedColor of data.colors) {
         if (savedColor.name === colorValue.getAttribute("data-color-selection")!) {
           colorValue.value = savedColor.value.replace(colorValue.getAttribute("data-suffix")!, "");
+          if (savedColor.value.startsWith("url(")) {
+            colorValue.type = "file";
+            colorValue.style.display = "none";
+            color.querySelector("label")!!.style.display = "flex";
+          }
           break;
         }
       }
@@ -721,23 +766,6 @@ import ResetColor from "./ResetColor.astro";
       let elementInEditor = document.getElementById("themedef-" + elementCSSData.element);
       let placeholderAlreadyProcessed = false;
       for (const cssRule of elementCSSData.css) {
-        if (cssRule.rule === "text-align" && !placeholderAlreadyProcessed) {
-          placeholderAlreadyProcessed = true;
-          continue;
-        }
-
-        if (cssRule.rule.includes("image")) {
-          let url = cssRule.value;
-          let filename = url.split("/").pop()!.split(".")[0];
-          let fileExtension = url.split("/").pop()!.split(".")[1];
-          let file = new File([url], `${filename}.${fileExtension}`, { type: `image/${fileExtension}` });
-          let fileReader = new FileReader();
-          fileReader.onload = (e) => {
-            addPropertyToElement(elementInEditor!.children[3].children[0]! as HTMLElement, cssRule.rule, (e.target as FileReader).result as string);
-          }
-          fileReader.readAsDataURL(file);
-          continue;
-        }
         addPropertyToElement(elementInEditor!.children[3].children[0]! as HTMLElement, cssRule.rule, cssRule.value);
       }
     }
@@ -758,12 +786,14 @@ import ResetColor from "./ResetColor.astro";
         
         loadFromSaved(atob(theme!));
         (document.querySelector("#preview_menu")! as HTMLElement).style.display = "flex";
+        return;
       }
       loadSelectedTheme();
     }
   }, 100);
 
   function loadSelectedTheme() {
+    if (isPreviewing) return;
     document.getElementById("throwback")!!.style.visibility = "hidden";
     document.getElementById("vercel")!!.style.visibility = "visible";
     if (!isPreviewing) {
@@ -787,6 +817,9 @@ import ResetColor from "./ResetColor.astro";
       }
       else if (themeSelected === "hotdog" && !doesCurrentThemeHaveEdits) {
         loadFromSaved(hotdogTheme);
+      }
+      else if (themeSelected === "blurred-img" && !doesCurrentThemeHaveEdits) {
+        loadFromSaved(blurredTheme);
       }
       else {
         loadFromSaved();
@@ -834,14 +867,31 @@ import ResetColor from "./ResetColor.astro";
 
   document.querySelectorAll('[data-reset-colors]').forEach((element) => {
     element.addEventListener("click", () => {
-      let colorInput = element.parentElement!.children[2] as HTMLInputElement;
+      let colorInput = element.parentElement!.querySelector("input")!!;
       colorInput.value = colorInput.getAttribute("data-default")!;
       updateColors();
     });
   });
+
+  document.querySelectorAll('[data-switch-to-file]').forEach((element) => {
+    element.addEventListener("click", () => {
+      let fileInput = element.parentElement!.querySelector("input")!!;
+      const label = element.parentElement!.querySelector("label")!!;
+      if (fileInput.type === "color") {
+        label.style.display = 'flex';
+        fileInput.style.display = 'none';
+        fileInput.type = "file";
+      }
+      else if (fileInput.type === "file") {
+        label.style.display = 'none';
+        fileInput.style.display = 'block'; 
+        fileInput.type = "color"; 
+      } 
+      updateColors();
+    })
+  })
   
   themeEditor.style.display = "none";
-
   // prevent theme editor from being themed
   function addThemeEditorTag(element: HTMLElement) {
     element.setAttribute("data-in-theme-editor", "")
@@ -979,14 +1029,21 @@ import ResetColor from "./ResetColor.astro";
       saveProgress();
     }
   });
-
   // create a custom dom event called "refresh theme" and make an event listener that triggers the loadFromSaved function
   document.addEventListener("refreshTheme", async (ev) => {
     // get the detail of the event to see if we should allow refresh
     let detail = (ev as CustomEvent).detail || { disallowRefresh: false };
     const allowsRefresh = detail.disallowRefresh != null ? !detail.disallowRefresh : true;
+    if (themeSelected === "blurred-img" || localStorage.getItem("theme") === "blurred-img") {
+      // if the theme is blurred-img, we need to reload the page to refresh the blurred image
+      if (allowsRefresh) {
+        window.location.reload();
+      }
+      return;
+    } 
     console.log("Theme refresh caught!")
     themeSelected = localStorage.getItem("theme") || "default";
+    
     loadSelectedTheme();
   });
 </script>
