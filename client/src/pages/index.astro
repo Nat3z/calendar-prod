@@ -1,29 +1,13 @@
 ---
-import moment from "moment";
 import Settings from "../layouts/Settings.astro";
 import Layout from "../layouts/Layout.astro";
 import ThemeModifier from "../components/ThemeModifier.astro";
 import ThemeEditor from "../components/ThemeEditor.astro";
 import ScreenSaver from "../components/ScreenSaver.astro";
-import VoteForVP from "../components/VoteForVP.astro";
 import "../styles/introjs-royale.css";
 import Changelog from "../components/Changelog.astro";
-import Spinner from "../components/Spinner.astro";
 import StorageVersion from "../components/StorageVersion.astro";
 
-function replaceShorthands(period: string) {
-	// replace period to Lunch if it's ONLY "L" with regex
-	// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-	return period.replace(/(\d) Blk/, "Block $1").replace(/^L$/, "Lunch");
-}
-
-function parseTime(t: string, offsetTime = new Date()) {
-	let momentDate = moment(t, "h:mm A").toDate();
-	if (momentDate.getHours() < 8) {
-		momentDate.setHours(momentDate.getHours() + 12);
-	}
-	return momentDate;
-}
 const isInDev = import.meta.env.NODE_ENV ? "" : "";
 ---
 

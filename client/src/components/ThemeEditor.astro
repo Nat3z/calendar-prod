@@ -1,6 +1,5 @@
 ---
 import ResetColor from "./ResetColor.astro";
-
 ---
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
@@ -244,12 +243,12 @@ import ResetColor from "./ResetColor.astro";
           <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="border-color" data-default="#000000" value="#000000" />
         </div>
         <div class="flex w-full">
-          <h1 class="font-mono text-lg text-true-white" data-color>progress-bar color</h1>
+          <h1 class="font-mono text-lg text-true-white" data-color>progressbar color</h1>
           <ResetColor />
           <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="progress-bar" data-default="#3B82F6" value="#3B82F6" />
         </div>
         <div class="flex w-full">
-          <h1 class="font-mono text-lg text-true-white" data-color>progress-bar opacity</h1>
+          <h1 class="font-mono text-lg text-true-white" data-color>progressbar opacity</h1>
           <ResetColor />
           <input class="w-12 h-8 rounded-lg text-black" type="number" data-suffix="%" data-color-selection="progress-bar-opacity" data-default="20" value="20" />
         </div>
@@ -377,7 +376,7 @@ import ResetColor from "./ResetColor.astro";
       updateColors();
     }
 
-    copyof.children[0].addEventListener("click", (e) => {
+    copyof.children[0].addEventListener("click", () => {
       let cssElement = document.getElementById(copyof.parentElement!.parentElement!.getAttribute("data-element")!.replace("#", ""));
       if (!cssElement) {
         for (const element of document.querySelectorAll(copyof.parentElement!.parentElement!.getAttribute("data-element")!)) {
