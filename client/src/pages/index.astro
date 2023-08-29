@@ -239,7 +239,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 
 			quickpeek.classList.remove("backdrop-blur");
 			quickpeek.classList.remove("bg-white/0");
-
+			quickpeek.classList.add("bg-quickpeek");
 			mainschedule.classList.remove("backdrop-blur");
 			mainschedule.classList.remove("dark:bg-white/5");
 			mainschedule.classList.remove("bg-black/5");
@@ -266,6 +266,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 
 				quickpeek.classList.add("backdrop-blur");
 				quickpeek.classList.add("bg-white/0");
+				quickpeek.classList.remove("bg-quickpeek");
 				document.getElementById("settings_cog")!.classList.add("backdrop-blur");
 				document.getElementById("settings_cog")!.classList.add("bg-white/5");
 
@@ -273,7 +274,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				mainschedule.classList.add("dark:bg-white/5");
 				mainschedule.classList.add("bg-black/5");
 
-				document.body.classList.add("bg-light");
+				document.body.classList.add("!bg-light");
 				document.getElementById("vercel")!.classList.add("-bottom-8");
 				document.body.classList.add("dark:bg-dark");
 
