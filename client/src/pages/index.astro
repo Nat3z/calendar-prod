@@ -243,7 +243,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			mainschedule.classList.remove("backdrop-blur");
 			mainschedule.classList.remove("dark:bg-white/5");
 			mainschedule.classList.remove("bg-black/5");
-
+			mainschedule.classList.add("bg-primary");
 			document
 				.getElementById("settings_cog")!
 				.classList.remove("backdrop-blur");
@@ -251,7 +251,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 
 			document.body.classList.remove("bg-light");
 			document.body.classList.remove("dark:bg-dark");
-			document.getElementById("vercel")!.classList.remove("-bottom-8");
+			document.getElementById("vercel")!.style.bottom = "1rem";
 
 			document.body.classList.remove("bg-dark-primary");
 			document.body.style.cursor = "auto";
@@ -273,13 +273,14 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				mainschedule.classList.add("backdrop-blur");
 				mainschedule.classList.add("dark:bg-white/5");
 				mainschedule.classList.add("bg-black/5");
-
-				document.body.classList.add("!bg-light");
-				document.getElementById("vercel")!.classList.add("-bottom-8");
+				mainschedule.classList.remove("bg-primary");
+				document.body.classList.add("bg-light");
+				document.getElementById("vercel")!.style.bottom = "-1.5rem";
+				console.log("hello!");
+				document.body.style.cursor = "none";
 				document.body.classList.add("dark:bg-dark");
 
 				document.body.classList.remove("bg-dark-primary");
-				document.body.style.cursor = "none";
 			}, 5000);
 		}
 
