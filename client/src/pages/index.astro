@@ -521,7 +521,10 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				// calculate how many days it is ahead of now
 				let dayOffset = currentDateOffset.getDate() - current.getDate();
 				if (dayOffset < 0) {
-					if (dayOffset == -1) text = "Yesterday's Schedule";
+					// check if the day offset is in the next month or not
+					if (currentDateOffset.getMonth() != current.getMonth()) 
+						text = "Tomorrow's Schedule";
+					else if (dayOffset == -1) text = "Yesterday's Schedule";
 					else text = `${dayOffset * -1} Days in the Past`;
 				} else {
 					if (dayOffset == 1) text = "Tomorrow's Schedule";
