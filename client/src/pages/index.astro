@@ -262,8 +262,8 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				const propertyDark = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--background-image-dark");
 				const propertyLight = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--background-image-light");
 				if ((
-					propertyDark === 'url(./dark.gif)' ||
-					propertyLight === 'url(./background.gif)'
+					propertyDark === 'url(/dark.gif)' ||
+					propertyLight === 'url(/background.gif)'
 				) || 
 					!propertyDark.startsWith("url(") ||
 					!propertyLight.startsWith("url(")
@@ -920,8 +920,8 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			--border-color: black;
 			--progress-bar-opacity: 20%;
 			--quickpeek: var(--light-primary);
-			--background-image-dark: url("./dark.gif");
-			--background-image-light: url("./background.gif");
+			--background-image-dark: url("/dark.gif");
+			--background-image-light: url("/background.gif");
 		}
 
 		body {
