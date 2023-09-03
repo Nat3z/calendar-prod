@@ -257,8 +257,27 @@ import ResetColor from "./ResetColor.astro";
           <ResetColor />
           <input class="w-12 h-8 rounded-lg text-black" type="color" data-color-selection="quickpeek" data-default="#1a0066" value="#1a0066" />
         </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-true-white" data-color>adaptive bg (light)</h1>
+          
+          <input id="set_adaptive_light" class="w-12 h-8 rounded-lg text-black" type="file" data-color-selection="background-image-light" data-default="url(./light.gif)" value="url(./light.gif)" style="display: none;" />
+          <label for="set_adaptive_light" class="text-gray-600 ml-auto hover:text-green-500 hover:cursor-pointer w-12 h-8 justify-center item-center flex" style="display: flex;">
+            <span class="material-symbols-outlined">
+              file_upload
+            </span>
+          </label>
+        </div>
+        <div class="flex w-full">
+          <h1 class="font-mono text-lg text-true-white" data-color>adaptive bg (dark)</h1>
+          
+          <input id="set_adaptive_dark" class="w-12 h-8 rounded-lg text-black" type="file" data-color-selection="background-image-dark" data-default="url(./dark.gif)" value="url(./dark.gif)" style="display: none;" />
+          <label for="set_adaptive_dark" class="text-gray-600 ml-auto hover:text-green-500 hover:cursor-pointer w-12 h-8 justify-center item-center flex" style="display: flex;">
+            <span class="material-symbols-outlined">
+              file_upload
+            </span>
+          </label>
+        </div>
       </div>
-
       <h1 class="font-mono text-gray-600 text-center">Misc.</h1>
       <div class="flex justify-center items-center flex-row flex-wrap pl-4 pr-4 mt-2 gap-2 pb-24 text-sm">
         <button class="bg-gray-600 p-2 pr-4 pl-4 rounded-lg" id="shareTheme" data-intro="This is the 'Share Theme' button where you can share you theme with a link.">Share Theme</button>
@@ -283,7 +302,7 @@ import ResetColor from "./ResetColor.astro";
 
 <script>
   import introJs from "intro.js";
-  import { blurredTheme } from "../lib/bigthemes";
+  import { blurredTheme, cherryBlossom } from "../lib/bigthemes";
   let themeSelected = localStorage.getItem("theme") || "default";
   const themeEditor = document.getElementById("themeEditor")!;
   const addPropertyEvent = new CustomEvent("addPropertyToThemeEditor");
@@ -304,7 +323,9 @@ import ResetColor from "./ResetColor.astro";
       const color = colorDefinition.getAttribute("data-color-selection");
       const colorValue = colorDefinition.value;
       if (colorDefinition.type === "file") {
-        await new Promise<void>((resolve, reject) => {
+        await new Promise<void>(async (resolve, reject) => {
+          // wait for the file in colorDefinition.files[0] to be loaded fully
+          if (!colorDefinition.files || colorDefinition.files.length === 0) return resolve();
           const reader = new FileReader();
           reader.onload = (event) => {
             style.innerHTML += `--${color}: url(${reader.result}) !important;\n`;
@@ -622,14 +643,25 @@ import ResetColor from "./ResetColor.astro";
 
       if (colorValue.type === "file") {
         let reader = new FileReader();
-        await new Promise((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
+          if (colorValue.files!.length === 0) {
+            // instead get it from the css variable that is already set
+            let cssVar = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--" + colorValue.getAttribute("data-color-selection")!);
+            data.colors.push({
+              name: colorValue.getAttribute("data-color-selection")!,
+              value: cssVar
+            });
+            console.log("Did fallback of getting from the css variable for " + colorValue.getAttribute("data-color-selection")!);
+            resolve()
+            return; 
+          }
           reader.onload = function (e) {
             // convert image file to base64 string and save to localStorage
             data.colors.push({
               name: colorValue.getAttribute("data-color-selection")!,
               value: `url(${reader.result as string})`
             });
-            resolve(e);
+            resolve();
           };
           reader.readAsDataURL(colorValue.files![0]);
         })
@@ -698,10 +730,14 @@ import ResetColor from "./ResetColor.astro";
 
     // for each of the color definitions, revert them to the default color palette
     for (let childPalette of document.querySelector("#colorpalette")!.children) {
-      const colorDefinition = childPalette.querySelector("input")!!;
-      let color = colorDefinition.getAttribute("data-color-selection")!;
+      const colorDefinition = childPalette.querySelector("input");
+      if (!colorDefinition) continue;
       let colorValue = colorDefinition.getAttribute("data-default")!;
-      colorDefinition.value = colorValue;
+      if (colorDefinition.type === "file" && !colorValue.startsWith("url(")) {
+        colorDefinition.type = "color";
+      }
+      if (colorDefinition.type === "color")
+        colorDefinition.value = colorValue;
     }
     let elementCopy = document.getElementById("element-copy")!.cloneNode(true) as HTMLElement;
     document.getElementById("elements")!.innerHTML = "";
@@ -748,7 +784,9 @@ import ResetColor from "./ResetColor.astro";
       if (!colorName || !colorValue) continue;
       for (let savedColor of data.colors) {
         if (savedColor.name === colorValue.getAttribute("data-color-selection")!) {
-          colorValue.value = savedColor.value.replace(colorValue.getAttribute("data-suffix")!, "");
+          if (!savedColor.value.startsWith("url(")) {
+            colorValue.value = savedColor.value.replace(colorValue.getAttribute("data-suffix")!, "");
+          }
           if (savedColor.value.startsWith("url(")) {
             colorValue.type = "file";
             colorValue.style.display = "none";
@@ -820,6 +858,9 @@ import ResetColor from "./ResetColor.astro";
       }
       else if (themeSelected === "blurred-img" && !doesCurrentThemeHaveEdits) {
         loadFromSaved(blurredTheme);
+      }
+      else if (themeSelected === "cherry-blossom" && !doesCurrentThemeHaveEdits) {
+        loadFromSaved(cherryBlossom);
       }
       else {
         loadFromSaved();

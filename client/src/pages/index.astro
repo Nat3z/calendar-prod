@@ -7,7 +7,10 @@ import ScreenSaver from "../components/ScreenSaver.astro";
 import "../styles/introjs-royale.css";
 import Changelog from "../components/Changelog.astro";
 import StorageVersion from "../components/StorageVersion.astro";
-
+import { Image } from "astro:assets";
+import AstroLogo from "../lib/astro-logo.png"
+import VercelLogo from "../lib/vercel-logo.png"
+import GradLogo from "../lib/grad_logo.png"
 const isInDev = import.meta.env.NODE_ENV ? "" : "";
 ---
 
@@ -17,8 +20,8 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			class="fixed w-full h-full backdrop-blur-lg shadow-lg z-50 text-4xl flex justify-center items-center"
 			id="loading-splash"
 		>
-			<img
-				src="/grad_logo.png"
+			<Image
+				src={GradLogo}
 				alt="🎓"
 				class="w-24 h-24 text-4xl text-center animate-pulse"
 			/>
@@ -124,16 +127,16 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 							href="https://github.com/Nat3z/calendar-prod"
 							class="inline -mr-1 -ml-0.5 underline"
 							target="_blank">Nat3z</a
-						>, using <img
+						>, using <Image
 							alt="Astro"
-							src="/astro-logo.png"
+							src={AstroLogo}
 							width="75"
 							height="24.7167"
 							class="top-1 relative"
-						/> and hosted on <img
+						/> and hosted on <Image
 							alt="Vercel"
 							height="16.9"
-							src="/vercel-logo.png"
+							src={VercelLogo}
 							width="75"
 							class="top-0.5 relative"
 						/>
@@ -232,11 +235,45 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 
 		let mouseTimeout: number | undefined;
 
-		function mouseMove() {
+		async function mouseMove() {
 			clearTimeout(mouseTimeout);
+
+			if (localStorage.getItem("theme") !== "default" || !localStorage.getItem("theme")) {
+				// check if the css variable --background-image-dark and --background-image-light are set to a new value. if not, then return.
+				if (document.getElementById("color-definitions") === null)
+					await new Promise((resolve, reject) => {
+						const interval = setInterval(() => {
+							if (document.getElementById("color-definitions") === null)
+								return;
+							resolve();
+						}, 100)
+
+						setTimeout(() => {
+							if (document.getElementById("color-definitions") === null) {
+								clearInterval(interval)
+								const style = document.createElement("style")
+								style.id = "color-definitions"
+								document.head.appendChild(style)
+								resolve()
+							}
+						}, 1000)
+					});
+				
+				const propertyDark = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--background-image-dark");
+				const propertyLight = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--background-image-light");
+				if ((
+					propertyDark === 'url(./dark.gif)' ||
+					propertyLight === 'url(./background.gif)'
+				) || 
+					!propertyDark.startsWith("url(") ||
+					!propertyLight.startsWith("url(")
+				) {
+					return;
+				}
+			}
 			let quickpeek = document.getElementById("quickpeek")!;
 			let mainschedule = document.getElementById("main_schedule")!;
-
+			// WHEN MOUSE IS MOVING
 			quickpeek.classList.remove("backdrop-blur");
 			quickpeek.classList.remove("bg-white/0");
 			quickpeek.classList.add("bg-quickpeek");
@@ -244,6 +281,19 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			mainschedule.classList.remove("dark:bg-white/5");
 			mainschedule.classList.remove("bg-black/5");
 			mainschedule.classList.add("bg-primary");
+
+			mainschedule.classList.add("text-white");
+			mainschedule.classList.remove("text-true-white");
+			document.querySelector("#settings_cog")!!.classList.add("border-custom")
+
+			quickpeek.classList.add("text-white");
+			quickpeek.classList.remove("text-true-white");
+			quickpeek.classList.add("border-b-custom");
+
+			quickpeek.querySelector("h1")!.classList.add("text-white");
+			quickpeek.querySelector("h1")!.classList.remove("text-true-white");
+
+			mainschedule.classList.add("border-custom");
 			document
 				.getElementById("settings_cog")!
 				.classList.remove("backdrop-blur");
@@ -256,27 +306,39 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			document.body.classList.remove("bg-dark-primary");
 			document.body.style.cursor = "auto";
 			mouseTimeout = window.setTimeout(() => {
-				if (
-					localStorage.getItem("theme") !== "default" &&
-					localStorage.getItem("theme")
-				)
-					return;
+				// if (
+				//	localStorage.getItem("theme") !== "default" &&
+				//	localStorage.getItem("theme")
+				//)
+				//	return;
+
+				// WHEN MOUSE IS STILL
 				let quickpeek = document.getElementById("quickpeek")!;
 				let mainschedule = document.getElementById("main_schedule")!;
 
 				quickpeek.classList.add("backdrop-blur");
 				quickpeek.classList.add("bg-white/0");
 				quickpeek.classList.remove("bg-quickpeek");
+				quickpeek.classList.remove("text-white");
+				quickpeek.classList.add("text-true-white");
+				quickpeek.classList.remove("border-b-custom");
+
+				quickpeek.querySelector("h1")!.classList.remove("text-white");
+				quickpeek.querySelector("h1")!.classList.add("text-true-white");
+
 				document.getElementById("settings_cog")!.classList.add("backdrop-blur");
 				document.getElementById("settings_cog")!.classList.add("bg-white/5");
+				document.getElementById("settings_cog")!.classList.remove("border-custom");
 
+				mainschedule.classList.remove("text-white");
+				mainschedule.classList.add("text-true-white");
+				mainschedule.classList.remove("border-custom");
 				mainschedule.classList.add("backdrop-blur");
 				mainschedule.classList.add("dark:bg-white/5");
 				mainschedule.classList.add("bg-black/5");
 				mainschedule.classList.remove("bg-primary");
 				document.body.classList.add("bg-light");
 				document.getElementById("vercel")!.style.bottom = "-1.5rem";
-				console.log("hello!");
 				document.body.style.cursor = "none";
 				document.body.classList.add("dark:bg-dark");
 
@@ -286,11 +348,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 
 		if (
 			(localStorage.getItem("dynamic_theme") === "true" ||
-				!localStorage.getItem("dynamic_theme")) &&
-			!localStorage.getItem("savedEditor.default") &&
-			(localStorage.getItem("theme") === "default" ||
-				!localStorage.getItem("theme"))
-		) {
+				!localStorage.getItem("dynamic_theme"))) {
 			document.onmousemove = mouseMove;
 			mouseMove();
 		}
@@ -306,6 +364,8 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 
 			mainschedule.classList.add("backdrop-blur");
 			mainschedule.classList.add("dark:bg-white/5");
+			mainschedule.classList.remove("text-white");
+			mainschedule.classList.add("text-true-white");
 			mainschedule.classList.add("bg-black/5");
 
 			document.getElementById("vercel")!.classList.add("-bottom-8");
@@ -860,6 +920,8 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			--border-color: black;
 			--progress-bar-opacity: 20%;
 			--quickpeek: var(--light-primary);
+			--background-image-dark: url("./dark.gif");
+			--background-image-light: url("./background.gif");
 		}
 
 		body {

@@ -102,6 +102,7 @@
         <option value="hotdog">Hot Dog Stand</option>
         <option value="purple">Purple</option>
         <option value="green">Green</option>
+        <option value="cherry-blossom">Cherry Blossom</option>
         <option value="blurred-img">Blurred Image (custom)</option>
         <option value="custom-1">Custom Theme 1</option>
         <option value="custom-2">Custom Theme 2</option>
@@ -158,7 +159,7 @@
     </div>
 
     <img
-      src="/howtocopy.gif"
+      src="./howtocopy.gif"
       alt="Open the Schoology Courses tab and type CTRL + A and CTRL + C. Then, type CTRL + V in the 'Paste Here' field."
       class="w-full h-full"
     />
@@ -177,16 +178,15 @@
     </div>
   </div>
 </div>
-
 <script defer>
 const runningInIframe = window.location !== window.parent.location;
 if (runningInIframe) {
   document.getElementById("edit").style.display = "none";
   document.querySelector("#settings_cog").innerHTML = `
-      <span class='material-symbols-outlined w-full h-full top-1 relative'>
-        open_in_new
-      </span>
-    `;
+        <span class='material-symbols-outlined w-full h-full top-1 relative'>
+          open_in_new
+        </span>
+      `;
 }
 let isInDev = document.getElementById("isInDev").dataset.inDev === "true";
 if (isInDev) {
@@ -212,9 +212,8 @@ document.getElementById("blk_7-input").children[1].value =
   localStorage.getItem("blk_7") || "Block 7";
 
 document.getElementById("dynbackground").textContent =
-  !localStorage.getItem("savedEditor.default") &&
-    (localStorage.getItem("dynamic_theme") === "true" ||
-      !localStorage.getItem("dynamic_theme"))
+  (localStorage.getItem("dynamic_theme") === "true" ||
+    !localStorage.getItem("dynamic_theme"))
     ? "Disable Adaptive Background"
     : "Enable Adaptive Background";
 
@@ -227,12 +226,6 @@ document.getElementById("dynbackground").addEventListener("click", () => {
     dynbackground.textContent = "Enable Adaptive Background";
     localStorage.setItem("dynamic_theme", "false");
   } else {
-    if (localStorage.getItem("savedEditor.default")) {
-      alert(
-        "You currently have a custom theme applied to default. Please remove it before enabling adaptive background."
-      );
-      return;
-    }
     dynbackground.textContent = "Disable Adaptive Background";
     localStorage.setItem("dynamic_theme", "true");
   }
@@ -336,104 +329,104 @@ document.getElementById("save").addEventListener("click", () => {
   document.getElementById("classes").innerHTML = "";
 });
 
-  document
-    .getElementById("settings_cog")
-    .addEventListener("click", toggleSettings);
+document
+  .getElementById("settings_cog")
+  .addEventListener("click", toggleSettings);
 
-  const mq = window.matchMedia("(max-width: 760px)");
-  if (mq.matches) {
-    let themeSelected = localStorage.getItem("theme") || "default";
-    let editorButton = document.getElementById("edit");
-    editorButton.id = "preventTheme2";
-    editorButton.classList.remove("flex");
-    editorButton.classList.add("hidden");
-    document.getElementById("preventTheme2").addEventListener("click", () => {
-      if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
-        localStorage.removeItem(`editorThemeClear.${themeSelected}`);
-        location.reload();
-        return;
-      }
-      let allowed = confirm(
-        "Are you sure you want to prevent this theme from applying?\n" +
-          "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
-          "➡️ This will allow you to make as many edits to the theme as you like.\n" +
-          "➡️ You can undo this by clicking the button again."
-      );
-      if (!allowed) return;
-
-      localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
+const mq = window.matchMedia("(max-width: 760px)");
+if (mq.matches) {
+  let themeSelected = localStorage.getItem("theme") || "default";
+  let editorButton = document.getElementById("edit");
+  editorButton.id = "preventTheme2";
+  editorButton.classList.remove("flex");
+  editorButton.classList.add("hidden");
+  document.getElementById("preventTheme2").addEventListener("click", () => {
+    if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
+      localStorage.removeItem(`editorThemeClear.${themeSelected}`);
       location.reload();
-    });
-    document.getElementById("preventTheme2").textContent = localStorage.getItem(
-      `editorThemeClear.${themeSelected}`
-    )
-      ? "Enable Theme"
-      : "Disable Theme";
-  } else {
-    document.getElementById("edit").classList.remove("hidden");
-  }
-  if (document.getElementById("edit"))
-    document.getElementById("edit").addEventListener("click", () => {
-      if (document.querySelector("#preview_menu").style.display !== "none") {
-        alert("Please close the preview menu before editing the theme.");
-        return;
-      }
-      const themeEditor = document.getElementById("themeEditor");
-      if (themeEditor.style.display === "block") {
-        return;
-      }
-      themeEditor.style.display = "block";
-      themeEditor.animate(
-        [{ transform: "translateX(-100%)" }, { transform: "translateX(0)" }],
-        {
-          duration: 500,
-          easing: "ease-in-out",
-          fill: "forwards",
-        }
-      );
+      return;
+    }
+    let allowed = confirm(
+      "Are you sure you want to prevent this theme from applying?\n" +
+      "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
+      "➡️ This will allow you to make as many edits to the theme as you like.\n" +
+      "➡️ You can undo this by clicking the button again."
+    );
+    if (!allowed) return;
 
-      document
-        .getElementById("schedule_page")
-        .animate([{ marginLeft: "-33.33%" }, { marginLeft: "0" }], {
-          duration: 500,
-          easing: "ease-in-out",
-          fill: "forwards",
-        });
-
-      setTimeout(() => {
-        themeEditor.style.display = "block";
-        document
-          .getElementById("schedule_page")
-          .animate([{ marginLeft: "0" }], {
-            duration: 0,
-            fill: "forwards",
-          });
-      }, 500);
-    });
-
-  document.getElementById("removeCustomTheme").addEventListener("click", () => {
-    let themeSelected = localStorage.getItem("theme") || "default";
-    localStorage.removeItem(`savedEditor.${themeSelected}`);
+    localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
     location.reload();
   });
-
-  // for each input in the children of the settings div, add an event listener to the change event
-  for (const child of document.getElementById("settings").children) {
-    if (child.nodeName === "SECTION") {
-      child.children[1].addEventListener("change", () => {
-        let block = child.children[0].innerHTML.split(" ")[1];
-        localStorage.setItem(`blk_${block}`, child.children[1].value);
-        document.getElementById("classes").innerHTML = "";
-        // refresh the theme using the refreshTheme custom event
-        setTimeout(() => {
-          console.log("refreshing theme");
-          document.dispatchEvent(
-            new CustomEvent("refreshTheme", {
-              detail: { disallowRefresh: true },
-            })
-          );
-        }, 100);
-      });
+  document.getElementById("preventTheme2").textContent = localStorage.getItem(
+    `editorThemeClear.${themeSelected}`
+  )
+    ? "Enable Theme"
+    : "Disable Theme";
+} else {
+  document.getElementById("edit").classList.remove("hidden");
+}
+if (document.getElementById("edit"))
+  document.getElementById("edit").addEventListener("click", () => {
+    if (document.querySelector("#preview_menu").style.display !== "none") {
+      alert("Please close the preview menu before editing the theme.");
+      return;
     }
+    const themeEditor = document.getElementById("themeEditor");
+    if (themeEditor.style.display === "block") {
+      return;
+    }
+    themeEditor.style.display = "block";
+    themeEditor.animate(
+      [{ transform: "translateX(-100%)" }, { transform: "translateX(0)" }],
+      {
+        duration: 500,
+        easing: "ease-in-out",
+        fill: "forwards",
+      }
+    );
+
+    document
+      .getElementById("schedule_page")
+      .animate([{ marginLeft: "-33.33%" }, { marginLeft: "0" }], {
+        duration: 500,
+        easing: "ease-in-out",
+        fill: "forwards",
+      });
+
+    setTimeout(() => {
+      themeEditor.style.display = "block";
+      document
+        .getElementById("schedule_page")
+        .animate([{ marginLeft: "0" }], {
+          duration: 0,
+          fill: "forwards",
+        });
+    }, 500);
+  });
+
+document.getElementById("removeCustomTheme").addEventListener("click", () => {
+  let themeSelected = localStorage.getItem("theme") || "default";
+  localStorage.removeItem(`savedEditor.${themeSelected}`);
+  location.reload();
+});
+
+// for each input in the children of the settings div, add an event listener to the change event
+for (const child of document.getElementById("settings").children) {
+  if (child.nodeName === "SECTION") {
+    child.children[1].addEventListener("change", () => {
+      let block = child.children[0].innerHTML.split(" ")[1];
+      localStorage.setItem(`blk_${block}`, child.children[1].value);
+      document.getElementById("classes").innerHTML = "";
+      // refresh the theme using the refreshTheme custom event
+      setTimeout(() => {
+        console.log("refreshing theme");
+        document.dispatchEvent(
+          new CustomEvent("refreshTheme", {
+            detail: { disallowRefresh: true },
+          })
+        );
+      }, 100);
+    });
   }
+}
 </script>

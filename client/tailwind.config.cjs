@@ -25,8 +25,8 @@ module.exports = {
 				"custom-color": "var(--border-color)",
 			},
 			"backgroundImage": {
-				"dark": "url('/dark.gif')",
-				"light": "url('/background.gif')"
+				"dark": "var(--background-image-dark)",
+				"light": "var(--background-image-light)"
 			},
 			"fontSize": {
 				"ultramd": "1.25rem",
