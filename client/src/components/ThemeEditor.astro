@@ -747,7 +747,7 @@ import ResetColor from "./ResetColor.astro";
     if (!savedData) return;
     console.log("Loading Saved Theme...")
     // clear all existing info inside of the theme editor
-   let data = JSON.parse(savedData);
+    let data = JSON.parse(savedData);
     for (let element of data.elements) {
       let elementToAffect = document.getElementById(element.element.replace("#", ""));
       let css = "";
