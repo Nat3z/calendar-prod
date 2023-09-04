@@ -158,13 +158,13 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 		// remember to change this to the production url when you're done testing
 		let url = isInDev
 			? "http://localhost:3001/api/schedule"
-			: "https://api.schedule.nat3z.com/api/schedule";
+			: "https://api-schedule.nat3z.com/api/schedule";
 
 		if (
-			window.location.href.includes("development.") ||
-			window.location.href.includes("preview.")
+			window.location.href.includes("development-schedule.") ||
+			window.location.href.includes("preview-schedule.")
 		) {
-			url = "https://api.development.schedule.nat3z.com/api/schedule";
+			url = "https://api-development-schedule.nat3z.com/api/schedule";
 		}
 		let dtScheduleFirst = new Date();
 		// don't be influenced by utc
