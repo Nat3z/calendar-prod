@@ -16,12 +16,12 @@ function subtractHours(date: Date, hours: number) {
   const currentHours = newDate.getDate();
   let newHours = currentHours - hours;
   if (newHours >= 0) {
-      newDate.setDate(newHours);
+    newDate.setDate(newHours);
   } else {
-      const daysToSubtract = Math.ceil(Math.abs(newHours) / 24);
-      newDate.setDate(newDate.getDate() - daysToSubtract);
-      newHours = 24*daysToSubtract + newHours;
-      newDate.setDate(newHours);
+    const daysToSubtract = Math.ceil(Math.abs(newHours) / 24);
+    newDate.setDate(newDate.getDate() - daysToSubtract);
+    newHours = 24 * daysToSubtract + newHours;
+    newDate.setDate(newHours);
   }
   return newDate;
 }
@@ -31,26 +31,25 @@ function addHours(date: Date, hours: number) {
   const currentHours = newDate.getHours();
   const newHours = currentHours + hours;
   if (newHours < 24) {
-      newDate.setHours(newHours);
+    newDate.setHours(newHours);
   } else {
-      const daysToAdd = Math.floor(newHours / 24);
-      newDate.setDate(newDate.getDate() + daysToAdd);
-      newDate.setHours(newHours % 24);
+    const daysToAdd = Math.floor(newHours / 24);
+    newDate.setDate(newDate.getDate() + daysToAdd);
+    newDate.setHours(newHours % 24);
   }
   return newDate;
 }
 
-
 function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday", excludeToday = false, refDate = new Date()) {
-  const dayOfWeek = ["sun","mon","tue","wed","thu","fri","sat"]
-    .indexOf(dayName.slice(0,3).toLowerCase());
+  const dayOfWeek = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+    .indexOf(dayName.slice(0, 3).toLowerCase());
   if (dayOfWeek < 0) return;
   // if (process.env.VERCEL_ENV === "production") {
   //   refDate = subtractHours(refDate, 2)
   // }
 
-  refDate.setHours(0,0,0,0);
-  refDate.setDate(refDate.getDate() + +!!excludeToday + 
+  refDate.setHours(0, 0, 0, 0);
+  refDate.setDate(refDate.getDate() + +!!excludeToday +
     (dayOfWeek + 7 - refDate.getDay() - +!!excludeToday) % 7);
   return refDate;
 }
@@ -63,8 +62,8 @@ function generateFallbacks() {
   const friday = getNextDayOfTheWeek("Friday", false)!
 
   const icsMonday = ics.createEvents([{
-    start: [ monday.getFullYear(), monday.getMonth() + 1, monday.getDate(), 6, 0 ],
-    end: [ monday.getFullYear(), monday.getMonth() + 1, monday.getDate(), 15, 0 ],
+    start: [monday.getFullYear(), monday.getMonth() + 1, monday.getDate(), 6, 0],
+    end: [monday.getFullYear(), monday.getMonth() + 1, monday.getDate(), 15, 0],
     title: "Monday Schedule",
     description: `1 Blk 8:30 - 9:50
     2 Blk 10:05 - 11:20
@@ -73,8 +72,8 @@ function generateFallbacks() {
     4 Blk 1:30 - 2:45
     Tutoring 2:55-3:20`
   }, {
-    start: [ tuesday.getFullYear(), tuesday.getMonth() + 1, tuesday.getDate(), 6, 0 ],
-    end: [ tuesday.getFullYear(), tuesday.getMonth() + 1, tuesday.getDate(), 15, 0 ],
+    start: [tuesday.getFullYear(), tuesday.getMonth() + 1, tuesday.getDate(), 6, 0],
+    end: [tuesday.getFullYear(), tuesday.getMonth() + 1, tuesday.getDate(), 15, 0],
     title: "Tuesday Schedule",
     description: `5 Blk 8:30 - 9:50
     6 Blk 10:05 - 11:20
@@ -83,8 +82,8 @@ function generateFallbacks() {
     1 Blk 1:30 - 2:25
     Flex 2:30 - 3:00`
   }, {
-    start: [ wednesday.getFullYear(), wednesday.getMonth() + 1, wednesday.getDate(), 6, 0 ],
-    end: [ wednesday.getFullYear(), wednesday.getMonth() + 1, wednesday.getDate(), 15, 0 ],
+    start: [wednesday.getFullYear(), wednesday.getMonth() + 1, wednesday.getDate(), 6, 0],
+    end: [wednesday.getFullYear(), wednesday.getMonth() + 1, wednesday.getDate(), 15, 0],
     title: "Wednesday Schedule",
     description: `2 Blk 8:30 - 9:30
     3 Blk 9:38 - 10:33
@@ -94,8 +93,8 @@ function generateFallbacks() {
     5 Blk 1:02 - 1:57
     6 Blk 2:05 - 3:00`
   }, {
-    start: [ thursday.getFullYear(), thursday.getMonth() + 1, thursday.getDate(), 6, 0 ],
-    end: [ thursday.getFullYear(), thursday.getMonth() + 1, thursday.getDate(), 15, 0 ],
+    start: [thursday.getFullYear(), thursday.getMonth() + 1, thursday.getDate(), 6, 0],
+    end: [thursday.getFullYear(), thursday.getMonth() + 1, thursday.getDate(), 15, 0],
     title: "Thursday Schedule",
     description: `7 Blk 8:30 - 9:30
     1 Blk 9:45 - 11:00
@@ -104,8 +103,8 @@ function generateFallbacks() {
     3 Blk 1:10 - 2:25
     Flex - 2:30 - 3:00`
   }, {
-    start: [ friday.getFullYear(), friday.getMonth() + 1, friday.getDate(), 6, 0 ],
-    end: [ friday.getFullYear(), friday.getMonth() + 1, friday.getDate(), 15, 0 ],
+    start: [friday.getFullYear(), friday.getMonth() + 1, friday.getDate(), 6, 0],
+    end: [friday.getFullYear(), friday.getMonth() + 1, friday.getDate(), 15, 0],
     title: "Friday Schedule",
     description: `4 Blk 8:30 - 9:50
     5 Blk 10:05 - 11:20
@@ -132,7 +131,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   )
-  
+
 
   let ics = (await axios.get("https://www.salesian.com/data/calendar/icalcache/calendar_369.ics")).data
   // parse the ics file with node-ical
@@ -155,7 +154,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // parse unix timestamp with moment
     refDate = moment.unix(parseInt(req.query.refDate)).toDate()
   }
-  
+
   let schoolToBeClosed = false;
   let endOfSchool = false;
   let eventDescription = "";
@@ -164,7 +163,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     if (event.type !== "VEVENT") return false
     // development
     if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
-      if (!schoolToBeClosed) 
+      if (!schoolToBeClosed)
         schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
       if (event.summary.includes("Last Day of School") && !endOfSchool) {
         endOfSchool = true;
@@ -204,7 +203,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   let matchedTime: RegExpExecArray | null
 
-  
+
   // check if the date is August 16th, 2023
   if (today.getDate() == 16 && today.getMonth() == 7 && today.getFullYear() == 2023) {
     eventDescription = `
@@ -219,7 +218,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     `
     title = "Orientation Day (Freshmen and Transfer Students Only)"
   }
-  
+
   while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH.exec(eventDescription)) !== null) {
     let time = matchedTime[2].replaceAll(" ", "").trim()
     let period = matchedTime[1].replace("-", "").replace(":", "").trim()
