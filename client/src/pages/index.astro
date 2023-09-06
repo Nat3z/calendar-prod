@@ -261,7 +261,9 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				
 				const propertyDark = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--background-image-dark");
 				const propertyLight = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--background-image-light");
-				if ((
+				if (
+					(!propertyDark || !propertyLight) || 
+				(
 					propertyDark === 'url(/dark.gif)' ||
 					propertyLight === 'url(/background.gif)'
 				) || 
