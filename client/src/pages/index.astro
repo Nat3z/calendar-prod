@@ -238,7 +238,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 		async function mouseMove() {
 			clearTimeout(mouseTimeout);
 
-			if (localStorage.getItem("theme") !== "default" || !localStorage.getItem("theme")) {
+			if (localStorage.getItem("theme") !== "default") {
 				// check if the css variable --background-image-dark and --background-image-light are set to a new value. if not, then return.
 				if (document.getElementById("color-definitions") === null)
 					await new Promise((resolve, reject) => {
@@ -267,8 +267,8 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 					propertyDark === 'url(/dark.gif)' ||
 					propertyLight === 'url(/background.gif)'
 				) || 
-					!propertyDark.startsWith("url(") ||
-					!propertyLight.startsWith("url(")
+					propertyDark === "url(\\/dark\\.gif)" ||
+					propertyLight === "url(\\/background\\.gif)"
 				) {
 					return;
 				}
