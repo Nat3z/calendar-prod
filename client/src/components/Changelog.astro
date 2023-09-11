@@ -2,14 +2,14 @@
   
   <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
     <div class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25">
-      <h1 class="font-mono pl-4 text-2xl">🤔 what's new?</h1>
+      <h1 class="font-mono pl-4 text-2xl text-true-white">🤔 what's new?</h1>
       <button class="ml-auto flex justify-center items-center h-fit" id="close_changelog">
-        <span class="material-symbols-outlined text-white hover:text-red-500 p-4 text-true-white" style="font-size: 2em">close</span>
+        <span class="material-symbols-outlined hover:text-red-500 p-4 !text-true-white" style="font-size: 2em">close</span>
       </button>
     </div>
     
     <div class="overflow-y-auto h-full text-true-white pt-14">
-      <article id="content_changelog" class="text-true-white overflow-y-auto h-full p-4"></article>
+      <article id="content_changelog" class="text-true-white overflow-y-auto h-full p-4 pb-12"></article>
     </div>
     
   </div>
@@ -22,8 +22,8 @@
 
   let latestChangelogText = await latestChangelog.text();
   const latestcommit_json = await latestcommitData.json()
-  const latestcommitText = latestcommit_json.commit.message;
-  const commitSHA = latestcommit_json.sha.slice(0, 7);
+  const latestcommitText = (latestcommit_json.commit ?? {}).message ?? "rate limited :(\n\nyour network has been rate limited by github, please check back later.";
+  const commitSHA = (latestcommit_json.sha ?? "00000000").slice(0, 7);
 
   marked.use({
     renderer: {
@@ -48,7 +48,7 @@
   });
 
   const content = marked.parse(latestChangelogText);
-  const latestcommit_content = `<hr style="margin-bottom: 1.5rem; border-color: gray; margin-top: 1.5rem;"><div style="background: white; width: fit-content; padding: 2px 2px 2px; border-radius: 8px; padding-left: 4px; padding-right: 4px;" class="font-mono text-black">#${commitSHA}</div>\n\n${marked.parse("# " + latestcommitText.split('\n\n')[0] + "\n\n" + (latestcommitText.split('\n\n').length > 1 ? latestcommitText.split('\n\n')[1] : ""))}`;
+  const latestcommit_content = `<hr style="margin-bottom: 1.5rem; border-color: gray; margin-top: 1.5rem;"><div style="background: white; width: fit-content; padding: 2px 2px 2px; border-radius: 8px; padding-left: 4px; padding-right: 4px;" class="font-mono text-black">#${commitSHA}</div>\n\n${marked.parse("# " + latestcommitText.split('\n\n')[0] + "\n\n" + (latestcommitText.split('\n\n').length > 1 ? latestcommitText.split('\n\n', 2)[1] : ""))}`;
   
   const content_changelog = document.getElementById('content_changelog')!;
   content_changelog.innerHTML = content + latestcommit_content;
