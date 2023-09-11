@@ -1,12 +1,15 @@
-<div class="z-10 fixed justify-center items-center flex md:bg-black/50 w-screen h-screen hidden" id="changelog">
+<div class="z-10 fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden" id="changelog">
   
-  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl bg-slate-800 md:rounded-lg relative overflow-auto">
-    <button class="absolute ml-auto top-2 right-2 flex justify-center items-center w-fit h-fit" id="close_changelog">
-      <span class="material-symbols-outlined text-white hover:text-red-500 w-full h-full p-4 text-true-white" style="font-size: 2em">close</span>
-    </button>
-
-    <div class="overflow-auto p-4 h-auto pb-16 text-true-white">
-      <article id="content_changelog" class="text-true-white"></article>
+  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
+    <div class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25">
+      <h1 class="font-mono pl-4 text-2xl">🤔 what's new?</h1>
+      <button class="ml-auto flex justify-center items-center h-fit" id="close_changelog">
+        <span class="material-symbols-outlined text-white hover:text-red-500 p-4 text-true-white" style="font-size: 2em">close</span>
+      </button>
+    </div>
+    
+    <div class="overflow-y-auto h-full text-true-white pt-14">
+      <article id="content_changelog" class="text-true-white overflow-y-auto h-full p-4"></article>
     </div>
     
   </div>
@@ -15,7 +18,12 @@
 <script>
   import { marked } from 'marked';
   const latestChangelog = await fetch('https://raw.githubusercontent.com/wiki/Nat3z/calendar-prod/Latest-Changelog.md?' + Date.now());
-  const latestChangelogText = await latestChangelog.text();
+  const latestcommitData = await fetch('https://api.github.com/repos/nat3z/calendar-prod/commits/master?' + Date.now());
+
+  let latestChangelogText = await latestChangelog.text();
+  const latestcommit_json = await latestcommitData.json()
+  const latestcommitText = latestcommit_json.commit.message;
+  const commitSHA = latestcommit_json.sha.slice(0, 7);
 
   marked.use({
     renderer: {
@@ -31,13 +39,19 @@
       paragraph(text) {
         return `<p class="text-true-white">${text}</p>`;
       },
+      image(href, title, text) {
+        return `<img src="${href}" alt="${text}" class="rounded-lg w-full">`;
+      },
     },
     headerIds: false,
 
   });
+
   const content = marked.parse(latestChangelogText);
+  const latestcommit_content = `<hr style="margin-bottom: 1.5rem; border-color: gray; margin-top: 1.5rem;"><div style="background: white; width: fit-content; padding: 2px 2px 2px; border-radius: 8px; padding-left: 4px; padding-right: 4px;" class="font-mono text-black">#${commitSHA}</div>\n\n${marked.parse("# " + latestcommitText.split('\n\n')[0] + "\n\n" + (latestcommitText.split('\n\n').length > 1 ? latestcommitText.split('\n\n')[1] : ""))}`;
+  
   const content_changelog = document.getElementById('content_changelog')!;
-  content_changelog.innerHTML = content;
+  content_changelog.innerHTML = content + latestcommit_content;
   
   const changelog = document.getElementById('changelog')!;
   const close_changelog = document.getElementById('close_changelog')!;
@@ -56,10 +70,20 @@
     changelog.classList.remove('hidden');
   });
 
+  changelog.classList.remove('hidden');
 
 </script>
 
 <style>
+  article {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  article::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+  }
+
   li {
     @apply ml-2;
   }
