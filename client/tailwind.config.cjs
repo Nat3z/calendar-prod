@@ -38,6 +38,21 @@ module.exports = {
 				"screen-1/4": "25vh",
 				"screen-3/4": "75vh",
 			},
+			"animation": {
+				"pop-in": "pop-in 0.25s ease-in-out",
+			},
+			"keyframes": {
+				"pop-in": {
+					"0%": {
+						"transform": "scale(0.75)",
+						"opacity": "0",
+					},
+					"100%": {
+						"transform": "scale(1)",
+						"opacity": "1",
+					}
+				}
+			},
 			"zIndex": {
 				"1": "1",
 			},
