@@ -219,7 +219,7 @@ document.getElementById("dynbackground").textContent =
     : "Enable Adaptive Background";
 
 document.getElementById("open_changelog").addEventListener("click", () => {
-  document.dispatchEvent(new Event("openChangelog"));
+  document.getElementById('changelog').classList.remove("hidden");
 });
 document.getElementById("dynbackground").addEventListener("click", () => {
   const dynbackground = document.getElementById("dynbackground");
@@ -249,6 +249,7 @@ document.getElementById("theme_select").addEventListener("change", () => {
 
 document.getElementById("purge").addEventListener("click", () => {
   sessionStorage.clear();
+  localStorage.removeItem("changelog");
   window.location.reload();
 });
 
