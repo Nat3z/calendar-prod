@@ -1,0 +1,141 @@
+---
+---
+
+<div class="z-10 fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden" id="manage_account">
+  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
+    <div class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25">
+      <h1 class="font-mono pl-4 text-2xl text-true-white">💻 Account Management</h1>
+      <button class="ml-auto flex justify-center items-center h-fit" id="account_manage_close">
+        <span class="material-symbols-outlined hover:text-red-500 p-4 !text-true-white" style="font-size: 2em">close</span>
+      </button>
+    </div>
+    
+    <div class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4">
+      <div id="not_loggedin" style="display: none;">
+        <button class="rounded-lg p-2 pl-4 pr-4 flex justify-start items-center gap-2 flex-row bg-white hover:bg-white/90 text-black shadow-lg" id="go_login">
+          <img src="/public/google_logo.png" alt="Google Logo" class="w-8 h-8" />
+          <h1 class="text-lg font-semibold -mt-1">Login with Google</h1>
+        </button>
+      </div>
+
+      <div id="loggedin" class="flex-col text-xl gap-2" style="display: none;">
+        <div class="flex flex-row gap-4">
+          <button id="sync_account" class="bg-blue-400 rounded-lg p-2 pl-4 pr-4 w-24 text-lg">Sync</button>
+          <button id="logout_account" class="bg-red-400 rounded-lg p-2 pl-4 pr-4 w-24 text-lg">Logout</button>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+  import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+  import { initializeApp } from "firebase/app";
+  import { getDatabase, set, ref, get } from "firebase/database";
+import moment from "moment";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCWBTTV9qu7tzlKeYOSrcj9bzM8ndY6DI4",
+    authDomain: "dynschedule-login.firebaseapp.com",
+    projectId: "dynschedule-login",
+    storageBucket: "dynschedule-login.appspot.com",
+    messagingSenderId: "158062505462",
+    appId: "1:158062505462:web:6b7decc39bbd0553c86bd7"
+  };
+  
+  document.getElementById("account_manage_close")!.addEventListener("click", () => {
+    document.getElementById("manage_account")!.classList.add("hidden");
+  });
+
+  document.getElementById("sync_account")!.addEventListener("click", () => {
+    console.log("Sync event triggered.");
+    document.dispatchEvent(new Event("login:sync"));
+  });
+
+  document.addEventListener("login:sync", async () => {
+    console.log("Syncing...");
+    const user = auth.currentUser;
+    if (user) {
+      // clone localStorage
+      const localStorageExcluded = {...localStorage};
+      delete localStorageExcluded["changelog"];
+      // check all themes and make sure that they don't exceed the 10mb limit
+      for (const key in localStorageExcluded) {
+        if (localStorageExcluded[key].length > 10000000) {
+          console.log("Theme " + key + " exceeds the 10mb limit. Deleting from sync.");
+          delete localStorageExcluded[key];
+        }
+      }
+      await set(ref(realtime, 'accounts/' + user.uid), 
+        {
+          data: JSON.stringify(localStorageExcluded),
+          lastSynced: moment().unix()
+        }
+      );
+
+      console.log("%cSync successful.", "color: green; font-weight: bold;");
+    }
+  });
+
+  document.getElementById("logout_account")!.addEventListener("click", () => {
+    console.log("Logout event triggered.");
+    auth.signOut()
+      .then(() => {
+        console.log("Logged out successfully.");
+        document.getElementById("loggedin")!.style.display = "none";
+        document.getElementById("not_loggedin")!.style.display = "block";
+      })
+      .catch(() => console.error("Errored when logging out."))
+  });
+
+  document.getElementById("go_login")!.addEventListener("click", () => {
+    console.log("Login event triggered.");
+    signInWithPopup(auth, googleAuth)
+      .then((result) => {
+        const user = result.user;
+        auth.updateCurrentUser(user);
+      })
+    .catch(() => console.error("Errored when logging in."))
+  })
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const googleAuth = new GoogleAuthProvider();
+
+  let realtime = getDatabase(app);
+  auth.onAuthStateChanged((user) => {
+    document.getElementById("loggedin")!.style.display = "none";
+    document.getElementById("not_loggedin")!.style.display = "none";
+    if (user) {
+      console.log("User is logged in.");
+      document.getElementById("loggedin")!.style.display = "flex";
+      // sync database
+      if (localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60 * 5) {
+        console.log("Synced within the 5 minutes. Skipping sync.");
+        return;
+      }
+      get(ref(realtime, 'accounts/' + user.uid)).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("Syncing data...");
+          const data = JSON.parse(snapshot.val().data);
+          for (const key in data) {
+            localStorage.setItem(key, data[key]);
+          }
+          console.log("%cSync successful.", "color: green; font-weight: bold;");
+          localStorage.setItem("lastSynced", moment().unix().toString());
+          document.dispatchEvent(new CustomEvent("refreshTheme"));
+        } else {
+          console.log("No data found.");
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    } else {
+      console.log("User is not logged in.");
+      document.getElementById("not_loggedin")!.style.display = "block";
+    }
+  });
+</script>

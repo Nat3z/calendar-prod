@@ -8,8 +8,8 @@ const matchRegex_ExcludeColonTimeBOTH_inverse = /(\d{1,2}(?:(?:\s+)?-(?:\s)?)\d{
 
 const matchRegex = /(.*?) (\d{1,2}:\d{2}(?:(?:\s+)?-(?:\s)?)\d{1,2}:\d{2})(?:.*?)/gm;
 import axios from 'axios';
-import * as ical from 'node-ical';
-import * as ics from 'ics';
+import ical from 'node-ical';
+import ics from 'ics';
 
 function subtractHours(date: Date, hours: number) {
   const newDate = new Date(date);

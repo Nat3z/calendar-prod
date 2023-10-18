@@ -11,15 +11,18 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/tailwind": "^5.0.0",
+    "@astrojs/tailwind": "latest",
     "@types/intro.js": "^5.1.1",
     "@types/marked": "^4.3.0",
-    "astro": "^3.0.5",
+    "@types/sharp": "^0.32.0",
+    "astro": "latest",
+    "firebase": "^10.5.0",
     "intro.js": "^7.0.1",
     "marked": "^5.0.2",
     "marked-mangle": "^1.0.1",
+    "mime": "^3.0.0",
     "moment": "^2.29.4",
-    "sharp": "^0.32.5",
+    "sharp": "latest",
     "tailwindcss": "^3.0.24"
   }
 }
