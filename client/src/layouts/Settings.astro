@@ -290,6 +290,7 @@ document.getElementById("theme").addEventListener("click", () => {
 document.getElementById("theme_select").addEventListener("change", () => {
   const theme_select = document.getElementById("theme_select");
   localStorage.setItem("theme", theme_select.value);
+  document.dispatchEvent(new Event("login:sync"))
   document.dispatchEvent(new CustomEvent("refreshTheme"));
 });
 
@@ -341,6 +342,8 @@ document.getElementById("paste_confirm").addEventListener("click", () => {
       block_name;
     localStorage.setItem(`blk_${block}`, block_name);
   });
+
+  document.dispatchEvent(new Event("login:sync"))
   const paste_screen = document.getElementById("paste_screen");
   paste_screen.classList.add("hidden");
   document.getElementById("classes").innerHTML = "";
