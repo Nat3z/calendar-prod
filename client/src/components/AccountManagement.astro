@@ -22,6 +22,7 @@ import GoogleLogo from "../lib/google_logo.png"
 
       <div id="loggedin" class="flex-col text-xl gap-2" style="display: none;">
         <div class="flex flex-row gap-4">
+          <button id="pull_account" class="bg-green-400 rounded-lg p-2 pl-4 pr-4 w-24 text-lg">Pull</button>
           <button id="sync_account" class="bg-blue-400 rounded-lg p-2 pl-4 pr-4 w-24 text-lg">Sync</button>
           <button id="logout_account" class="bg-red-400 rounded-lg p-2 pl-4 pr-4 w-24 text-lg">Logout</button>
         </div>
@@ -32,7 +33,7 @@ import GoogleLogo from "../lib/google_logo.png"
 </div>
 
 <script>
-  import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, type User } from "firebase/auth";
   import { initializeApp } from "firebase/app";
   import { getDatabase, set, ref, get } from "firebase/database";
   import moment from "moment";
@@ -100,12 +101,39 @@ import GoogleLogo from "../lib/google_logo.png"
     .catch(() => console.error("Errored when logging in."))
   })
 
+  document.getElementById("pull_account")!.addEventListener("click", () => {
+    console.log("Pull event triggered.");
+    const user = auth.currentUser;
+    if (user) {
+      pull(user);
+    }
+  });
+
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
   const googleAuth = new GoogleAuthProvider();
 
   let realtime = getDatabase(app);
+  function pull(user: User) {
+    get(ref(realtime, 'accounts/' + user.uid)).then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log("Syncing data...");
+        const data = JSON.parse(snapshot.val().data);
+        for (const key in data) {
+          localStorage.setItem(key, data[key]);
+        }
+        console.log("%cSync successful.", "color: green; font-weight: bold;");
+        localStorage.setItem("lastSynced", moment().unix().toString());
+        document.dispatchEvent(new CustomEvent("refreshTheme"));
+        document.dispatchEvent(new Event("login:update"))
+      } else {
+        console.log("No data found.");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
   auth.onAuthStateChanged((user) => {
     document.getElementById("loggedin")!.style.display = "none";
     document.getElementById("not_loggedin")!.style.display = "none";
@@ -113,27 +141,11 @@ import GoogleLogo from "../lib/google_logo.png"
       console.log("User is logged in.");
       document.getElementById("loggedin")!.style.display = "flex";
       // sync database
-      if (localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60 * 5) {
-        console.log("Synced within the 5 minutes. Skipping sync.");
+      if (localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60) {
+        console.log("Synced within the 1 minute. Skipping sync.");
         return;
       }
-      get(ref(realtime, 'accounts/' + user.uid)).then((snapshot) => {
-        if (snapshot.exists()) {
-          console.log("Syncing data...");
-          const data = JSON.parse(snapshot.val().data);
-          for (const key in data) {
-            localStorage.setItem(key, data[key]);
-          }
-          console.log("%cSync successful.", "color: green; font-weight: bold;");
-          localStorage.setItem("lastSynced", moment().unix().toString());
-          document.dispatchEvent(new CustomEvent("refreshTheme"));
-        } else {
-          console.log("No data found.");
-        }
-      }).catch((error) => {
-        console.error(error);
-      });
-
+      pull(user)
     } else {
       console.log("User is not logged in.");
       document.getElementById("not_loggedin")!.style.display = "block";
