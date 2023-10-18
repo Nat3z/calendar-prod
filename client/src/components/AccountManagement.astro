@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets"
+import GoogleLogo from "../lib/google_logo.png"
 ---
 
 <div class="z-10 fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden" id="manage_account">
@@ -13,7 +15,7 @@
     <div class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4">
       <div id="not_loggedin" style="display: none;">
         <button class="rounded-lg p-2 pl-4 pr-4 flex justify-start items-center gap-2 flex-row bg-white hover:bg-white/90 text-black shadow-lg" id="go_login">
-          <img src="/public/google_logo.png" alt="Google Logo" class="w-8 h-8" />
+          <Image src={GoogleLogo} alt="Google Logo" class="w-8 h-8" />
           <h1 class="text-lg font-semibold -mt-1">Login with Google</h1>
         </button>
       </div>
@@ -33,17 +35,16 @@
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
   import { initializeApp } from "firebase/app";
   import { getDatabase, set, ref, get } from "firebase/database";
-import moment from "moment";
-
+  import moment from "moment";
   const firebaseConfig = {
     apiKey: "AIzaSyCWBTTV9qu7tzlKeYOSrcj9bzM8ndY6DI4",
     authDomain: "dynschedule-login.firebaseapp.com",
+    databaseURL: "https://dynschedule-login-default-rtdb.firebaseio.com",
     projectId: "dynschedule-login",
     storageBucket: "dynschedule-login.appspot.com",
     messagingSenderId: "158062505462",
-    appId: "1:158062505462:web:6b7decc39bbd0553c86bd7"
+    appId: "1:158062505462:web:e6f1bbf5415593a2c86bd7"
   };
-  
   document.getElementById("account_manage_close")!.addEventListener("click", () => {
     document.getElementById("manage_account")!.classList.add("hidden");
   });
