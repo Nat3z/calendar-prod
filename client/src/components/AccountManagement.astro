@@ -135,6 +135,7 @@ import GoogleLogo from "../lib/google_logo.png"
         document.dispatchEvent(new CustomEvent("refreshTheme"));
         document.dispatchEvent(new Event("login:update"))
       } else {
+        document.dispatchEvent(new Event("login:sync"));
         console.log("No data found.");
       }
     }).catch((error) => {
