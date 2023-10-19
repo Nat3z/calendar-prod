@@ -13,11 +13,15 @@ import GoogleLogo from "../lib/google_logo.png"
     </div>
     
     <div class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4">
-      <div id="not_loggedin" style="display: none;">
+      <div id="not_loggedin" style="display: none;" class="justify-center items-center flex-col gap-2">
         <button class="rounded-lg p-2 pl-4 pr-4 flex justify-start items-center gap-2 flex-row bg-white hover:bg-white/90 text-black shadow-lg" id="go_login">
           <Image src={GoogleLogo} alt="Google Logo" class="w-8 h-8" />
           <h1 class="text-lg font-semibold -mt-1">Login with Google</h1>
         </button>
+        <p class="text-gray-400">
+          By logging in, you agree to our
+          <a href="https://github.com/Nat3z/calendar-prod/wiki/Privacy-Policy" class="text-center underline text-purple-600">Privacy Policy</a>
+        </p>
       </div>
 
       <div id="loggedin" class="flex-col text-xl gap-2" style="display: none;">
@@ -93,7 +97,7 @@ import GoogleLogo from "../lib/google_logo.png"
       .then(() => {
         console.log("Logged out successfully.");
         document.getElementById("loggedin")!.style.display = "none";
-        document.getElementById("not_loggedin")!.style.display = "block";
+        document.getElementById("not_loggedin")!.style.display = "flex";
       })
       .catch(() => console.error("Errored when logging out."))
   });
@@ -159,7 +163,7 @@ import GoogleLogo from "../lib/google_logo.png"
     } else {
       loggedOut = true;
       console.log("User is not logged in.");
-      document.getElementById("not_loggedin")!.style.display = "block";
+      document.getElementById("not_loggedin")!.style.display = "flex";
     }
   });
 
