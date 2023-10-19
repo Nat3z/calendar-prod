@@ -21,11 +21,18 @@ import GoogleLogo from "../lib/google_logo.png"
       </div>
 
       <div id="loggedin" class="flex-col text-xl gap-2" style="display: none;">
-        <div class="flex flex-row gap-4">
-          <button id="pull_account" class="bg-green-400 rounded-lg p-2 pl-4 pr-4 w-24 text-lg">Pull</button>
-          <button id="sync_account" class="bg-blue-400 rounded-lg p-2 pl-4 pr-4 w-24 text-lg">Sync</button>
-          <button id="logout_account" class="bg-red-400 rounded-lg p-2 pl-4 pr-4 w-24 text-lg">Logout</button>
-        </div>
+        <button id="pull_account" class="bg-green-400 rounded-lg p-2 pl-4 pr-4 text-lg flex flex-row justify-center items-center gap-2 font-semibold">
+          <span class="material-symbols-outlined">cloud_download</span>
+          Download from Cloud
+        </button>
+        <button id="sync_account" class="bg-blue-400 rounded-lg p-2 pl-4 pr-4 text-lg flex flex-row justify-center items-center gap-2 font-semibold">
+          <span class="material-symbols-outlined">cloud_upload</span>
+          Save to Cloud
+        </button>
+        <button id="logout_account" class="bg-red-400 rounded-lg p-2 pl-4 pr-4 text-lg flex flex-row justify-center items-center gap-2 font-semibold">
+          <span class="material-symbols-outlined">logout</span>
+          Logout
+        </button>
       </div>
     </div>
     
@@ -142,7 +149,7 @@ import GoogleLogo from "../lib/google_logo.png"
       document.getElementById("loggedin")!.style.display = "flex";
       // sync database
       if (localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60) {
-        console.log("Synced within the 1 minute. Skipping sync.");
+        console.log("Synced within the 1 minute. Skipping pull.");
         return;
       }
       pull(user)
@@ -150,5 +157,14 @@ import GoogleLogo from "../lib/google_logo.png"
       console.log("User is not logged in.");
       document.getElementById("not_loggedin")!.style.display = "block";
     }
+  });
+
+  document.addEventListener("visibilitychange", (event) => {
+    if (localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60) {
+      console.log("Synced within the 1 minute. Skipping pull.");
+      return;
+    }
+    if (auth.currentUser)
+      pull(auth.currentUser!);
   });
 </script>
