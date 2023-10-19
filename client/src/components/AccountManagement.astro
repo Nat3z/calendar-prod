@@ -46,7 +46,7 @@ import GoogleLogo from "../lib/google_logo.png"
 <script>
   import { getAuth, GoogleAuthProvider, signInWithPopup, type User } from "firebase/auth";
   import { initializeApp } from "firebase/app";
-  import { getDatabase, set, ref, get } from "firebase/database";
+  import { getDatabase, set, ref, get, goOffline, goOnline } from "firebase/database";
   import moment from "moment";
   const firebaseConfig = {
     apiKey: "AIzaSyCWBTTV9qu7tzlKeYOSrcj9bzM8ndY6DI4",
@@ -80,12 +80,15 @@ import GoogleLogo from "../lib/google_logo.png"
           delete localStorageExcluded[key];
         }
       }
+
+      goOnline(realtime);
       await set(ref(realtime, 'accounts/' + user.uid), 
         {
           data: JSON.stringify(localStorageExcluded),
           lastSynced: moment().unix()
         }
       );
+      goOffline(realtime);
 
       console.log("%cSync successful.", "color: green; font-weight: bold;");
     }
@@ -126,7 +129,9 @@ import GoogleLogo from "../lib/google_logo.png"
   const googleAuth = new GoogleAuthProvider();
 
   let realtime = getDatabase(app);
+  goOffline(realtime);
   function pull(user: User) {
+    goOnline(realtime);
     get(ref(realtime, 'accounts/' + user.uid)).then((snapshot) => {
       if (snapshot.exists()) {
         console.log("Syncing data...");
@@ -138,6 +143,7 @@ import GoogleLogo from "../lib/google_logo.png"
         localStorage.setItem("lastSynced", moment().unix().toString());
         document.dispatchEvent(new CustomEvent("refreshTheme"));
         document.dispatchEvent(new Event("login:update"))
+        goOffline(realtime);
       } else {
         document.dispatchEvent(new Event("login:sync"));
         console.log("No data found.");
