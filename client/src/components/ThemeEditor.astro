@@ -673,6 +673,10 @@ import ResetColor from "./ResetColor.astro";
     }
     localStorage.setItem(`savedEditor.${themeSelected}`, JSON.stringify(data));
     console.log("Saved at " + new Date().toLocaleTimeString());
+
+    setTimeout(() => {
+      document.dispatchEvent(new Event("login:sync"))
+    }, 2500);
   }
 
   function animateNotif(text: string, element: HTMLElement) {

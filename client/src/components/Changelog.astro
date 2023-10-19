@@ -60,9 +60,16 @@
     changelog.classList.add('hidden');
   });
   // record the current changelog and check if it is the same as the latest one
+
+  const currentChangelogSHA = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(content ?? ""));
+  const currentChangelogSHAString = Array.from(new Uint8Array(currentChangelogSHA))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
   const currentChangelog = localStorage.getItem('changelog');
-  if (currentChangelog !== content) {
-    localStorage.setItem('changelog', content);
+  if (currentChangelog !== currentChangelogSHAString) {
+    // turn sha into readable string
+    
+    localStorage.setItem('changelog', currentChangelogSHAString);
     changelog.classList.remove('hidden');
   }
 

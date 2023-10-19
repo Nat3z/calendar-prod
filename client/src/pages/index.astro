@@ -234,7 +234,44 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 		}
 
 		let mouseTimeout: number | undefined;
+		document.addEventListener("refreshTheme", () => {
+			let quickpeek = document.getElementById("quickpeek")!;
+			let mainschedule = document.getElementById("main_schedule")!;
+			console.log("resetting adaptive bg")
+			// reset the adaptive bg
+			quickpeek.classList.remove("backdrop-blur");
+			quickpeek.classList.remove("bg-white/0");
+			quickpeek.classList.add("bg-quickpeek");
+			mainschedule.classList.remove("backdrop-blur");
+			mainschedule.classList.remove("dark:bg-white/5");
+			mainschedule.classList.remove("bg-black/5");
+			mainschedule.classList.add("bg-primary");
 
+			mainschedule.classList.add("text-white");
+			mainschedule.classList.remove("text-true-white");
+			document.querySelector("#settings_cog")!!.classList.add("border-custom")
+
+			quickpeek.classList.add("text-white");
+			quickpeek.classList.remove("text-true-white");
+			quickpeek.classList.add("border-b-custom");
+
+			quickpeek.querySelector("h1")!.classList.add("text-white");
+			quickpeek.querySelector("h1")!.classList.remove("text-true-white");
+
+			mainschedule.classList.add("border-custom");
+			document
+				.getElementById("settings_cog")!
+				.classList.remove("backdrop-blur");
+			document.getElementById("settings_cog")!.classList.remove("bg-white/5");
+
+			document.body.classList.remove("bg-light");
+			document.body.classList.remove("dark:bg-dark");
+			document.getElementById("vercel")!.style.bottom = "1rem";
+
+			document.body.classList.remove("bg-dark-primary");
+			document.body.style.cursor = "auto";
+
+		})
 		async function mouseMove() {
 			clearTimeout(mouseTimeout);
 
