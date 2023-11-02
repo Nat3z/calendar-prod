@@ -5,8 +5,7 @@ const matchRegex_ExcludeColonTime = /(.*?) (\d{1,2}(?:(?:\s+)?-(?:\s)?)\d{1,2}:\
 const matchRegex_ExcludeColonTime_inverse = /(\d{1,2}(?:(?:\s+)?-(?:\s)?)\d{1,2}:\d{2})(?:.*?) (.*)/gm;
 const matchRegex_ExcludeColonTimeBOTH = /(\d{1,2}(?:(?:\s+)?-(?:\s)?)\d{1,2})(?:.*?) (.*)/gm;
 const matchRegex_ExcludeColonTimeBOTH_inverse = /(\d{1,2}(?:(?:\s+)?-(?:\s)?)\d{1,2})(?:.*?) (.*)/gm;
-
-const matchRegex = /(.*?) (\d{1,2}:\d{2}(?:(?:\s+)?-(?:\s)?)\d{1,2}:\d{2})(?:.*?)/gm;
+const matchRegex = /(.*?)(?:\s+)?(\d{1,2}:\d{2}(?:(?:\s+)?-(?:\s)?)\d{1,2}:\d{2})(?:.*?)/gm;
 import axios from 'axios';
 import ical from 'node-ical';
 import ics from 'ics';
