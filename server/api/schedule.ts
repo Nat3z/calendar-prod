@@ -202,20 +202,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   let matchedTime: RegExpExecArray | null
 
-
-  // check if the date is August 16th, 2023
-  if (today.getDate() == 16 && today.getMonth() == 7 && today.getFullYear() == 2023) {
+  if (today.getDate() == 7 && today.getMonth() == 10 && today.getFullYear() == 2023) {
     eventDescription = `
-    8:30 - 9:05 School Begins (New Students Arrive at the Gym)
-    9:10 - 10:03 Block 1&nbh7 (5 Minutes per Block)
-
-    10:03 - 10:25 Break (Cafeteria)
-
-    10:30- 11:30 Mass
-
-    11:35 - 12:35 Network, ID Card Photos, Schoology
+      Blk 6  8:30 - 9:35 (65 min)
+      Blk 7  9:45 - 10:45 (60 min)
+      Blk 1  11:00 - 12:00 (60 min)
+      Lunch  12:00 - 12:40 (40 min)
+      Blk 2  12:45 - 1:45 (60 min)
+      All School Assembly on the Holy Grass 1:50 - 2:00
     `
-    title = "Orientation Day (Freshmen and Transfer Students Only)"
+    title = "Schedule Change: Visitation by Fr. Hugo Orozco; Early Dismissal 2pm; PD for Faculty"
   }
 
   while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH.exec(eventDescription)) !== null) {
@@ -228,6 +224,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       period = matchedTime[2].replace("-", "").replace(":", "").trim()
     }
 
+
     if (!time || !period || !time.match(/[0-9]:[0-9]/)) continue;
     // if the time is below 8am, add 12 hours to it
     time = time.split("-").map(time => {
@@ -239,6 +236,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
       }
       return `${hour}:${minute < 10 ? "0" + minute : minute} AM`
     }).join("-")
+
     times.set(period, { start: time.split("-")[0], end: time.split("-")[1] })
   }
 
