@@ -201,17 +201,20 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   if (!eventDescription) eventDescription = event.description
 
   let matchedTime: RegExpExecArray | null
-
-  if (today.getDate() == 7 && today.getMonth() == 10 && today.getFullYear() == 2023) {
+  console.log(today.getDate(), today.getMonth(), today.getFullYear())
+  if (today.getDate() == 14 && today.getMonth() == 2 && today.getFullYear() == 2024) {
     eventDescription = `
-      Blk 6  8:30 - 9:35 (65 min)
-      Blk 7  9:45 - 10:45 (60 min)
-      Blk 1  11:00 - 12:00 (60 min)
-      Lunch  12:00 - 12:40 (40 min)
-      Blk 2  12:45 - 1:45 (60 min)
-      All School Assembly on the Holy Grass 1:50 - 2:00
+      Blk 5 8:30 - 9:27 (57 min)
+14 min passing
+Blk 6 9:41 - 10:33 (52 min)
+Blk 7 10:40 - 11:32 (52 min)
+Lunch 11:32 - 12:12 (40 min)
+FaithFam 12:17 - 12:57 (40 min)
+Blk 1 1:04 - 1:56 (52 min)
+Blk 2 2:03 - 2:55 (52 min)
     `
-    title = "Schedule Change: Visitation by Fr. Hugo Orozco; Early Dismissal 2pm; PD for Faculty"
+    console.log("Resorted to ff")
+    title = "Schedule Change: Blks 5,6,7,1,2; Faith Family Meeting"
   }
 
   while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH.exec(eventDescription)) !== null) {
