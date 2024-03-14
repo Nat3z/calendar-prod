@@ -208,7 +208,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				await fetch(
 					`${url}?date=${moment(
 						currentDateOffset
-					).unix()}&refDate=${moment().unix()}`
+					).unix()}&refDate=${moment(new Date()).unix()}`
 				)
 			).json();
 			scheduleEvents = scheduleData.events;
@@ -218,7 +218,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				await fetch(
 					`${url}?date=${moment(
 						dtScheduleFirst
-					).unix()}&refDate=${moment().unix()}`
+					).unix()}&refDate=${moment(new Date()).unix()}`
 				)
 			).json();
 			scheduleEvents = scheduleData.events;
@@ -867,7 +867,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				moment().unix() - timeSinceLastFocus > 30 * 60
 			) {
 				timeSinceLastFocus = 0;
-				fetch(`${url}?date=${moment().unix()}&refDate=${moment().unix()}`)
+				fetch(`${url}?date=${moment(new Date()).unix()}&refDate=${moment(new Date()).unix()}`)
 					.then((res) => res.json())
 					.then(async (data) => {
 						scheduleData = data;
