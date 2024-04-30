@@ -5,8 +5,8 @@
     "server"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "npm-run-all --parallel server client",
     "server": "vercel dev --listen 3001",
-    "client": "cd client; cross-env NODE_ENV=development pnpm run dev --host"
+    "client": "cd client && cross-env NODE_ENV=development pnpm run dev --host"
   }
 }

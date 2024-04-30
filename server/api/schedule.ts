@@ -202,11 +202,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
 
   let matchedTime: RegExpExecArray | null
   console.log(today.getDate(), today.getMonth(), today.getFullYear())
-  if (today.getDate() == 19 && today.getMonth() == 3 && today.getFullYear() == 2024) {
+  if (today.getDate() == 30 && today.getMonth() == 3 && today.getFullYear() == 2024) {
     eventDescription = `
-      Service Day 8:30 - 1:00
+      Blk 1 8:30 - 9:27 (57 min)
+      Blk 2 9:41 - 10:33 (52 min)
+      Blk 3 10:40 - 11:32 (52 min)
+      Lunch 11:32 - 12:12 (40 min)
+      Blk 4 12:17 - 1:09 (52 min)
+      Blk 5 1:16 - 2:08 (52 min)
      `
-    title = "Schedule Change: Service Day; Early Dismissal 1pm"
+    title = "Schedule Change: Blks 1,2,3,4,5; early 2:08pm Dismissal; Faculty PLC "
   }
 
   while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH.exec(eventDescription)) !== null) {
