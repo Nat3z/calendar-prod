@@ -160,12 +160,12 @@ import GoogleLogo from "../lib/google_logo.png"
     
     if (user) {
       console.log("User is logged in.");
+      document.getElementById("loggedin")!.style.display = "flex";
+      document.getElementById("not_loggedin")!.style.display = "none";
       if (!loggedOut && localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60) {
         console.log("Synced within the 1 minute. Skipping pull.");
         return;
       }
-      document.getElementById("loggedin")!.style.display = "flex";
-      document.getElementById("not_loggedin")!.style.display = "none";
       // sync database
       pull(user)
     } else {
