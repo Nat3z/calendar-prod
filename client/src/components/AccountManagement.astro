@@ -154,9 +154,10 @@ import GoogleLogo from "../lib/google_logo.png"
   }
 
   let loggedOut = false;
+  document.getElementById("loggedin")!.style.display = "none";
+  document.getElementById("not_loggedin")!.style.display = "none";
   auth.onAuthStateChanged((user) => {
-    document.getElementById("loggedin")!.style.display = "none";
-    document.getElementById("not_loggedin")!.style.display = "none";
+    
     if (user) {
       console.log("User is logged in.");
       if (!loggedOut && localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60) {
@@ -164,12 +165,14 @@ import GoogleLogo from "../lib/google_logo.png"
         return;
       }
       document.getElementById("loggedin")!.style.display = "flex";
+      document.getElementById("not_loggedin")!.style.display = "none";
       // sync database
       pull(user)
     } else {
       loggedOut = true;
       console.log("User is not logged in.");
       document.getElementById("not_loggedin")!.style.display = "flex";
+      document.getElementById("loggedin")!.style.display = "none";
     }
   });
 
