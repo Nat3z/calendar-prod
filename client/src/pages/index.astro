@@ -7,6 +7,7 @@ import ScreenSaver from "../components/ScreenSaver.astro";
 import "../styles/introjs-royale.css";
 import Changelog from "../components/Changelog.astro";
 import StorageVersion from "../components/StorageVersion.astro";
+import NewSettings from "../layouts/NewSettings.astro";
 import { Image } from "astro:assets";
 import AstroLogo from "../lib/astro-logo.png"
 import VercelLogo from "../lib/vercel-logo.png"
@@ -121,26 +122,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				</div>
 
 				<div class="hidden sm:block fixed bottom-4 transition-all" id="vercel">
-					<div class="flex justify-center text-white items-center gap-2 m-auto">
-						<!-- <img width="25" height="25" alt="Light mode" src="./sun.svg"/> -->
-						Built by <a
-							href="https://github.com/Nat3z/calendar-prod"
-							class="inline -mr-1 -ml-0.5 underline"
-							target="_blank">Nat3z</a
-						>, using <Image
-							alt="Astro"
-							src={AstroLogo}
-							width="75"
-							height="24.7167"
-							class="top-1 relative"
-						/> and hosted on <Image
-							alt="Vercel"
-							height="16.9"
-							src={VercelLogo}
-							width="75"
-							class="top-0.5 relative"
-						/>
-					</div>
+
 				</div>
 			</div>
 			<!-- <VoteForVP /> -->
@@ -278,7 +260,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			if (localStorage.getItem("theme") !== "default") {
 				// check if the css variable --background-image-dark and --background-image-light are set to a new value. if not, then return.
 				if (document.getElementById("color-definitions") === null)
-					await new Promise((resolve, reject) => {
+					await new Promise<void>((resolve, reject) => {
 						const interval = setInterval(() => {
 							if (document.getElementById("color-definitions") === null)
 								return;
@@ -426,7 +408,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			let hasClearedAllDocs = false;
 
 			if (!events) {
-				if (document.getElementById("themeEditor").style.display === "block")
+				if (document.getElementById("themeEditor")!!.style.display === "block")
 					document.getElementById("progressbar")!.style.width = `50%`;
 				else document.getElementById("progressbar")!.style.width = `0%`;
 
@@ -583,7 +565,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 						document.title = text;
 					}
 
-					if (document.getElementById("themeEditor").style.display === "none")
+					if (document.getElementById("themeEditor")!!.style.display === "none")
 						document.getElementById("progressbar")!.style.width = `0%`;
 					else document.getElementById("progressbar")!.style.width = `50%`;
 					success = true;
@@ -632,7 +614,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 
 				document.getElementById("current")!.innerHTML = text;
 				// percentage
-				if (document.getElementById("themeEditor").style.display === "none")
+				if (document.getElementById("themeEditor")!!.style.display === "none")
 					document.getElementById("progressbar")!.style.width = `0%`;
 				else document.getElementById("progressbar")!.style.width = `50%`;
 				if (!document.hasFocus()) {
@@ -671,7 +653,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 		}
 		let currentScheduleInterval = setInterval(
 			() => updateSchedule(scheduleEvents),
-			100
+			500
 		);
 
 		let timeSinceLastFocus = 0;
@@ -705,11 +687,11 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 			.addEventListener("click", () => {
 				if (loadingWayback) return;
 				let dayOffset = currentDateOffset.getDate() - new Date().getDate();
-				if (dayOffset >= 6 && !isInDev)
-					return animateNotif(
-						"You can only view schedules up to 7 days in the future",
-						document.querySelector("#refresh_notif")! as HTMLElement
-					);
+				// if (dayOffset >= 6 && !isInDev)
+				// 	return animateNotif(
+				// 		"You can only view schedules up to 7 days in the future",
+				// 		document.querySelector("#refresh_notif")! as HTMLElement
+				// 	);
 				currentDateOffset.setDate(currentDateOffset.getDate() + 1);
 				currentDateOffset.setHours(8, 0, 0, 0);
 				if (currentDateOffset.getMonth() != new Date().getMonth()) {
@@ -775,10 +757,10 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 		document.querySelector("#wayback-back")!.addEventListener("click", () => {
 			if (loadingWayback) return;
 			let dayOffset = currentDateOffset.getDate() - new Date().getDate();
-
-			if (dayOffset < -6 && !isInDev)
+			console.log(dayOffset)
+			if (dayOffset <= 0)
 				return animateNotif(
-					"You can only view schedules up to 7 days in the past",
+					"You cannot view past days.",
 					document.querySelector("#refresh_notif")! as HTMLElement
 				);
 			currentDateOffset.setDate(currentDateOffset.getDate() - 1);
@@ -923,7 +905,7 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 				return;
 			}
 			await new Promise((resolve) => setTimeout(resolve, 150));
-			document.getElementById("loading-splash").animate(
+			document.getElementById("loading-splash")!!.animate(
 				[
 					{ opacity: 1, transform: "scale(1)" },
 					{ opacity: 0, transform: "scale(1.5)" },
