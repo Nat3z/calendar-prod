@@ -58,6 +58,8 @@
 
   close_changelog.addEventListener('click', () => {
     changelog.classList.add('hidden');
+    changelogPulse.classList.add('hidden'); 
+    localStorage.setItem('changelog', currentChangelogSHAString);
   });
   // record the current changelog and check if it is the same as the latest one
 
@@ -66,14 +68,14 @@
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
   const currentChangelog = localStorage.getItem('changelog');
+  const changelogPulse = document.getElementById('changelog_pulse')!;
   if (currentChangelog !== currentChangelogSHAString) {
     // turn sha into readable string
-    
-    localStorage.setItem('changelog', currentChangelogSHAString);
-    changelog.classList.remove('hidden');
+    changelogPulse.classList.remove('hidden'); 
   }
 
   document.addEventListener("openChangelog", () => {
+    changelogPulse.classList.add('hidden'); 
     changelog.classList.remove('hidden');
   });
 

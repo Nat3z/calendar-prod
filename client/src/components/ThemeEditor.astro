@@ -646,6 +646,11 @@ import ResetColor from "./ResetColor.astro";
         await new Promise<void>((resolve, reject) => {
           if (colorValue.files!.length === 0) {
             // instead get it from the css variable that is already set
+            if (!document.getElementById("color-definitions")!!) {
+              console.error("Could not find the color definitions element, so could not get the css variable for " + colorValue.getAttribute("data-color-selection")!);
+              resolve();
+              return;
+            }
             let cssVar = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--" + colorValue.getAttribute("data-color-selection")!);
             data.colors.push({
               name: colorValue.getAttribute("data-color-selection")!,
@@ -848,6 +853,8 @@ import ResetColor from "./ResetColor.astro";
       const hotdogTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"hidden"}]}],"colors":[{"name":"light-primary","value":"#ff0000"},{"name":"primary","value":"#fbff00"},{"name":"dark-primary","value":"#050014"},{"name":"background","value":"#ffff00"},{"name":"text-color","value":"#000000"},{"name":"border-width","value":"2px"},{"name":"border-color","value":"#000000"},{"name":"progress-bar","value":"#000000"},{"name":"progress-bar-opacity","value":"20%"},{"name":"quickpeek","value":"#ff0000"}]}'
       const greenTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"visibility","value":"hidden"}]}],"colors":[{"name":"light-primary","value":"#b2d977"},{"name":"primary","value":"#bdf9a4"},{"name":"dark-primary","value":"#ffffff"},{"name":"background","value":"#77bb41"},{"name":"text-color","value":"#426222"},{"name":"border-width","value":"2px"},{"name":"border-color","value":"#4a963a"},{"name":"progress-bar","value":"#d9e9cb"},{"name":"progress-bar-opacity","value":"55%"},{"name":"quickpeek","value":"#b3de8f"}]}'
       const turquoiseTheme = '{"elements":[{"element":"abbr","css":[{"rule":"text-align","value":""}]},{"element":"#vercel","css":[{"rule":"text-align","value":""},{"rule":"text-align","value":""},{"rule":"text-align","value":""}]}],"colors":[{"name":"light-primary","value":"#005e80"},{"name":"primary","value":"#00364a"},{"name":"dark-primary","value":"#00364a"},{"name":"background","value":"#004d65"},{"name":"text-color","value":"#ffffff"},{"name":"border-width","value":"1px"},{"name":"border-color","value":"#000000"},{"name":"progress-bar","value":"#004d65"},{"name":"progress-bar-opacity","value":"19%"},{"name":"quickpeek","value":"#006d8f"},{"name":"background-image-light","value":"url(/background.gif)"},{"name":"background-image-dark","value":"url(/dark.gif)"}]}'
+
+      const darkTheme = '{"elements":[{"element":"abbr","css":[]}],"colors":[{"name":"light-primary","value":"#2b2b2b"},{"name":"primary","value":"#171717"},{"name":"dark-primary","value":"#141414"},{"name":"background","value":"#121212"},{"name":"text-color","value":"#ffffff"},{"name":"border-width","value":"1px"},{"name":"border-color","value":"#000000"},{"name":"progress-bar","value":"#303030"},{"name":"progress-bar-opacity","value":"20%"},{"name":"quickpeek","value":"#292929"}]}'
       if (themeSelected === "salesian" && !doesCurrentThemeHaveEdits) {
         loadFromSaved(salesianTheme);
       }
@@ -868,6 +875,9 @@ import ResetColor from "./ResetColor.astro";
       }
       else if (themeSelected === "turquoise" && !doesCurrentThemeHaveEdits) {
         loadFromSaved(turquoiseTheme);
+      }
+      else if (themeSelected === "dark" && !doesCurrentThemeHaveEdits) {
+        loadFromSaved(darkTheme);
       }
       else {
         loadFromSaved();

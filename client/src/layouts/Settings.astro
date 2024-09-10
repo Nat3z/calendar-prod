@@ -7,6 +7,7 @@ import AccountManagement from "../components/AccountManagement.astro";
   id="settings_cog"
 >
   <img src="/settings.svg" alt="⚙️" class="w-full h-full" id="cog_svg" />
+  
 </button>
 
 <div
@@ -77,8 +78,13 @@ import AccountManagement from "../components/AccountManagement.astro";
       id="purge">Purge Cache</button
     >
     <button
-      class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center"
-      id="open_changelog">View Changelog</button
+      class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center relative"
+      id="open_changelog">
+        View Changelog
+        <div class="absolute rounded-full w-4 h-4 bg-red-500 -right-1 -bottom-1 animate-pulse hidden pointer-events-none" id="changelog_pulse">
+
+        </div>
+      </button
     >
   <button
       class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center pr-4 pl-4"
@@ -105,6 +111,7 @@ import AccountManagement from "../components/AccountManagement.astro";
         id="theme_select"
       >
         <option value="default">Default</option>
+        <option value="dark">Dark</option>
         <option value="salesian">Original Schedulology</option>
         <option value="hotdog">Hot Dog Stand</option>
         <option value="purple">Purple</option>
@@ -140,53 +147,11 @@ import AccountManagement from "../components/AccountManagement.astro";
     </h4>
     <h4 class="-mt-1 font-mono text-light-primary drop-shadow-lg">-</h4>
     <h4 class="-mt-1 font-mono text-light-primary drop-shadow-lg">
-      "DynSchedule v1.5"
+      "DynSchedule v1.6"
     </h4>
   </div>
 </div>
-<!---->
-<!-- <div -->
-<!--   class="fixed hidden w-screen z-10 h-screen flex justify-center items-center bg-black/25" -->
-<!--   id="paste_screen" -->
-<!-- > -->
-<!--   <div -->
-<!--     class="rounded-lg w-3/4 sm:w-7/12 flex justify-center items-center flex-col bg-primary border-custom border-custom-color shadow-lg" -->
-<!--   > -->
-<!--     <div -->
-<!--       class="w-full text-left text-white text-lg bg-primary flex justify-center items-center flex-row p-2 rounded-t-lg" -->
-<!--     > -->
-<!--       <h1>Paste from Schoology</h1> -->
-<!--       <button -->
-<!--         class="relative ml-auto rounded-lg w-12 h-full -mr-2 text-white flex justify-center items-center" -->
-<!--         id="close_paste" -->
-<!--       > -->
-<!--         <span class="material-symbols-outlined hover:text-red-500 text-white"> -->
-<!--           close -->
-<!--         </span> -->
-<!--       </button> -->
-<!--     </div> -->
-<!---->
-<!--     <img -->
-<!--       src="./howtocopy.gif" -->
-<!--       alt="Open the Schoology Courses tab and type CTRL + A and CTRL + C. Then, type CTRL + V in the 'Paste Here' field." -->
-<!--       class="w-full h-full" -->
-<!--     /> -->
-<!--     <div -->
-<!--       class="text-white p-2 text-left flex justify-center items-center flex-col gap-2" -->
-<!--     > -->
-<!--       <div class="flex flex-row gap-2"> -->
-<!--         <h1>Paste Here:</h1> -->
-<!--         <textarea class="text-black" id="pasted_text"></textarea> -->
-<!--       </div> -->
-<!---->
-<!--       <button -->
-<!--         class="bg-light-primary text-white text-lg rounded-lg h-8 w-24" -->
-<!--         id="paste_confirm">Confirm</button -->
-<!--       > -->
-<!--     </div> -->
-<!--   </div> -->
-<!---->
-<!-- </div> -->
+
 <div class="z-10 fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden" id="paste_screen">
   
   <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
@@ -205,7 +170,7 @@ import AccountManagement from "../components/AccountManagement.astro";
       />
       <div class="flex flex-row gap-4 w-full justify-center items-center">
         <h1>Paste Here:</h1>
-        <textarea class="text-black" id="pasted_text"></textarea>
+        <textarea class="text-black resize-none" id="pasted_text"></textarea>
       </div>
 
       <button
