@@ -12,7 +12,6 @@ import { Image } from "astro:assets";
 import AstroLogo from "../lib/astro-logo.png"
 import VercelLogo from "../lib/vercel-logo.png"
 import GradLogo from "../lib/grad_logo.png"
-const isInDev = import.meta.env.NODE_ENV ? "" : "";
 ---
 
 <Layout title="DynSchedule">
@@ -138,16 +137,17 @@ const isInDev = import.meta.env.NODE_ENV ? "" : "";
 		let isInDev = document.getElementById("isInDev")!.dataset.inDev === "true";
 
 		// remember to change this to the production url when you're done testing
-		let url = isInDev
-			? "http://localhost:3001/api/schedule"
-			: "https://api-schedule.nat3z.com/api/schedule";
+		let url = './api/schedule';
+		// let url = isInDev
+		// 	? "./api/schedule"
+		// 	: "https://api-schedule.nat3z.com/api/schedule";
 
-		if (
-			window.location.href.includes("development-schedule.") ||
-			window.location.href.includes("preview-schedule.")
-		) {
-			url = "https://api-development-schedule.nat3z.com/api/schedule";
-		}
+		// if (
+		// 	window.location.href.includes("development-schedule.") ||
+		// 	window.location.href.includes("preview-schedule.")
+		// ) {
+		// 	url = "https://api-development-schedule.nat3z.com/api/schedule";
+		// }
 		let dtScheduleFirst = new Date();
 		// don't be influenced by utc
 		dtScheduleFirst.setHours(8, 0, 0, 0);
