@@ -169,6 +169,7 @@ export const GET: APIRoute = async ({ params, request }) => {
   let schoolToBeClosed = false;
   let endOfSchool = false;
   let eventDescription = "";
+  let title: string = "";
   /* @ts-ignore */
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
@@ -204,27 +205,37 @@ export const GET: APIRoute = async ({ params, request }) => {
       }
     })
 
-    if (event) eventDescription = event.description
+    if (event) {
+      title = event.summary
+      eventDescription = event.description
+    }
   }
 
-  if (!event) return new Response(JSON.stringify({ title: null, events: null, code: 500, message: "Event not found." }), res)
-  let title = event.summary
+  console.log("ur mom", today.getDate(), today.getMonth(), today.getFullYear())
+  if (today.getDate() == 19 && today.getMonth() == 9 && today.getFullYear() == 2024) {
+    eventDescription = `
+      Check in 8:30 - 9:00 
+      Driver Meeting 9:15 - 9:30 
+      Qualification 9:30 - 11:30 
+      Lunch 12:00 - 1:00 
+      College Panel 1:00 - 2:00
+      Elimination Matches 2:00 - 4:00
+      Awards 4:15 - 4:45
+      Check out 4:45 - 5:00
+     `
+    title = "PiE Fall Robotics Competition 2024"
+  }
+  if (!event && !title) return new Response(JSON.stringify({ title: null, events: null, code: 500, message: "Event not found." }), res)
   let times = new Map<string, { start: string, end: string }>()
-  if (!eventDescription) eventDescription = event.description
+  if (event && !gotFromCache) {
+    if (!title)
+      title = event.summary
+    if (!eventDescription)
+      eventDescription = event.description
+  }
 
   let matchedTime: RegExpExecArray | null
-  console.log(today.getDate(), today.getMonth(), today.getFullYear())
-  if (today.getDate() == 30 && today.getMonth() == 3 && today.getFullYear() == 2024) {
-    eventDescription = `
-      Blk 1 8:30 - 9:27 (57 min)
-      Blk 2 9:41 - 10:33 (52 min)
-      Blk 3 10:40 - 11:32 (52 min)
-      Lunch 11:32 - 12:12 (40 min)
-      Blk 4 12:17 - 1:09 (52 min)
-      Blk 5 1:16 - 2:08 (52 min)
-     `
-    title = "Schedule Change: Blks 1,2,3,4,5; early 2:08pm Dismissal; Faculty PLC "
-  }
+  
 
   while ((matchedTime = matchRegex.exec(eventDescription)) !== null || (matchedTime = matchRegex_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTime_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH_inverse.exec(eventDescription)) !== null || (matchedTime = matchRegex_ExcludeColonTimeBOTH.exec(eventDescription)) !== null) {
     let time = matchedTime[2].replaceAll(" ", "").trim()
