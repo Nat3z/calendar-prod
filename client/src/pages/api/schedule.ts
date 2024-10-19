@@ -223,7 +223,7 @@ export const GET: APIRoute = async ({ params, request }) => {
       Awards 4:15 - 4:45
       Check out 4:45 - 5:00
      `
-    title = "PiE Fall Robotics Competition 2024"
+    title = "PiE Fall Robotics Competition 2024 (For Robotics Club)"
   }
   if (!event && !title) return new Response(JSON.stringify({ title: null, events: null, code: 500, message: "Event not found." }), res)
   let times = new Map<string, { start: string, end: string }>()
