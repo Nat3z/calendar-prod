@@ -225,7 +225,7 @@ import GradLogo from "../lib/grad_logo.png"
 			quickpeek.classList.remove("bg-white/0");
 			quickpeek.classList.add("bg-quickpeek");
 			mainschedule.classList.remove("backdrop-blur");
-			mainschedule.classList.remove("dark:bg-white/5");
+			mainschedule.classList.remove("dark:bg-white/0");
 			mainschedule.classList.remove("bg-black/5");
 			mainschedule.classList.add("bg-primary");
 
@@ -296,10 +296,10 @@ import GradLogo from "../lib/grad_logo.png"
 			let mainschedule = document.getElementById("main_schedule")!;
 			// WHEN MOUSE IS MOVING
 			quickpeek.classList.remove("backdrop-blur");
-			quickpeek.classList.remove("bg-white/0");
+			quickpeek.classList.remove("bg-black/5");
 			quickpeek.classList.add("bg-quickpeek");
 			mainschedule.classList.remove("backdrop-blur");
-			mainschedule.classList.remove("dark:bg-white/5");
+			mainschedule.classList.remove("dark:bg-white/0");
 			mainschedule.classList.remove("bg-black/5");
 			mainschedule.classList.add("bg-primary");
 
@@ -338,7 +338,7 @@ import GradLogo from "../lib/grad_logo.png"
 				let mainschedule = document.getElementById("main_schedule")!;
 
 				quickpeek.classList.add("backdrop-blur");
-				quickpeek.classList.add("bg-white/0");
+				quickpeek.classList.add("bg-black/5");
 				quickpeek.classList.remove("bg-quickpeek");
 				quickpeek.classList.remove("text-white");
 				quickpeek.classList.add("text-true-white");
@@ -355,7 +355,7 @@ import GradLogo from "../lib/grad_logo.png"
 				mainschedule.classList.add("text-true-white");
 				mainschedule.classList.remove("border-custom");
 				mainschedule.classList.add("backdrop-blur");
-				mainschedule.classList.add("dark:bg-white/5");
+				mainschedule.classList.add("dark:bg-white/0");
 				mainschedule.classList.add("bg-black/5");
 				mainschedule.classList.remove("bg-primary");
 				document.body.classList.add("bg-light");
@@ -379,19 +379,19 @@ import GradLogo from "../lib/grad_logo.png"
 			let mainschedule = document.getElementById("main_schedule")!;
 
 			quickpeek.classList.add("backdrop-blur");
-			quickpeek.classList.add("bg-white/0");
+			quickpeek.classList.add("bg-black/5");
 			document.getElementById("settings_cog")!.classList.add("backdrop-blur");
 			document.getElementById("settings_cog")!.classList.add("bg-white/5");
 
 			mainschedule.classList.add("backdrop-blur");
-			mainschedule.classList.add("dark:bg-white/5");
+			mainschedule.classList.add("dark:bg-white/0");
 			mainschedule.classList.remove("text-white");
 			mainschedule.classList.add("text-true-white");
 			mainschedule.classList.add("bg-black/5");
 
 			document.getElementById("vercel")!.classList.add("-bottom-8");
 
-			document.body.classList.remove("bg-dark-primary");
+			// document.body.classList.remove("bg-dark-primary");
 		}
 		if (!scheduleData.possiblyClosed)
 			localStorage.removeItem("alwaysShowSchedule");
