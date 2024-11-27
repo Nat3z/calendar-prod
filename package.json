@@ -5,9 +5,9 @@
     "server"
   ],
   "scripts": {
-    "dev": "npm-run-all --parallel server client",
+    "dev": "pnpm run client",
     "server": "vercel dev --listen 3001",
-    "client": "cd client && cross-env NODE_ENV=development pnpm run dev --host"
+    "client": "cd client && cross-env SCHOOL_ASSIGNMENT=salesian NODE_ENV=development pnpm run dev --host"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
