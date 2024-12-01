@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import GradLogo from "../../lib/grad_logo.png"
+---
+
+<div class="screen_about flex flex-col w-full justify-center items-center p-8">
+  <div class="flex flex-row gap-2 justify-center items-center">
+    <Image src={GradLogo} alt="Grad Logo" class="w-24" />
+    <h1 class="text-3xl font-semibold">DynSchedule</h1>
+  </div>
+  <div class="flex flex-row gap-2 justify-center items-center text-lg">
+    <h4 id="branch_name">master</h4>
+    {' • '}
+    <h4 id="schoolSelected"></h4>
+    {import.meta.env.HOSTER ? ' • ' : ''}
+    <h4 id="schoolSelected">{import.meta.env.HOSTER ? "Hosted by " + import.meta.env.HOSTER : ""}</h4>
+  </div>
+  <div class="flex flex-col sm:flex-row gap-1 justify-center items-center text-lg w-full">
+    <button
+      class="mt-2 bg-slate-800 text-true-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center relative w-full max-w-48"
+      id="open_changelog">
+        View Changelog
+        <div class="changelog_pulse absolute rounded-full w-4 h-4 bg-red-500 -right-1 top-0 animate-pulse hidden pointer-events-none">
+
+        </div>
+    </button> 
+    <button
+      class="mt-2 bg-slate-800 text-true-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center relative w-full max-w-48"
+      id="purge">
+        Purge Cache
+    </button>
+  </div>
+</div>
+
+<script>
+  const schoolAssignment = document.getElementById("schoolImAssigned")!.dataset.assignment!!;
+  (document.querySelector("#schoolSelected") as HTMLElement).textContent = schoolAssignment;
+
+  (document.querySelector(".screen_about") as HTMLElement).style.display = "none";
+  document.addEventListener("screen:change", (e) => {
+    let newScreen = (e as CustomEvent).detail as string;
+    if (newScreen == "about") {
+      (document.querySelector(".screen_about") as HTMLElement).style.display = "flex";
+    }
+    else {
+      (document.querySelector(".screen_about") as HTMLElement).style.display = "none";
+    }
+  })
+
+  let isInDev = document.getElementById("isInDev")!!.dataset.inDev === "true";
+  if (isInDev) {
+    document.getElementById("branch_name")!!.innerHTML = "dev (local)";
+  } else if (window.location.href.includes("dev")) {
+    document.getElementById("branch_name")!!.innerHTML = "dev";
+  } else {
+    document.getElementById("branch_name")!!.innerHTML = "master";
+  }
+
+  document.getElementById("open_changelog")!!.addEventListener("click", () => {
+    document.getElementById('changelog')!!.classList.remove("hidden");
+  });
+  document.getElementById("purge")!!.addEventListener("click", () => {
+    sessionStorage.clear();
+    localStorage.removeItem("changelog");
+    window.location.reload();
+  });
+</script>
