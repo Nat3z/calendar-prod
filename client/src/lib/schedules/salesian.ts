@@ -4,35 +4,6 @@ import ical from 'node-ical';
 import ics from 'ics';
 import { buildSchedule, matchRegex, matchRegex_ExcludeColonTime_inverse, matchRegex_inverse, parseAllDates, sendErrorResponse } from '../../lib/schedule-helper';
 
-function subtractHours(date: Date, hours: number) {
-  const newDate = new Date(date);
-  const currentHours = newDate.getDate();
-  let newHours = currentHours - hours;
-  if (newHours >= 0) {
-    newDate.setDate(newHours);
-  } else {
-    const daysToSubtract = Math.ceil(Math.abs(newHours) / 24);
-    newDate.setDate(newDate.getDate() - daysToSubtract);
-    newHours = 24 * daysToSubtract + newHours;
-    newDate.setDate(newHours);
-  }
-  return newDate;
-}
-
-function addHours(date: Date, hours: number) {
-  const newDate = new Date(date);
-  const currentHours = newDate.getHours();
-  const newHours = currentHours + hours;
-  if (newHours < 24) {
-    newDate.setHours(newHours);
-  } else {
-    const daysToAdd = Math.floor(newHours / 24);
-    newDate.setDate(newDate.getDate() + daysToAdd);
-    newDate.setHours(newHours % 24);
-  }
-  return newDate;
-}
-
 function getNextDayOfTheWeek(dayName: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday", excludeToday = false, refDate = new Date()) {
   const dayOfWeek = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
     .indexOf(dayName.slice(0, 3).toLowerCase());

@@ -1,5 +1,5 @@
 ---
-import Settings from "../layouts/Settings.astro";
+// import Settings from "../layouts/Settings.astro";
 import Layout from "../layouts/Layout.astro";
 import ThemeModifier from "../components/ThemeModifier.astro";
 import ThemeEditor from "../components/ThemeEditor.astro";
@@ -9,11 +9,8 @@ import Changelog from "../components/Changelog.astro";
 import StorageVersion from "../components/StorageVersion.astro";
 import NewSettings from "../layouts/NewSettings.astro";
 import { Image } from "astro:assets";
-import AstroLogo from "../lib/astro-logo.png"
-import VercelLogo from "../lib/vercel-logo.png"
+
 import GradLogo from "../lib/grad_logo.png"
-
-
 ---
 
 <Layout title="DynSchedule">
@@ -39,12 +36,11 @@ import GradLogo from "../lib/grad_logo.png"
 				data-assignment={import.meta.env.SCHOOL_ASSIGNMENT}
 		/>
 		<Changelog />
-
 		<div class="flex justify-start items-center flex-row" data-in-theme-editor>
 			<ScreenSaver />
 			<ThemeEditor />
 			<div
-				class="fixed opacity-0 bg-blue-500 text-white rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12 pointer-events-none"
+				class="fixed opacity-0 bg-blue-500 text-custom rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12 pointer-events-none"
 				id="refresh_notif"
 				data-in-theme-editor
 			>
@@ -67,7 +63,7 @@ import GradLogo from "../lib/grad_logo.png"
 					<h1>Originally by C.J.F '22, Rebuilt by Nat3z</h1>
 				</div>
 
-				<Settings />
+				<NewSettings />
 				<div
 					class="bg-primary w-11/12 transition-all relative h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg border-custom border-custom-color"
 					id="main_schedule"
@@ -77,7 +73,7 @@ import GradLogo from "../lib/grad_logo.png"
 						id="quickpeek"
 					>
 						<h1
-							class="text-center text-white text-4xl md:text-6xl absolute z-10"
+							class="text-center text-custom text-4xl md:text-6xl absolute z-10"
 							id="current"
 						>
 							Loading...
@@ -137,35 +133,26 @@ import GradLogo from "../lib/grad_logo.png"
 	<script>
 		import moment from "moment";
 		import { fetch } from "../lib/FetchCache";
+		import { animateNotif } from "../lib/helpers";
 		let currentDateOffset = new Date();
 		let isInDev = document.getElementById("isInDev")!.dataset.inDev === "true";
-		const schoolAssignment = document.getElementById("schoolImAssigned")!.dataset.assignment;
-		console.log("Heyo! I'm assigned to " + schoolAssignment);
+		
 		// remember to change this to the production url when you're done testing
 		let url = './api/schedule';
-		// let url = isInDev
-		// 	? "./api/schedule"
-		// 	: "https://api-schedule.nat3z.com/api/schedule";
-
-		// if (
-		// 	window.location.href.includes("development-schedule.") ||
-		// 	window.location.href.includes("preview-schedule.")
-		// ) {
-		// 	url = "https://api-development-schedule.nat3z.com/api/schedule";
-		// }
+		
 		let dtScheduleFirst = new Date();
 		// don't be influenced by utc
 		dtScheduleFirst.setHours(8, 0, 0, 0);
 
 		let scheduleData: any;
-		// let scheduleData = await ((await fetch('http://localhost:3000/api/schedule')).json())
 		let scheduleEvents: any[] = [];
 
 		console.log(
-			"%cCreated by cool people at Salesian!!!",
-			"color: #b8a26d; text-shadow: -2px -2px #ac1f2d; font-size: 32px;"
+			"%c 🎓 DynSchedule by Nat3z ",
+			"background-color: purple; color: white; text-shadow: -2px -2px black; font-size: 32px;"
 		);
-
+		const schoolAssignment = document.getElementById("schoolImAssigned")!.dataset.assignment;
+		console.log("Heyo! I'm assigned to " + schoolAssignment);
 		function replaceShorthands(period: string) {
 			// replace period to Lunch if it's ONLY "L" with regex
 			// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
@@ -234,15 +221,15 @@ import GradLogo from "../lib/grad_logo.png"
 			mainschedule.classList.remove("bg-black/5");
 			mainschedule.classList.add("bg-primary");
 
-			mainschedule.classList.add("text-white");
+			mainschedule.classList.add("text-custom");
 			mainschedule.classList.remove("text-true-white");
 			document.querySelector("#settings_cog")!!.classList.add("border-custom")
 
-			quickpeek.classList.add("text-white");
+			quickpeek.classList.add("text-custom");
 			quickpeek.classList.remove("text-true-white");
 			quickpeek.classList.add("border-b-custom");
 
-			quickpeek.querySelector("h1")!.classList.add("text-white");
+			quickpeek.querySelector("h1")!.classList.add("text-custom");
 			quickpeek.querySelector("h1")!.classList.remove("text-true-white");
 
 			mainschedule.classList.add("border-custom");
@@ -308,15 +295,15 @@ import GradLogo from "../lib/grad_logo.png"
 			mainschedule.classList.remove("bg-black/5");
 			mainschedule.classList.add("bg-primary");
 
-			mainschedule.classList.add("text-white");
+			mainschedule.classList.add("text-custom");
 			mainschedule.classList.remove("text-true-white");
 			document.querySelector("#settings_cog")!!.classList.add("border-custom")
 
-			quickpeek.classList.add("text-white");
+			quickpeek.classList.add("text-custom");
 			quickpeek.classList.remove("text-true-white");
 			quickpeek.classList.add("border-b-custom");
 
-			quickpeek.querySelector("h1")!.classList.add("text-white");
+			quickpeek.querySelector("h1")!.classList.add("text-custom");
 			quickpeek.querySelector("h1")!.classList.remove("text-true-white");
 
 			mainschedule.classList.add("border-custom");
@@ -345,18 +332,18 @@ import GradLogo from "../lib/grad_logo.png"
 				quickpeek.classList.add("backdrop-blur");
 				quickpeek.classList.add("bg-black/5");
 				quickpeek.classList.remove("bg-quickpeek");
-				quickpeek.classList.remove("text-white");
+				quickpeek.classList.remove("text-custom");
 				quickpeek.classList.add("text-true-white");
 				quickpeek.classList.remove("border-b-custom");
 
-				quickpeek.querySelector("h1")!.classList.remove("text-white");
+				quickpeek.querySelector("h1")!.classList.remove("text-custom");
 				quickpeek.querySelector("h1")!.classList.add("text-true-white");
 
 				document.getElementById("settings_cog")!.classList.add("backdrop-blur");
 				document.getElementById("settings_cog")!.classList.add("bg-white/5");
 				document.getElementById("settings_cog")!.classList.remove("border-custom");
 
-				mainschedule.classList.remove("text-white");
+				mainschedule.classList.remove("text-custom");
 				mainschedule.classList.add("text-true-white");
 				mainschedule.classList.remove("border-custom");
 				mainschedule.classList.add("backdrop-blur");
@@ -391,7 +378,7 @@ import GradLogo from "../lib/grad_logo.png"
 
 			mainschedule.classList.add("backdrop-blur");
 			mainschedule.classList.add("dark:bg-white/0");
-			mainschedule.classList.remove("text-white");
+			mainschedule.classList.remove("text-custom");
 			mainschedule.classList.add("text-true-white");
 			mainschedule.classList.add("bg-black/5");
 
@@ -639,7 +626,7 @@ import GradLogo from "../lib/grad_logo.png"
 					<h1 id="title" class="text-center text-lg w-3/4 md:text-3xl text-red-500 font-bold">
 						School is most likely closed for the day. Please check the school's website for more information.
 					</h1>
-					<button class="p-2 pl-4 pr-4 bg-light-primary rounded-lg mt-4" id="revealschedule">Show Schedule Anyways (Spam Click)</button>
+					<button class="p-2 pl-4 pr-4 bg-light-primary rounded-lg mt-4" id="revealschedule">Show Schedule Anyways</button>
 				`;
 				document
 					.querySelector("#revealschedule")!
@@ -662,29 +649,7 @@ import GradLogo from "../lib/grad_logo.png"
 			500
 		);
 
-		let timeSinceLastFocus = 0;
-
-		function animateNotif(text: string, element: HTMLElement) {
-			element.style.display = "flex";
-			element.animate([{ opacity: 0 }, { opacity: 1 }], {
-				duration: 500,
-				easing: "ease-in-out",
-				fill: "forwards",
-			});
-			element.querySelector("h1")!.textContent = text;
-
-			setTimeout(() => {
-				element.animate([{ opacity: 1 }, { opacity: 0 }], {
-					duration: 500,
-					easing: "ease-in-out",
-					iterations: 1,
-					fill: "forwards",
-				});
-				setTimeout(() => {
-					element.style.display = "none";
-				}, 500);
-			}, 4 * 1000);
-		}
+		let timeSinceLastFocus = 0;	
 
 		let loadingWayback = false;
 
@@ -957,7 +922,7 @@ import GradLogo from "../lib/grad_logo.png"
 			background: var(--background);
 			background-size: cover;
 			background-repeat: no-repeat;
-			@apply transition-all h-screen text-white;
+			@apply transition-all h-screen text-custom;
 		}
 
 		.introjs-tooltiptext {

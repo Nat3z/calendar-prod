@@ -1,6 +1,106 @@
-<div class="z-50 fixed flex justify-center items-center w-screen h-screen p-16 backdrop-blur-lg">
+---
+import BlocksScreen from './settings/Blocks.astro';
+import AccountScreen from './settings/Account.astro';
+import AboutScreen from './settings/About.astro';
+import ThemingScreen from './settings/Theming.astro';
+---
+<button
+  class="absolute top-2 right-2 p-2 bg-primary rounded-lg w-12 h-12 text-white border-custom border-custom-color"
+  id="settings_cog"
+>
+  <img src="/settings.svg" alt="⚙️" class="w-full h-full" id="cog_svg" />
+</button>
 
-  <div class="bg-slate-900 w-9/12 h-full rounded-xl">
+<div id="settings" style="display: none;" class="z-1 fixed flex justify-center items-center w-screen h-screen sm:p-16 backdrop-blur-lg !cursor-auto">
+  <div class="bg-slate-900 w-full -mt-8 xl:mt-0 sm:w-11/12 h-full sm:rounded-xl flex justify-start items-center flex-col-reverse text-white sm:flex-row">
+    <div class="settings_prompts flex flex-row p-2 gap-2 sm:flex-col w-full bg-slate-950 sm:w-1/12 min-w-24 h-2/6 max-h-36 sm:h-full sm:max-h-full sm:rounded-l-xl justify-center items-start overflow-x-auto">
+      <button data-screen="blocks">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <h1>Blocks</h1>
+      </button>
+      <button data-screen="account">
+        <span class="material-symbols-outlined">account_circle</span>
+        <h1>Account</h1>
+      </button>
+      <button data-screen="theming">
+        <span class="material-symbols-outlined">brush</span>
+        <h1>Theming</h1>
+      </button>
+      <button data-screen="about" class="relative">
+        <span class="material-symbols-outlined">info</span>
+        <h1>About</h1>
+        <div class="changelog_pulse absolute rounded-full w-4 h-4 bg-red-500 -right-1 top-0 animate-pulse hidden pointer-events-none">
 
+        </div>
+      </button>
+
+      <button data-screen="close" class="sm:mt-auto">
+        <span class="material-symbols-outlined">close</span>
+        <h1>Close</h1>
+      </button>
+    </div>
+    <div class="w-full h-full" id="settings_screen">
+      <BlocksScreen />
+      <AccountScreen />
+      <AboutScreen />
+      <ThemingScreen />
+    </div>
   </div>
 </div>
+
+<script>
+  const settings_prompts = document.querySelector('.settings_prompts') as HTMLElement;
+  settings_prompts.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'BUTTON') {
+      const screen = target.getAttribute('data-screen');
+      if (screen === 'close') {
+        (document.querySelector("#settings")!! as HTMLElement).style.display = "none";
+        return;
+      }
+      let alreadySelected = (document.querySelector(`[data-screen-selected="true"]`)!! as HTMLElement);
+      if (alreadySelected) alreadySelected.removeAttribute("data-screen-selected");
+      (document.querySelector(`[data-screen="${screen}"]`)!! as HTMLElement).setAttribute("data-screen-selected", "true");
+      document.dispatchEvent(new CustomEvent('screen:change', { detail: screen }));
+    }
+  });
+
+  // on settings cog click
+  document.querySelector('#settings_cog')!!.addEventListener('click', () => {
+    const themeEditor = document.getElementById("themeEditor")!!;
+    if (themeEditor.style.display === "block") {
+      return;
+    }
+    (document.querySelector('#settings') as HTMLElement).style.display = 'flex';
+    // pop up the settings with an animation
+    (document.querySelector('#settings') as HTMLElement).animate(
+      [
+        { transform: 'scale(0.75)', opacity: '0' },
+        { transform: 'scale(1)', opacity: '1' },
+      ],
+      {
+        duration: 100,
+        easing: 'ease-in-out',
+      }
+    );
+
+  let alreadySelected = (document.querySelector(`[data-screen-selected="true"]`)!! as HTMLElement);
+      if (alreadySelected) alreadySelected.removeAttribute("data-screen-selected");
+      (document.querySelector(`[data-screen="blocks"]`)!! as HTMLElement).setAttribute("data-screen-selected", "true");
+    document.dispatchEvent(new CustomEvent('screen:change', { detail: "blocks" }));
+  });
+</script>
+
+<style>
+  .settings_prompts {
+    button {
+      .material-symbols-outlined {
+        @apply text-xl sm:text-2xl text-slate-400 inline pointer-events-none;
+      }
+      h1 {
+        @apply text-xs inline font-sans text-slate-400 font-semibold pointer-events-none;
+      }
+      @apply flex flex-col justify-center items-center w-4/12 min-w-16 sm:w-full data-[screen-selected]:bg-slate-900/25 hover:bg-slate-900/25 px-2 pb-1 rounded-xl;
+    }
+  }
+</style>

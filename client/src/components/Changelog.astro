@@ -1,4 +1,4 @@
-<div class="z-10 fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden" id="changelog">
+<div class="z-10 fixed justify-center items-center flex md:backdrop-blur-md w-screen h-screen hidden cursor-auto" id="changelog">
   
   <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
     <div class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25">
@@ -17,8 +17,8 @@
 
 <script>
   import { marked } from 'marked';
-  const latestChangelog = await fetch('https://raw.githubusercontent.com/wiki/Nat3z/calendar-prod/Latest-Changelog.md?' + Date.now());
-  const latestcommitData = await fetch('https://api.github.com/repos/nat3z/calendar-prod/commits/master?' + Date.now());
+  const latestChangelog = await fetch('https://raw.githubusercontent.com/wiki/Nat3z/calendar-prod/Latest-Changelog.md');
+  const latestcommitData = await fetch('https://api.github.com/repos/nat3z/calendar-prod/commits/master');
 
   let latestChangelogText = await latestChangelog.text();
   const latestcommit_json = await latestcommitData.json()
@@ -56,9 +56,10 @@
   const changelog = document.getElementById('changelog')!;
   const close_changelog = document.getElementById('close_changelog')!;
 
+  const changelogPulse = document.querySelectorAll('.changelog_pulse')!;
   close_changelog.addEventListener('click', () => {
     changelog.classList.add('hidden');
-    changelogPulse.classList.add('hidden'); 
+    changelogPulse.forEach(element => element.classList.add('hidden'));
     localStorage.setItem('changelog', currentChangelogSHAString);
   });
   // record the current changelog and check if it is the same as the latest one
@@ -68,14 +69,13 @@
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
   const currentChangelog = localStorage.getItem('changelog');
-  const changelogPulse = document.getElementById('changelog_pulse')!;
   if (currentChangelog !== currentChangelogSHAString) {
     // turn sha into readable string
-    changelogPulse.classList.remove('hidden'); 
+    changelogPulse.forEach(element => element.classList.remove('hidden'));
   }
 
   document.addEventListener("openChangelog", () => {
-    changelogPulse.classList.add('hidden'); 
+    changelogPulse.forEach(element => element.classList.add('hidden'));
     changelog.classList.remove('hidden');
   });
 
