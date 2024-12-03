@@ -1,0 +1,180 @@
+---
+
+---
+
+<div class="z-[99] fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden top-0 left-0" id="paste_screen">
+  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
+    <div class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25">
+      <h1 class="font-mono pl-4 text-2xl text-true-white">🏫 Paste from Schoology</h1>
+      <button class="ml-auto flex justify-center items-center h-fit" id="close_paste">
+        <span class="material-symbols-outlined hover:text-red-500 p-4 !text-true-white" style="font-size: 2em">close</span>
+      </button>
+    </div>
+    <div class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4">
+      <img
+        src="./howtocopy.gif"
+        alt="Open the Schoology Courses tab and type CTRL + A and CTRL + C. Then, type CTRL + V in the 'Paste Here' field."
+        class="rounded-lg w-full"
+      />
+      <div class="flex flex-row gap-4 w-full justify-center items-center">
+        <h1>Paste Here:</h1>
+        <textarea class="text-black resize-none" id="pasted_text"></textarea>
+      </div>
+
+      <button
+        class="bg-[#1c2b50] text-white text-lg rounded-lg h-8 w-24 font-bold"
+        id="paste_confirm">Confirm</button
+      >
+    </div>
+  </div>
+</div>
+
+<div class="screen_blocks flex flex-col justify-center items-center">
+  <div id="settings_blocks">
+    <section
+      id="blk_1-input"
+    >
+      <h1>Block 1</h1>
+      <input class="w-36 text-black font-normal pl-2" />
+    </section>
+    <section
+      id="blk_2-input"
+    >
+      <h1>Block 2</h1>
+      <input class="w-36 text-black font-normal pl-2" />
+    </section>
+    <section
+      id="blk_3-input"
+    >
+      <h1>Block 3</h1>
+      <input class="w-36 text-black font-normal pl-2" />
+    </section>
+    <section
+      id="blk_4-input"
+    >
+      <h1>Block 4</h1>
+      <input class="w-36 text-black font-normal pl-2" />
+    </section>
+    <section
+      id="blk_5-input"
+    >
+      <h1>Block 5</h1>
+      <input class="w-36 text-black font-normal pl-2" />
+    </section>
+    <section
+      id="blk_6-input"
+    >
+      <h1>Block 6</h1>
+      <input class="w-36 text-black font-normal pl-2" />
+    </section>
+    <section
+      id="blk_7-input"
+    >
+      <h1>Block 7</h1>
+      <input class="w-36 text-black font-normal pl-2" />
+    </section>
+    </div>
+    <button id="paste" class="bg-slate-800 px-4 py-2 rounded-lg w-fit font-bold">Paste from Schoology</button>
+  </div>
+<script>
+(document.querySelector(".screen_blocks") as HTMLElement).style.display = "none";
+document.addEventListener("screen:change", (e) => {
+  let newScreen = (e as CustomEvent).detail as string;
+  if (newScreen == "blocks") {
+    (document.querySelector(".screen_blocks") as HTMLElement).style.display = "flex";
+  }
+  else {
+    (document.querySelector(".screen_blocks") as HTMLElement).style.display = "none";
+  }
+})
+
+function setHTML() {
+  (document.getElementById("blk_1-input")!!.children[1] as HTMLButtonElement).value =
+    localStorage.getItem("blk_1") || "Block 1";
+  (document.getElementById("blk_2-input")!!.children[1] as HTMLButtonElement).value =
+    localStorage.getItem("blk_2") || "Block 2";
+  (document.getElementById("blk_3-input")!!.children[1] as HTMLButtonElement).value =
+    localStorage.getItem("blk_3") || "Block 3";
+  (document.getElementById("blk_4-input")!!.children[1] as HTMLButtonElement).value =
+    localStorage.getItem("blk_4") || "Block 4";
+  (document.getElementById("blk_5-input")!!.children[1] as HTMLButtonElement).value =
+    localStorage.getItem("blk_5") || "Block 5";
+  (document.getElementById("blk_6-input")!!.children[1] as HTMLButtonElement).value =
+    localStorage.getItem("blk_6") || "Block 6";
+  (document.getElementById("blk_7-input")!!.children[1] as HTMLButtonElement).value =
+    localStorage.getItem("blk_7") || "Block 7";
+}
+
+setHTML()
+
+for (const child of document.getElementById("settings_blocks")!!.children) {
+  if (child.nodeName === "SECTION") {
+    child.children[1].addEventListener("change", () => {
+      let block = child.children[0].innerHTML.split(" ")[1];
+      localStorage.setItem(`blk_${block}`, (child.children[1] as HTMLButtonElement).value);
+      // refresh the theme using the refreshTheme custom event
+      setTimeout(() => {
+        console.log("refreshing theme");
+        document.dispatchEvent(new Event("login:sync"));
+        document.dispatchEvent(
+          new CustomEvent("refreshTheme", {
+            detail: { disallowRefresh: true },
+          })
+        );
+      }, 100);
+    });
+  }
+}
+
+document.getElementById("paste")!!.addEventListener("click", () => {
+  const paste_screen = document.getElementById("paste_screen")!!;
+  paste_screen.classList.remove("hidden");
+});
+
+document.getElementById("paste_confirm")!!.addEventListener("click", () => {
+  /**
+   * @type {string}
+   */
+  const pasted_text = document.getElementById("pasted_text").value;
+  let regex_pasted = /(.*)\nBlock (\d)/g;
+  let result;
+  pasted_text.match(regex_pasted).forEach((match: string) => {
+    let match_found = match.split("\n");
+    let block = match_found[1].split(" ")[1];
+    let block_name = match_found[0];
+    (document.getElementById(`blk_${block}-input`)!!.children[1] as HTMLInputElement).value =
+      block_name;
+    localStorage.setItem(`blk_${block}`, block_name);
+  });
+
+  document.dispatchEvent(new Event("login:sync"))
+  const paste_screen = document.getElementById("paste_screen")!!;
+  paste_screen.classList.add("hidden");
+  setTimeout(() => {
+    document.dispatchEvent(
+      new CustomEvent("refreshTheme", { detail: { disallowRefresh: true } })
+    );
+  }, 100);
+});
+
+document.getElementById("close_paste")!!.addEventListener("click", () => {
+  const paste_screen = document.getElementById("paste_screen")!!;
+  paste_screen.classList.add("hidden");
+});
+
+
+</script>
+
+<style>
+  #settings_blocks {
+    section {
+      input {
+        @apply border-dotted bg-slate-700/10 border-slate-700 border-b-2 rounded-none text-true-white;
+      }
+      @apply text-true-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4;
+    }
+
+    @apply w-full flex flex-col gap-2 p-8;
+  }
+</style>
+

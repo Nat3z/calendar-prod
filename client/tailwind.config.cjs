@@ -15,7 +15,7 @@ module.exports = {
 				"progress-bar": "var(--progress-bar-opacity)",
 			},
 			"textColor": {
-				"white": "var(--text-color)",
+				"custom": "var(--text-color)",
 				"true-white": "white",
 			},
 			"borderWidth": {

@@ -36,7 +36,7 @@ import ResetColor from "./ResetColor.astro";
     <button class="bg-light-primary p-2 pl-4 pr-4 rounded-lg" id="closePreviewTheme">Close</button>
   </div>
 </div>
-<div class="relative w-4/12 h-screen bg-gray-900 border-r-4 border-gray-800 text-true-white" style="display: none;" data-intro="Welcome to the Theme Editor ✏️" id="themeEditor">
+<div class="relative w-4/12 min-w-96 h-screen bg-gray-900 border-r-4 border-gray-800 text-true-white" style="display: none;" data-intro="Welcome to the Theme Editor ✏️" id="themeEditor">
   <div class="flex justify-start items-center pl-4 pr-4 mt-4">
     <h1 class="font-bold font-mono text-center text-xl" id="themeEditor-text">Theme Editor</h1>
     <button class="font-bold font-mono ml-auto text-gray-600 hover:text-red-400 text-xl justify-center items-center flex" id="closeEditor">
@@ -994,6 +994,10 @@ import ResetColor from "./ResetColor.astro";
       ev.preventDefault();
       if (onCooldwn) return;
       if ((document.querySelector("#preview_menu")! as HTMLElement).style.display !== "none") {
+        return;
+      }
+
+      if ((document.querySelector("#settings")! as HTMLElement).style.display !== "none") {
         return;
       }
 
