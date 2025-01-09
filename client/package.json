@@ -1,5 +1,5 @@
 {
-  "name": "@example/basics",
+  "name": "dynschedule-fullstack",
   "type": "module",
   "version": "0.0.1",
   "private": true,
@@ -29,5 +29,8 @@
     "sharp": "^0.32.6",
     "tailwindcss": "^3.0.24",
     "typescript": "^5.6.2"
+  },
+  "devDependencies": {
+    "tailwindcss-safe-area": "^0.6.0"
   }
 }
