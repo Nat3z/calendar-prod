@@ -114,7 +114,7 @@ export default async function handler(request: Request) {
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
     // development
-    if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
+    if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear() && event.summary.includes("Schedule")) {
       if (!schoolToBeClosed)
         schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
       if (event.summary.includes("Last Day of School") && !endOfSchool) {
