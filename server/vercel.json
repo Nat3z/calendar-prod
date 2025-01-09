@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/checkScheduleValidity",
-      "schedule": "15 17 * * *"
-    }
-  ]
-}
