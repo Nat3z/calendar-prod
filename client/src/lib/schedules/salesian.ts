@@ -110,11 +110,15 @@ export default async function handler(request: Request) {
   let endOfSchool = false;
   let eventDescription = "";
   let title: string = "";
+
+
+  console.log("Date: " + today.toDateString())
   /* @ts-ignore */
   let event: ical.VEvent | undefined = vEvents.find(event => {
     if (event.type !== "VEVENT") return false
     // development
-    if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear() && event.summary.includes("Schedule")) {
+    if (event.start.getDate() == today.getDate() && event.start.getMonth() == today.getMonth() && event.start.getFullYear() == today.getFullYear()) {
+      console.log(event.summary);
       if (!schoolToBeClosed)
         schoolToBeClosed = event.summary.includes("No School") || event.summary.includes("School Closed");
       if (event.summary.includes("Last Day of School") && !endOfSchool) {
@@ -125,13 +129,31 @@ export default async function handler(request: Request) {
         `
         return true;
       }
+
+      if (!event.summary.includes("Schedule") && !schoolToBeClosed) {
+        console.log("Skipping event: " + event.summary) 
+        return false;
+      }
       return (
         event.description.match(matchRegex) != null ||
         event.description.match(matchRegex_inverse) != null ||
         event.description.match(matchRegex_ExcludeColonTime_inverse) != null
       )
     }
-  })
+  });
+
+  if (today.getDate() === 7 && today.getMonth() === 2 && today.getFullYear() === 2025) {
+    eventDescription = `
+      8:30 - 12:35 Career Day
+    `;
+    title = "Schedule Change: Career Day; Early 12:35pm Dismissal";
+    return buildSchedule(req, res, {
+      eventTitle: title,
+      eventDescription,
+      schoolClosed: false,
+      gotFromCache: false
+    });
+  }
 
   // if the event is null in normal calendar, go to the fallback calendar
   let gotFromCache = false
