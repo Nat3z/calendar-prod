@@ -22,12 +22,12 @@ In the root directory, run this to start the server + the frontend.
 pnpm run dev
 ```
 # API Documentation
-Requests can be made to the [https://api-schedule.nat3z.com/api/schedule](https://api-schedule.nat3z.com/api/schedule) to receive the latest schedule.
-If you wish to live on the **bleeding edge**, you can use the [https://development-api-schedule.nat3z.com/api/schedule](https://development-api-schedule.nat3z.com/api/schedule) endpoint.
+Requests can be made to the [https://schedule.nat3z.com/api/schedule](https://schedule.nat3z.com/api/schedule) to receive the latest schedule.
+If you wish to live on the **bleeding edge**, you can use the [https://development-schedule.nat3z.com/api/schedule](https://development-schedule.nat3z.com/api/schedule) endpoint.
 
 Here's an example request in JavaScript
 ```js
-fetch("https://api-schedule.nat3z.com/api/schedule")
+fetch("https://schedule.nat3z.com/api/schedule")
   .then(
     (res) => res.json()
       .then(response => console.log)
