@@ -1,52 +1,99 @@
 ---
-import { Image } from "astro:assets"
-import GoogleLogo from "../lib/google_logo.png"
+import { Image } from "astro:assets";
+import GoogleLogo from "../lib/google_logo.png";
 ---
 
-<div class="z-10 fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden" id="manage_account">
-  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
-    <div class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25">
-      <h1 class="font-mono pl-4 text-2xl text-true-white">💻 Account Management</h1>
-      <button class="ml-auto flex justify-center items-center h-fit" id="account_manage_close">
-        <span class="material-symbols-outlined hover:text-red-500 p-4 !text-true-white" style="font-size: 2em">close</span>
+<div
+  class="z-10 fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden"
+  id="manage_account"
+>
+  <div
+    class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4"
+  >
+    <div
+      class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25"
+    >
+      <h1 class="font-mono pl-4 text-2xl text-true-white">
+        💻 Account Management
+      </h1>
+      <button
+        class="ml-auto flex justify-center items-center h-fit"
+        id="account_manage_close"
+      >
+        <span
+          class="material-symbols-rounded hover:text-red-500 p-4 !text-true-white"
+          style="font-size: 2em">close</span
+        >
       </button>
     </div>
-    
-    <div class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4">
-      <div id="not_loggedin" style="display: none;" class="justify-center items-center flex-col gap-2">
-        <button class="rounded-lg p-2 pl-4 pr-4 flex justify-start items-center gap-2 flex-row bg-white hover:bg-white/90 text-black shadow-lg" id="go_login">
+
+    <div
+      class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4"
+    >
+      <div
+        id="not_loggedin"
+        style="display: none;"
+        class="justify-center items-center flex-col gap-2"
+      >
+        <button
+          class="rounded-lg p-2 pl-4 pr-4 flex justify-start items-center gap-2 flex-row bg-white hover:bg-white/90 text-black shadow-lg"
+          id="go_login"
+        >
           <Image src={GoogleLogo} alt="Google Logo" class="w-8 h-8" />
           <h1 class="text-lg font-semibold -mt-1">Login with Google</h1>
         </button>
         <p class="text-gray-400">
           By logging in, you agree to our
-          <a href="https://github.com/Nat3z/calendar-prod/wiki/Privacy-Policy" class="text-center underline text-purple-600">Privacy Policy</a>
+          <a
+            href="https://github.com/Nat3z/calendar-prod/wiki/Privacy-Policy"
+            class="text-center underline text-purple-600">Privacy Policy</a
+          >
         </p>
       </div>
 
       <div id="loggedin" class="flex-col text-xl gap-2" style="display: none;">
-        <button id="pull_account" class="bg-green-400 rounded-lg p-2 pl-4 pr-4 text-lg flex flex-row justify-center items-center gap-2 font-semibold">
-          <span class="material-symbols-outlined">cloud_download</span>
+        <button
+          id="pull_account"
+          class="bg-green-400 rounded-lg p-2 pl-4 pr-4 text-lg flex flex-row justify-center items-center gap-2 font-semibold"
+        >
+          <span class="material-symbols-rounded">cloud_download</span>
           Download from Cloud
         </button>
-        <button id="sync_account" class="bg-blue-400 rounded-lg p-2 pl-4 pr-4 text-lg flex flex-row justify-center items-center gap-2 font-semibold">
-          <span class="material-symbols-outlined">cloud_upload</span>
+        <button
+          id="sync_account"
+          class="bg-blue-400 rounded-lg p-2 pl-4 pr-4 text-lg flex flex-row justify-center items-center gap-2 font-semibold"
+        >
+          <span class="material-symbols-rounded">cloud_upload</span>
           Save to Cloud
         </button>
-        <button id="logout_account" class="bg-red-400 rounded-lg p-2 pl-4 pr-4 text-lg flex flex-row justify-center items-center gap-2 font-semibold">
-          <span class="material-symbols-outlined">logout</span>
+        <button
+          id="logout_account"
+          class="bg-red-400 rounded-lg p-2 pl-4 pr-4 text-lg flex flex-row justify-center items-center gap-2 font-semibold"
+        >
+          <span class="material-symbols-rounded">logout</span>
           Logout
         </button>
       </div>
     </div>
-    
   </div>
 </div>
 
 <script>
-  import { getAuth, GoogleAuthProvider, signInWithPopup, type User } from "firebase/auth";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    type User,
+  } from "firebase/auth";
   import { initializeApp } from "firebase/app";
-  import { getDatabase, set, ref, get, goOffline, goOnline } from "firebase/database";
+  import {
+    getDatabase,
+    set,
+    ref,
+    get,
+    goOffline,
+    goOnline,
+  } from "firebase/database";
   import moment from "moment";
   const firebaseConfig = {
     apiKey: "AIzaSyCWBTTV9qu7tzlKeYOSrcj9bzM8ndY6DI4",
@@ -55,11 +102,13 @@ import GoogleLogo from "../lib/google_logo.png"
     projectId: "dynschedule-login",
     storageBucket: "dynschedule-login.appspot.com",
     messagingSenderId: "158062505462",
-    appId: "1:158062505462:web:e6f1bbf5415593a2c86bd7"
+    appId: "1:158062505462:web:e6f1bbf5415593a2c86bd7",
   };
-  document.getElementById("account_manage_close")!.addEventListener("click", () => {
-    document.getElementById("manage_account")!.classList.add("hidden");
-  });
+  document
+    .getElementById("account_manage_close")!
+    .addEventListener("click", () => {
+      document.getElementById("manage_account")!.classList.add("hidden");
+    });
 
   document.getElementById("sync_account")!.addEventListener("click", () => {
     console.log("Sync event triggered.");
@@ -71,23 +120,23 @@ import GoogleLogo from "../lib/google_logo.png"
     const user = auth.currentUser;
     if (user) {
       // clone localStorage
-      const localStorageExcluded = {...localStorage};
+      const localStorageExcluded = { ...localStorage };
       delete localStorageExcluded["changelog"];
       // check all themes and make sure that they don't exceed the 10mb limit
       for (const key in localStorageExcluded) {
         if (localStorageExcluded[key].length > 10000000) {
-          console.log("Theme " + key + " exceeds the 10mb limit. Deleting from sync.");
+          console.log(
+            "Theme " + key + " exceeds the 10mb limit. Deleting from sync."
+          );
           delete localStorageExcluded[key];
         }
       }
 
       goOnline(realtime);
-      await set(ref(realtime, 'accounts/' + user.uid), 
-        {
-          data: JSON.stringify(localStorageExcluded),
-          lastSynced: moment().unix()
-        }
-      );
+      await set(ref(realtime, "accounts/" + user.uid), {
+        data: JSON.stringify(localStorageExcluded),
+        lastSynced: moment().unix(),
+      });
       goOffline(realtime);
 
       console.log("%cSync successful.", "color: green; font-weight: bold;");
@@ -96,13 +145,14 @@ import GoogleLogo from "../lib/google_logo.png"
 
   document.getElementById("logout_account")!.addEventListener("click", () => {
     console.log("Logout event triggered.");
-    auth.signOut()
+    auth
+      .signOut()
       .then(() => {
         console.log("Logged out successfully.");
         document.getElementById("loggedin")!.style.display = "none";
         document.getElementById("not_loggedin")!.style.display = "flex";
       })
-      .catch(() => console.error("Errored when logging out."))
+      .catch(() => console.error("Errored when logging out."));
   });
 
   document.getElementById("go_login")!.addEventListener("click", () => {
@@ -112,8 +162,8 @@ import GoogleLogo from "../lib/google_logo.png"
         const user = result.user;
         auth.updateCurrentUser(user);
       })
-    .catch(() => console.error("Errored when logging in."))
-  })
+      .catch(() => console.error("Errored when logging in."));
+  });
 
   document.getElementById("pull_account")!.addEventListener("click", () => {
     console.log("Pull event triggered.");
@@ -132,42 +182,47 @@ import GoogleLogo from "../lib/google_logo.png"
   goOffline(realtime);
   function pull(user: User) {
     goOnline(realtime);
-    get(ref(realtime, 'accounts/' + user.uid)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log("Syncing data...");
-        const data = JSON.parse(snapshot.val().data);
-        for (const key in data) {
-          localStorage.setItem(key, data[key]);
+    get(ref(realtime, "accounts/" + user.uid))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("Syncing data...");
+          const data = JSON.parse(snapshot.val().data);
+          for (const key in data) {
+            localStorage.setItem(key, data[key]);
+          }
+          console.log("%cSync successful.", "color: green; font-weight: bold;");
+          localStorage.setItem("lastSynced", moment().unix().toString());
+          document.dispatchEvent(new CustomEvent("refreshTheme"));
+          document.dispatchEvent(new Event("login:update"));
+          goOffline(realtime);
+        } else {
+          document.dispatchEvent(new Event("login:sync"));
+          console.log("No data found.");
         }
-        console.log("%cSync successful.", "color: green; font-weight: bold;");
-        localStorage.setItem("lastSynced", moment().unix().toString());
-        document.dispatchEvent(new CustomEvent("refreshTheme"));
-        document.dispatchEvent(new Event("login:update"))
-        goOffline(realtime);
-      } else {
-        document.dispatchEvent(new Event("login:sync"));
-        console.log("No data found.");
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   let loggedOut = false;
   document.getElementById("loggedin")!.style.display = "none";
   document.getElementById("not_loggedin")!.style.display = "none";
   auth.onAuthStateChanged((user) => {
-    
     if (user) {
       console.log("User is logged in.");
       document.getElementById("loggedin")!.style.display = "flex";
       document.getElementById("not_loggedin")!.style.display = "none";
-      if (!loggedOut && localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60) {
+      if (
+        !loggedOut &&
+        localStorage.getItem("lastSynced") &&
+        moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60
+      ) {
         console.log("Synced within the 1 minute. Skipping pull.");
         return;
       }
       // sync database
-      pull(user)
+      pull(user);
     } else {
       loggedOut = true;
       console.log("User is not logged in.");
@@ -179,11 +234,13 @@ import GoogleLogo from "../lib/google_logo.png"
   document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState === "visible") return;
 
-    if (localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60) {
+    if (
+      localStorage.getItem("lastSynced") &&
+      moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60
+    ) {
       console.log("Synced within the 1 minute. Skipping pull.");
       return;
     }
-    if (auth.currentUser)
-      pull(auth.currentUser!);
+    if (auth.currentUser) pull(auth.currentUser!);
   });
 </script>

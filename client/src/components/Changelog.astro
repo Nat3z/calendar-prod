@@ -1,28 +1,49 @@
-<div class="z-10 fixed justify-center items-center flex md:backdrop-blur-md w-screen h-screen hidden cursor-auto" id="changelog">
-  
-  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
-    <div class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25">
+<div
+  class="z-10 fixed justify-center items-center flex md:backdrop-blur-md w-screen h-screen hidden cursor-auto"
+  id="changelog"
+>
+  <div
+    class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4"
+  >
+    <div
+      class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25"
+    >
       <h1 class="font-mono pl-4 text-2xl text-true-white">🤔 what's new?</h1>
-      <button class="ml-auto flex justify-center items-center h-fit" id="close_changelog">
-        <span class="material-symbols-outlined hover:text-red-500 p-4 !text-true-white" style="font-size: 2em">close</span>
+      <button
+        class="ml-auto flex justify-center items-center h-fit"
+        id="close_changelog"
+      >
+        <span
+          class="material-symbols-rounded hover:text-red-500 p-4 !text-true-white"
+          style="font-size: 2em">close</span
+        >
       </button>
     </div>
-    
+
     <div class="overflow-y-auto h-full text-true-white pt-14">
-      <article id="content_changelog" class="text-true-white overflow-y-auto h-full p-4 pb-12"></article>
+      <article
+        id="content_changelog"
+        class="text-true-white overflow-y-auto h-full p-4 pb-12"
+      >
+      </article>
     </div>
-    
   </div>
 </div>
 
 <script>
-  import { marked } from 'marked';
-  const latestChangelog = await fetch('https://raw.githubusercontent.com/wiki/Nat3z/calendar-prod/Latest-Changelog.md');
-  const latestcommitData = await fetch('https://api.github.com/repos/nat3z/calendar-prod/commits/master');
+  import { marked } from "marked";
+  const latestChangelog = await fetch(
+    "https://raw.githubusercontent.com/wiki/Nat3z/calendar-prod/Latest-Changelog.md"
+  );
+  const latestcommitData = await fetch(
+    "https://api.github.com/repos/nat3z/calendar-prod/commits/master"
+  );
 
   let latestChangelogText = await latestChangelog.text();
-  const latestcommit_json = await latestcommitData.json()
-  const latestcommitText = (latestcommit_json.commit ?? {}).message ?? "rate limited :(\n\nyour network has been rate limited by github, please check back later.";
+  const latestcommit_json = await latestcommitData.json();
+  const latestcommitText =
+    (latestcommit_json.commit ?? {}).message ??
+    "rate limited :(\n\nyour network has been rate limited by github, please check back later.";
   const commitSHA = (latestcommit_json.sha ?? "00000000").slice(0, 7);
 
   marked.use({
@@ -44,55 +65,57 @@
       },
     },
     headerIds: false,
-
   });
 
   const content = marked.parse(latestChangelogText);
-  const latestcommit_content = `<hr style="margin-bottom: 1.5rem; border-color: gray; margin-top: 1.5rem;"><div style="background: white; width: fit-content; padding: 2px 2px 2px; border-radius: 8px; padding-left: 4px; padding-right: 4px;" class="font-mono text-black">#${commitSHA}</div>\n\n${marked.parse("# " + latestcommitText.split('\n\n')[0] + "\n\n" + (latestcommitText.split('\n\n').length > 1 ? latestcommitText.split('\n\n', 2)[1] : ""))}`;
-  
-  const content_changelog = document.getElementById('content_changelog')!;
-  content_changelog.innerHTML = content + latestcommit_content;
-  
-  const changelog = document.getElementById('changelog')!;
-  const close_changelog = document.getElementById('close_changelog')!;
+  const latestcommit_content = `<hr style="margin-bottom: 1.5rem; border-color: gray; margin-top: 1.5rem;"><div style="background: white; width: fit-content; padding: 2px 2px 2px; border-radius: 8px; padding-left: 4px; padding-right: 4px;" class="font-mono text-black">#${commitSHA}</div>\n\n${marked.parse("# " + latestcommitText.split("\n\n")[0] + "\n\n" + (latestcommitText.split("\n\n").length > 1 ? latestcommitText.split("\n\n", 2)[1] : ""))}`;
 
-  const changelogPulse = document.querySelectorAll('.changelog_pulse')!;
-  close_changelog.addEventListener('click', () => {
-    changelog.classList.add('hidden');
-    changelogPulse.forEach(element => element.classList.add('hidden'));
-    localStorage.setItem('changelog', currentChangelogSHAString);
+  const content_changelog = document.getElementById("content_changelog")!;
+  content_changelog.innerHTML = content + latestcommit_content;
+
+  const changelog = document.getElementById("changelog")!;
+  const close_changelog = document.getElementById("close_changelog")!;
+
+  const changelogPulse = document.querySelectorAll(".changelog_pulse")!;
+  close_changelog.addEventListener("click", () => {
+    changelog.classList.add("hidden");
+    changelogPulse.forEach((element) => element.classList.add("hidden"));
+    localStorage.setItem("changelog", currentChangelogSHAString);
   });
   // record the current changelog and check if it is the same as the latest one
 
-  const currentChangelogSHA = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(content ?? ""));
-  const currentChangelogSHAString = Array.from(new Uint8Array(currentChangelogSHA))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-  const currentChangelog = localStorage.getItem('changelog');
+  const currentChangelogSHA = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(content ?? "")
+  );
+  const currentChangelogSHAString = Array.from(
+    new Uint8Array(currentChangelogSHA)
+  )
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  const currentChangelog = localStorage.getItem("changelog");
   if (currentChangelog !== currentChangelogSHAString) {
     // turn sha into readable string
-    changelogPulse.forEach(element => element.classList.remove('hidden'));
+    changelogPulse.forEach((element) => element.classList.remove("hidden"));
   }
 
   document.addEventListener("openChangelog", () => {
-    changelogPulse.forEach(element => element.classList.add('hidden'));
-    changelog.classList.remove('hidden');
+    changelogPulse.forEach((element) => element.classList.add("hidden"));
+    changelog.classList.remove("hidden");
   });
-
 </script>
 
 <style>
   article {
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
   }
 
-  article::-webkit-scrollbar { 
-    display: none;  /* Safari and Chrome */
+  article::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
   }
 
   li {
     @apply ml-2;
   }
-
 </style>

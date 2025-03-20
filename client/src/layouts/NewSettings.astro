@@ -6,10 +6,15 @@ import ThemingScreen from "./settings/Theming.astro";
 ---
 
 <button
-  class="absolute top-2 right-2 p-2 bg-primary rounded-lg w-12 h-12 text-white border-custom border-custom-color"
+  class="flex justify-center items-center absolute top-2 right-2 p-2 bg-primary rounded-lg w-12 h-12 text-white border-custom border-custom-color"
   id="settings_cog"
 >
-  <img src="/settings.svg" alt="⚙️" class="w-full h-full" id="cog_svg" />
+  <span
+    class="material-symbols-rounded text-3xl text-custom"
+    style="font-variation-settings: 'FILL' 1;"
+  >
+    settings
+  </span>
 </button>
 
 <div
@@ -24,19 +29,19 @@ import ThemingScreen from "./settings/Theming.astro";
       class="settings_prompts flex flex-row p-2 gap-2 sm:flex-col w-full bg-slate-950 sm:w-1/12 min-w-24 pb-6 sm:h-full sm:max-h-full sm:rounded-l-xl justify-center items-start overflow-x-auto"
     >
       <button data-screen="blocks">
-        <span class="material-symbols-outlined">calendar_month</span>
+        <span class="material-symbols-rounded">calendar_month</span>
         <h1>Blocks</h1>
       </button>
       <button data-screen="account">
-        <span class="material-symbols-outlined">account_circle</span>
+        <span class="material-symbols-rounded">account_circle</span>
         <h1>Account</h1>
       </button>
       <button data-screen="theming">
-        <span class="material-symbols-outlined">brush</span>
+        <span class="material-symbols-rounded">brush</span>
         <h1>Theming</h1>
       </button>
       <button data-screen="about" class="relative">
-        <span class="material-symbols-outlined">info</span>
+        <span class="material-symbols-rounded">info</span>
         <h1>About</h1>
         <div
           class="changelog_pulse absolute rounded-full w-4 h-4 bg-red-500 -right-1 top-0 animate-pulse hidden pointer-events-none"
@@ -45,7 +50,7 @@ import ThemingScreen from "./settings/Theming.astro";
       </button>
 
       <button data-screen="close" class="sm:mt-auto">
-        <span class="material-symbols-outlined">close</span>
+        <span class="material-symbols-rounded">close</span>
         <h1>Close</h1>
       </button>
     </div>
@@ -121,7 +126,7 @@ import ThemingScreen from "./settings/Theming.astro";
 <style>
   .settings_prompts {
     button {
-      .material-symbols-outlined {
+      .material-symbols-rounded {
         @apply text-xl sm:text-2xl text-slate-400 inline pointer-events-none;
       }
       h1 {

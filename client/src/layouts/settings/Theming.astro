@@ -27,139 +27,144 @@
       class="bg-slate-700 text-white p-2 rounded-lg w-full"
       id="removeCustomTheme">Remove Custom Theme</button
     >
-    
   </div>
 
   <button id="edit" class="px-4 py-2 rounded-lg bg-slate-700">
-    <span class="material-symbols-outlined">brush</span>
+    <span class="material-symbols-rounded">brush</span>
   </button>
 </div>
 
 <script>
-(document.querySelector(".screen_theming") as HTMLElement).style.display = "none";
-document.addEventListener("screen:change", (e) => {
-  let newScreen = (e as CustomEvent).detail as string;
-  if (newScreen == "theming") {
-    (document.querySelector(".screen_theming") as HTMLElement).style.display = "flex";
-  }
-  else {
-    (document.querySelector(".screen_theming") as HTMLElement).style.display = "none";
-  }
-})
+  (document.querySelector(".screen_theming") as HTMLElement).style.display =
+    "none";
+  document.addEventListener("screen:change", (e) => {
+    let newScreen = (e as CustomEvent).detail as string;
+    if (newScreen == "theming") {
+      (document.querySelector(".screen_theming") as HTMLElement).style.display =
+        "flex";
+    } else {
+      (document.querySelector(".screen_theming") as HTMLElement).style.display =
+        "none";
+    }
+  });
 
-function setHTML() {
-  document.getElementById("dynbackground")!!.textContent =
-      (localStorage.getItem("dynamic_theme") === "true" ||
-        !localStorage.getItem("dynamic_theme"))
+  function setHTML() {
+    document.getElementById("dynbackground")!!.textContent =
+      localStorage.getItem("dynamic_theme") === "true" ||
+      !localStorage.getItem("dynamic_theme")
         ? "Disable Adaptive Background"
         : "Enable Adaptive Background";
     (document.getElementById("theme_select")!! as HTMLSelectElement).value =
       localStorage.getItem("theme") || "default";
-}
-setHTML();
+  }
+  setHTML();
 
-const mq = window.matchMedia("(max-width: 760px)");
-if (mq.matches) {
-  let themeSelected = localStorage.getItem("theme") || "default";
-  let editorButton = document.getElementById("edit")!!;
-  editorButton.id = "preventTheme2";
-  editorButton.classList.remove("flex");
-  editorButton.classList.add("hidden");
-  document.getElementById("preventTheme2")!!.addEventListener("click", () => {
-    if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
-      localStorage.removeItem(`editorThemeClear.${themeSelected}`);
-      location.reload();
-      return;
-    }
-    let allowed = confirm(
-      "Are you sure you want to prevent this theme from applying?\n" +
-      "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
-      "➡️ This will allow you to make as many edits to the theme as you like.\n" +
-      "➡️ You can undo this by clicking the button again."
-    );
-    if (!allowed) return;
-
-    localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
-    location.reload();
-  });
-  document.getElementById("preventTheme2")!!.textContent = localStorage.getItem(
-    `editorThemeClear.${themeSelected}`
-  )
-    ? "Enable Theme"
-    : "Disable Theme";
-} else {
-  document.getElementById("edit")!!.classList.remove("hidden");
-}
-
-if (document.getElementById("edit"))
-  document.getElementById("edit")!!.addEventListener("click", () => {
-    (document.querySelector('[data-screen="close"]')!! as HTMLButtonElement).click();
-    if ((document.querySelector("#preview_menu")!! as HTMLElement).style.display !== "none") {
-      alert("Please close the preview menu before editing the theme.");
-      return;
-    }
-    const themeEditor = document.getElementById("themeEditor")!!;
-    if (themeEditor.style.display === "block") {
-      return;
-    }
-    themeEditor.style.display = "block";
-    themeEditor.animate(
-      [{ transform: "translateX(-100%)" }, { transform: "translateX(0)" }],
-      {
-        duration: 500,
-        easing: "ease-in-out",
-        fill: "forwards",
+  const mq = window.matchMedia("(max-width: 760px)");
+  if (mq.matches) {
+    let themeSelected = localStorage.getItem("theme") || "default";
+    let editorButton = document.getElementById("edit")!!;
+    editorButton.id = "preventTheme2";
+    editorButton.classList.remove("flex");
+    editorButton.classList.add("hidden");
+    document.getElementById("preventTheme2")!!.addEventListener("click", () => {
+      if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
+        localStorage.removeItem(`editorThemeClear.${themeSelected}`);
+        location.reload();
+        return;
       }
-    );
+      let allowed = confirm(
+        "Are you sure you want to prevent this theme from applying?\n" +
+          "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
+          "➡️ This will allow you to make as many edits to the theme as you like.\n" +
+          "➡️ You can undo this by clicking the button again."
+      );
+      if (!allowed) return;
 
-    document
-      .getElementById("schedule_page")!!
-      .animate([{ marginLeft: "-33.33%" }, { marginLeft: "0" }], {
-        duration: 500,
-        easing: "ease-in-out",
-        fill: "forwards",
-      });
+      localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
+      location.reload();
+    });
+    document.getElementById("preventTheme2")!!.textContent =
+      localStorage.getItem(`editorThemeClear.${themeSelected}`)
+        ? "Enable Theme"
+        : "Disable Theme";
+  } else {
+    document.getElementById("edit")!!.classList.remove("hidden");
+  }
 
-    setTimeout(() => {
+  if (document.getElementById("edit"))
+    document.getElementById("edit")!!.addEventListener("click", () => {
+      (
+        document.querySelector('[data-screen="close"]')!! as HTMLButtonElement
+      ).click();
+      if (
+        (document.querySelector("#preview_menu")!! as HTMLElement).style
+          .display !== "none"
+      ) {
+        alert("Please close the preview menu before editing the theme.");
+        return;
+      }
+      const themeEditor = document.getElementById("themeEditor")!!;
+      if (themeEditor.style.display === "block") {
+        return;
+      }
       themeEditor.style.display = "block";
+      themeEditor.animate(
+        [{ transform: "translateX(-100%)" }, { transform: "translateX(0)" }],
+        {
+          duration: 500,
+          easing: "ease-in-out",
+          fill: "forwards",
+        }
+      );
+
       document
         .getElementById("schedule_page")!!
-        .animate([{ marginLeft: "0" }], {
-          duration: 0,
+        .animate([{ marginLeft: "-33.33%" }, { marginLeft: "0" }], {
+          duration: 500,
+          easing: "ease-in-out",
           fill: "forwards",
         });
-    }, 500);
+
+      setTimeout(() => {
+        themeEditor.style.display = "block";
+        document
+          .getElementById("schedule_page")!!
+          .animate([{ marginLeft: "0" }], {
+            duration: 0,
+            fill: "forwards",
+          });
+      }, 500);
+    });
+
+  document.getElementById("theme_select")!!.addEventListener("change", () => {
+    const theme_select = document.getElementById(
+      "theme_select"
+    )!! as HTMLSelectElement;
+    localStorage.setItem("theme", theme_select.value);
+    document.dispatchEvent(new Event("login:sync"));
+    document.dispatchEvent(new CustomEvent("refreshTheme"));
   });
 
-document.getElementById("theme_select")!!.addEventListener("change", () => {
-  const theme_select = document.getElementById("theme_select")!! as HTMLSelectElement;
-  localStorage.setItem("theme", theme_select.value);
-  document.dispatchEvent(new Event("login:sync"))
-  document.dispatchEvent(new CustomEvent("refreshTheme"));
-});
+  document.getElementById("dynbackground")!!.addEventListener("click", () => {
+    const dynbackground = document.getElementById("dynbackground")!!;
+    if (dynbackground.textContent === "Disable Adaptive Background") {
+      dynbackground.textContent = "Enable Adaptive Background";
+      localStorage.setItem("dynamic_theme", "false");
+    } else {
+      dynbackground.textContent = "Disable Adaptive Background";
+      localStorage.setItem("dynamic_theme", "true");
+    }
+    document.dispatchEvent(new Event("login:sync"));
+    document.dispatchEvent(new CustomEvent("refreshTheme"));
+    // window.location.reload();
+  });
 
-document.getElementById("dynbackground")!!.addEventListener("click", () => {
-  const dynbackground = document.getElementById("dynbackground")!!;
-  if (dynbackground.textContent === "Disable Adaptive Background") {
-    dynbackground.textContent = "Enable Adaptive Background";
-    localStorage.setItem("dynamic_theme", "false");
-  } else {
-    dynbackground.textContent = "Disable Adaptive Background";
-    localStorage.setItem("dynamic_theme", "true");
-  }
-  document.dispatchEvent(new Event("login:sync"))
-  document.dispatchEvent(new CustomEvent("refreshTheme"));
-  // window.location.reload();
-});
-
-document.getElementById("removeCustomTheme")!!.addEventListener("click", () => {
-  let themeSelected = localStorage.getItem("theme") || "default";
-  localStorage.removeItem(`savedEditor.${themeSelected}`);
-  document.dispatchEvent(new Event("login:sync"))
-  document.dispatchEvent(new CustomEvent("refreshTheme"));
-
-});
-
-
-
+  document
+    .getElementById("removeCustomTheme")!!
+    .addEventListener("click", () => {
+      let themeSelected = localStorage.getItem("theme") || "default";
+      localStorage.removeItem(`savedEditor.${themeSelected}`);
+      document.dispatchEvent(new Event("login:sync"));
+      document.dispatchEvent(new CustomEvent("refreshTheme"));
+    });
 </script>
