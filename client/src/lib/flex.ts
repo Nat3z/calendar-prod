@@ -35,6 +35,10 @@ export async function getFlexTimes() {
   const response = await fetch("/api/flex/flextimes", {
     method: "GET",
   });
+  if (!response.ok) {
+    console.error("Flex: Failed to get flex times");
+    return [];
+  }
   const data = await response.json();
   return data.flextimes as {
     id: number;

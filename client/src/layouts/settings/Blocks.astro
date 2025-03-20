@@ -90,7 +90,7 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col items-start gap-2 w-full xl:w-auto">
+    <div class="hidden flex-col items-start gap-2 w-full xl:w-auto md:flex">
       <a
         href="#"
         onclick="document.dispatchEvent(new CustomEvent('screen:change', {detail: 'account'}))"
@@ -103,7 +103,7 @@
   <div
     id="settings_blocks"
     data-logged-in="false"
-    class="data-[logged-in=false]:mt-60 data-[logged-in=false]:xl:mt-40"
+    class="data-[logged-in=false]:mt-44 data-[logged-in=false]:md:mt-60 data-[logged-in=false]:xl:mt-40"
   >
     <section id="blk_1-input">
       <h1>Block 1</h1>
@@ -280,6 +280,6 @@
       @apply text-true-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4;
     }
 
-    @apply w-full flex flex-col gap-2 p-8;
+    @apply w-full flex flex-col gap-2 p-8 overflow-y-auto max-h-[80vh];
   }
 </style>
