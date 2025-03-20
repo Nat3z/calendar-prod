@@ -1,37 +1,63 @@
 ---
 export interface Props {
-	title: string;
+  title: string;
 }
 
 const { title } = Astro.props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-		<link rel="icon" type="image/svg+xml" href="/grad_logo.png" />
-		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content="A dynamic scheduling solution for Salesian College Preparatory in Richmond.">
-		<meta property="og:title" content="DynSchedule for Salesian College Preparatory">
-		<title>{title}</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <link rel="icon" type="image/svg+xml" href="/grad_logo.png" />
+    <meta name="generator" content={Astro.generator} />
+    <meta
+      name="description"
+      content="A dynamic scheduling solution for Salesian College Preparatory in Richmond."
+    />
+    <meta
+      property="og:title"
+      content="DynSchedule for Salesian College Preparatory"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
 </html>
 <style is:global>
-	:root {
-		--accent: 124, 58, 237;
-		--accent-gradient: linear-gradient(45deg, rgb(var(--accent)), #da62c4 30%, white 60%);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background-color: #F6F6F6;
-	}
-	code {
-		font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-			Bitstream Vera Sans Mono, Courier New, monospace;
-	}
+  :root {
+    --accent: 124, 58, 237;
+    --accent-gradient: linear-gradient(
+      45deg,
+      rgb(var(--accent)),
+      #da62c4 30%,
+      white 60%
+    );
+  }
+  html {
+    font-family: system-ui, sans-serif;
+    background-color: #f6f6f6;
+  }
+  code {
+    font-family:
+      Menlo,
+      Monaco,
+      Lucida Console,
+      Liberation Mono,
+      DejaVu Sans Mono,
+      Bitstream Vera Sans Mono,
+      Courier New,
+      monospace;
+  }
 </style>

@@ -1,0 +1,58 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Account from "../layouts/settings/Account.astro";
+---
+
+<Layout title="Integrating Flex...">
+  <Account />
+  <main
+    class="flex flex-col items-center justify-center h-screen bg-slate-900 gap-4"
+  >
+    <div class="animate-spin">
+      <span class="material-symbols-rounded text-6xl text-white w-fit h-fit">
+        sync
+      </span>
+    </div>
+
+    <h1 class="text-4xl font-bold text-white flex items-center gap-2">
+      Activating Flex Integration...
+    </h1>
+
+    <div
+      class="flex items-center gap-2 text-sm text-gray-400 bg-slate-800 rounded-lg p-3"
+    >
+      <span class="material-symbols-rounded"> info </span>
+      <p>This may take a few seconds. Please do not refresh the page.</p>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  console.log("integrate-flex");
+  const urlParams = new URLSearchParams(window.location.search);
+  const refreshToken = urlParams.get("refresh_token");
+
+  async function main() {
+    console.log(refreshToken);
+
+    if (!refreshToken) {
+      localStorage.removeItem("flex_refresh_token");
+      localStorage.removeItem("flex_access_token");
+      sessionStorage.clear();
+    } else {
+      // store token locally
+      localStorage.setItem("flex_refresh_token", refreshToken);
+    }
+
+    setTimeout(() => {
+      document.dispatchEvent(new Event("login:sync"));
+      document.addEventListener("login:sync-finished", () => {
+        window.location.href = "/";
+      });
+    }, 1000);
+  }
+
+  main();
+</script>
+
+<style></style>

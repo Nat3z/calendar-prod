@@ -8,7 +8,7 @@ declare global {
   }
 }
 
-export const GET: APIRoute = async ({ _, request }) => {
+export const GET: APIRoute = async ({ request }) => {
   let res = new Response();
   let req = request;
 

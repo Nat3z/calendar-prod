@@ -7,7 +7,6 @@ import AccountManagement from "../components/AccountManagement.astro";
   id="settings_cog"
 >
   <img src="/settings.svg" alt="⚙️" class="w-full h-full" id="cog_svg" />
-  
 </button>
 
 <div
@@ -79,19 +78,22 @@ import AccountManagement from "../components/AccountManagement.astro";
     >
     <button
       class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center relative"
-      id="open_changelog">
-        View Changelog
-        <div class="absolute rounded-full w-4 h-4 bg-red-500 -right-1 -bottom-1 animate-pulse hidden pointer-events-none" id="changelog_pulse">
-
-        </div>
-      </button
+      id="open_changelog"
     >
-  <button
+      View Changelog
+      <div
+        class="absolute rounded-full w-4 h-4 bg-red-500 -right-1 -bottom-1 animate-pulse hidden pointer-events-none"
+        id="changelog_pulse"
+      >
+      </div>
+    </button>
+    <button
       class="bg-light-primary text-white font-bold text-sm sm:text-lg rounded-lg p-2 h-12 flex justify-center items-center pr-4 pl-4"
       id="account_settings"
     >
-      <span class="material-symbols-outlined font-extrabold">account_circle</span>
-  </button>
+      <span class="material-symbols-rounded font-extrabold">account_circle</span
+      >
+    </button>
   </div>
 
   <div class="flex justify-center items-center flex-col gap-2">
@@ -131,7 +133,7 @@ import AccountManagement from "../components/AccountManagement.astro";
         class="bg-light-primary text-white p-2 rounded-lg flex justify-center items-center"
         id="edit"
       >
-        <span class="material-symbols-outlined"> edit</span>
+        <span class="material-symbols-rounded"> edit</span>
       </button>
     </div>
   </div>
@@ -152,17 +154,33 @@ import AccountManagement from "../components/AccountManagement.astro";
   </div>
 </div>
 
-<div class="z-10 fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden" id="paste_screen">
-  
-  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
-    <div class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25">
-      <h1 class="font-mono pl-4 text-2xl text-true-white">🏫 Paste from Schoology</h1>
-      <button class="ml-auto flex justify-center items-center h-fit" id="close_paste">
-        <span class="material-symbols-outlined hover:text-red-500 p-4 !text-true-white" style="font-size: 2em">close</span>
+<div
+  class="z-10 fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden"
+  id="paste_screen"
+>
+  <div
+    class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4"
+  >
+    <div
+      class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25"
+    >
+      <h1 class="font-mono pl-4 text-2xl text-true-white">
+        🏫 Paste from Schoology
+      </h1>
+      <button
+        class="ml-auto flex justify-center items-center h-fit"
+        id="close_paste"
+      >
+        <span
+          class="material-symbols-rounded hover:text-red-500 p-4 !text-true-white"
+          style="font-size: 2em">close</span
+        >
       </button>
     </div>
-    
-    <div class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4">
+
+    <div
+      class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4"
+    >
       <img
         src="./howtocopy.gif"
         alt="Open the Schoology Courses tab and type CTRL + A and CTRL + C. Then, type CTRL + V in the 'Paste Here' field."
@@ -178,276 +196,273 @@ import AccountManagement from "../components/AccountManagement.astro";
         id="paste_confirm">Confirm</button
       >
     </div>
-    
   </div>
 </div>
 <AccountManagement />
 
 <script defer>
-const runningInIframe = window.location !== window.parent.location;
-if (runningInIframe) {
-  document.getElementById("edit").style.display = "none";
-  document.querySelector("#settings_cog").innerHTML = `
-        <span class='material-symbols-outlined w-full h-full top-1 relative'>
+  const runningInIframe = window.location !== window.parent.location;
+  if (runningInIframe) {
+    document.getElementById("edit").style.display = "none";
+    document.querySelector("#settings_cog").innerHTML = `
+        <span class='material-symbols-rounded w-full h-full top-1 relative'>
           open_in_new
         </span>
       `;
-}
-let isInDev = document.getElementById("isInDev").dataset.inDev === "true";
-if (isInDev) {
-  document.getElementById("branch_name").innerHTML = "dev (local)";
-} else if (window.location.href.includes("dev")) {
-  document.getElementById("branch_name").innerHTML = "dev";
-} else {
-  document.getElementById("branch_name").innerHTML = "master";
-}
-
-function setHTML() {
-  document.getElementById("blk_1-input").children[1].value =
-    localStorage.getItem("blk_1") || "Block 1";
-  document.getElementById("blk_2-input").children[1].value =
-    localStorage.getItem("blk_2") || "Block 2";
-  document.getElementById("blk_3-input").children[1].value =
-    localStorage.getItem("blk_3") || "Block 3";
-  document.getElementById("blk_4-input").children[1].value =
-    localStorage.getItem("blk_4") || "Block 4";
-  document.getElementById("blk_5-input").children[1].value =
-    localStorage.getItem("blk_5") || "Block 5";
-  document.getElementById("blk_6-input").children[1].value =
-    localStorage.getItem("blk_6") || "Block 6";
-  document.getElementById("blk_7-input").children[1].value =
-    localStorage.getItem("blk_7") || "Block 7";
-
-  document.getElementById("dynbackground").textContent =
-    (localStorage.getItem("dynamic_theme") === "true" ||
-      !localStorage.getItem("dynamic_theme"))
-      ? "Disable Adaptive Background"
-      : "Enable Adaptive Background";
-  document.getElementById("theme_select").value =
-    localStorage.getItem("theme") || "default";
-}
-
-setHTML()
-document.addEventListener("login:update", () => setHTML())
-
-document.getElementById("open_changelog").addEventListener("click", () => {
-  document.getElementById('changelog').classList.remove("hidden");
-});
-document.getElementById("dynbackground").addEventListener("click", () => {
-  const dynbackground = document.getElementById("dynbackground");
-  if (dynbackground.textContent === "Disable Adaptive Background") {
-    dynbackground.textContent = "Enable Adaptive Background";
-    localStorage.setItem("dynamic_theme", "false");
+  }
+  let isInDev = document.getElementById("isInDev").dataset.inDev === "true";
+  if (isInDev) {
+    document.getElementById("branch_name").innerHTML = "dev (local)";
+  } else if (window.location.href.includes("dev")) {
+    document.getElementById("branch_name").innerHTML = "dev";
   } else {
-    dynbackground.textContent = "Disable Adaptive Background";
-    localStorage.setItem("dynamic_theme", "true");
+    document.getElementById("branch_name").innerHTML = "master";
   }
-  window.location.reload();
-});
 
+  function setHTML() {
+    document.getElementById("blk_1-input").children[1].value =
+      localStorage.getItem("blk_1") || "Block 1";
+    document.getElementById("blk_2-input").children[1].value =
+      localStorage.getItem("blk_2") || "Block 2";
+    document.getElementById("blk_3-input").children[1].value =
+      localStorage.getItem("blk_3") || "Block 3";
+    document.getElementById("blk_4-input").children[1].value =
+      localStorage.getItem("blk_4") || "Block 4";
+    document.getElementById("blk_5-input").children[1].value =
+      localStorage.getItem("blk_5") || "Block 5";
+    document.getElementById("blk_6-input").children[1].value =
+      localStorage.getItem("blk_6") || "Block 6";
+    document.getElementById("blk_7-input").children[1].value =
+      localStorage.getItem("blk_7") || "Block 7";
 
-document.getElementById("theme").addEventListener("click", () => {
-  const theme_select = document.getElementById("theme_select");
-  localStorage.setItem("theme", theme_select.value);
-  document.dispatchEvent(new CustomEvent("refreshTheme"));
-});
-
-document.getElementById("theme_select").addEventListener("change", () => {
-  const theme_select = document.getElementById("theme_select");
-  localStorage.setItem("theme", theme_select.value);
-  document.dispatchEvent(new Event("login:sync"))
-  document.dispatchEvent(new CustomEvent("refreshTheme"));
-});
-
-document.getElementById("purge").addEventListener("click", () => {
-  sessionStorage.clear();
-  localStorage.removeItem("changelog");
-  window.location.reload();
-});
-
-function toggleSettings() {
-  if (runningInIframe) {
-    window.open(window.location.href, "_blank");
-    return;
+    document.getElementById("dynbackground").textContent =
+      localStorage.getItem("dynamic_theme") === "true" ||
+      !localStorage.getItem("dynamic_theme")
+        ? "Disable Adaptive Background"
+        : "Enable Adaptive Background";
+    document.getElementById("theme_select").value =
+      localStorage.getItem("theme") || "default";
   }
-  const settings = document.getElementById("settings");
-  const mainschedule = document.getElementById("main_schedule");
-  const cogsvg = document.getElementById("cog_svg");
-  if (!settings.classList.contains("hidden")) {
-    mainschedule.classList.remove("hidden");
-    cogsvg.src = "/settings.svg";
-    cogsvg.alt = "⚙️";
-    settings.classList.add("hidden");
-  } else {
-    mainschedule.classList.add("hidden");
 
-    cogsvg.src = "/close.svg";
-    cogsvg.alt = "❌";
-    settings.classList.remove("hidden");
-  }
-}
+  setHTML();
+  document.addEventListener("login:update", () => setHTML());
 
-document.getElementById("paste").addEventListener("click", () => {
-  const paste_screen = document.getElementById("paste_screen");
-  paste_screen.classList.remove("hidden");
-});
-
-document.getElementById("paste_confirm").addEventListener("click", () => {
-  /**
-   * @type {string}
-   */
-  const pasted_text = document.getElementById("pasted_text").value;
-  let regex_pasted = /(.*)\nBlock (\d)/g;
-  let result;
-  pasted_text.match(regex_pasted).forEach((match) => {
-    let match_found = match.split("\n");
-    let block = match_found[1].split(" ")[1];
-    let block_name = match_found[0];
-    document.getElementById(`blk_${block}-input`).children[1].value =
-      block_name;
-    localStorage.setItem(`blk_${block}`, block_name);
+  document.getElementById("open_changelog").addEventListener("click", () => {
+    document.getElementById("changelog").classList.remove("hidden");
+  });
+  document.getElementById("dynbackground").addEventListener("click", () => {
+    const dynbackground = document.getElementById("dynbackground");
+    if (dynbackground.textContent === "Disable Adaptive Background") {
+      dynbackground.textContent = "Enable Adaptive Background";
+      localStorage.setItem("dynamic_theme", "false");
+    } else {
+      dynbackground.textContent = "Disable Adaptive Background";
+      localStorage.setItem("dynamic_theme", "true");
+    }
+    window.location.reload();
   });
 
-  document.dispatchEvent(new Event("login:sync"))
-  const paste_screen = document.getElementById("paste_screen");
-  paste_screen.classList.add("hidden");
-  document.getElementById("classes").innerHTML = "";
-  setTimeout(() => {
-    document.dispatchEvent(
-      new CustomEvent("refreshTheme", { detail: { disallowRefresh: true } })
-    );
-  }, 100);
-});
-
-document.getElementById("close_paste").addEventListener("click", () => {
-  const paste_screen = document.getElementById("paste_screen");
-  paste_screen.classList.add("hidden");
-});
-
-document.getElementById("save").addEventListener("click", () => {
-  const blk_1 = document.getElementById("blk_1-input").children[1].value;
-  const blk_2 = document.getElementById("blk_2-input").children[1].value;
-  const blk_3 = document.getElementById("blk_3-input").children[1].value;
-  const blk_4 = document.getElementById("blk_4-input").children[1].value;
-  const blk_5 = document.getElementById("blk_5-input").children[1].value;
-  const blk_6 = document.getElementById("blk_6-input").children[1].value;
-  const blk_7 = document.getElementById("blk_7-input").children[1].value;
-
-  localStorage.setItem("blk_1", blk_1);
-  localStorage.setItem("blk_2", blk_2);
-  localStorage.setItem("blk_3", blk_3);
-  localStorage.setItem("blk_4", blk_4);
-  localStorage.setItem("blk_5", blk_5);
-  localStorage.setItem("blk_6", blk_6);
-  localStorage.setItem("blk_7", blk_7);
-
-  toggleSettings();
-  document.getElementById("classes").innerHTML = "";
-
-});
-
-document
-  .getElementById("settings_cog")
-  .addEventListener("click", toggleSettings);
-
-const mq = window.matchMedia("(max-width: 760px)");
-if (mq.matches) {
-  let themeSelected = localStorage.getItem("theme") || "default";
-  let editorButton = document.getElementById("edit");
-  document.getElementById("paste").classList.add("hidden");
-  editorButton.id = "preventTheme2";
-  editorButton.classList.remove("flex");
-  editorButton.classList.add("hidden");
-  document.getElementById("preventTheme2").addEventListener("click", () => {
-    if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
-      localStorage.removeItem(`editorThemeClear.${themeSelected}`);
-      location.reload();
-      return;
-    }
-    let allowed = confirm(
-      "Are you sure you want to prevent this theme from applying?\n" +
-      "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
-      "➡️ This will allow you to make as many edits to the theme as you like.\n" +
-      "➡️ You can undo this by clicking the button again."
-    );
-    if (!allowed) return;
-
-    localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
-    location.reload();
+  document.getElementById("theme").addEventListener("click", () => {
+    const theme_select = document.getElementById("theme_select");
+    localStorage.setItem("theme", theme_select.value);
+    document.dispatchEvent(new CustomEvent("refreshTheme"));
   });
-  document.getElementById("preventTheme2").textContent = localStorage.getItem(
-    `editorThemeClear.${themeSelected}`
-  )
-    ? "Enable Theme"
-    : "Disable Theme";
-} else {
-  document.getElementById("edit").classList.remove("hidden");
-}
-if (document.getElementById("edit"))
-  document.getElementById("edit").addEventListener("click", () => {
-    if (document.querySelector("#preview_menu").style.display !== "none") {
-      alert("Please close the preview menu before editing the theme.");
+
+  document.getElementById("theme_select").addEventListener("change", () => {
+    const theme_select = document.getElementById("theme_select");
+    localStorage.setItem("theme", theme_select.value);
+    document.dispatchEvent(new Event("login:sync"));
+    document.dispatchEvent(new CustomEvent("refreshTheme"));
+  });
+
+  document.getElementById("purge").addEventListener("click", () => {
+    sessionStorage.clear();
+    localStorage.removeItem("changelog");
+    window.location.reload();
+  });
+
+  function toggleSettings() {
+    if (runningInIframe) {
+      window.open(window.location.href, "_blank");
       return;
     }
-    const themeEditor = document.getElementById("themeEditor");
-    if (themeEditor.style.display === "block") {
-      return;
+    const settings = document.getElementById("settings");
+    const mainschedule = document.getElementById("main_schedule");
+    const cogsvg = document.getElementById("cog_svg");
+    if (!settings.classList.contains("hidden")) {
+      mainschedule.classList.remove("hidden");
+      cogsvg.src = "/settings.svg";
+      cogsvg.alt = "⚙️";
+      settings.classList.add("hidden");
+    } else {
+      mainschedule.classList.add("hidden");
+
+      cogsvg.src = "/close.svg";
+      cogsvg.alt = "❌";
+      settings.classList.remove("hidden");
     }
-    themeEditor.style.display = "block";
-    themeEditor.animate(
-      [{ transform: "translateX(-100%)" }, { transform: "translateX(0)" }],
-      {
-        duration: 500,
-        easing: "ease-in-out",
-        fill: "forwards",
-      }
-    );
+  }
 
-    document
-      .getElementById("schedule_page")
-      .animate([{ marginLeft: "-33.33%" }, { marginLeft: "0" }], {
-        duration: 500,
-        easing: "ease-in-out",
-        fill: "forwards",
-      });
+  document.getElementById("paste").addEventListener("click", () => {
+    const paste_screen = document.getElementById("paste_screen");
+    paste_screen.classList.remove("hidden");
+  });
 
+  document.getElementById("paste_confirm").addEventListener("click", () => {
+    /**
+     * @type {string}
+     */
+    const pasted_text = document.getElementById("pasted_text").value;
+    let regex_pasted = /(.*)\nBlock (\d)/g;
+    let result;
+    pasted_text.match(regex_pasted).forEach((match) => {
+      let match_found = match.split("\n");
+      let block = match_found[1].split(" ")[1];
+      let block_name = match_found[0];
+      document.getElementById(`blk_${block}-input`).children[1].value =
+        block_name;
+      localStorage.setItem(`blk_${block}`, block_name);
+    });
+
+    document.dispatchEvent(new Event("login:sync"));
+    const paste_screen = document.getElementById("paste_screen");
+    paste_screen.classList.add("hidden");
+    document.getElementById("classes").innerHTML = "";
     setTimeout(() => {
+      document.dispatchEvent(
+        new CustomEvent("refreshTheme", { detail: { disallowRefresh: true } })
+      );
+    }, 100);
+  });
+
+  document.getElementById("close_paste").addEventListener("click", () => {
+    const paste_screen = document.getElementById("paste_screen");
+    paste_screen.classList.add("hidden");
+  });
+
+  document.getElementById("save").addEventListener("click", () => {
+    const blk_1 = document.getElementById("blk_1-input").children[1].value;
+    const blk_2 = document.getElementById("blk_2-input").children[1].value;
+    const blk_3 = document.getElementById("blk_3-input").children[1].value;
+    const blk_4 = document.getElementById("blk_4-input").children[1].value;
+    const blk_5 = document.getElementById("blk_5-input").children[1].value;
+    const blk_6 = document.getElementById("blk_6-input").children[1].value;
+    const blk_7 = document.getElementById("blk_7-input").children[1].value;
+
+    localStorage.setItem("blk_1", blk_1);
+    localStorage.setItem("blk_2", blk_2);
+    localStorage.setItem("blk_3", blk_3);
+    localStorage.setItem("blk_4", blk_4);
+    localStorage.setItem("blk_5", blk_5);
+    localStorage.setItem("blk_6", blk_6);
+    localStorage.setItem("blk_7", blk_7);
+
+    toggleSettings();
+    document.getElementById("classes").innerHTML = "";
+  });
+
+  document
+    .getElementById("settings_cog")
+    .addEventListener("click", toggleSettings);
+
+  const mq = window.matchMedia("(max-width: 760px)");
+  if (mq.matches) {
+    let themeSelected = localStorage.getItem("theme") || "default";
+    let editorButton = document.getElementById("edit");
+    document.getElementById("paste").classList.add("hidden");
+    editorButton.id = "preventTheme2";
+    editorButton.classList.remove("flex");
+    editorButton.classList.add("hidden");
+    document.getElementById("preventTheme2").addEventListener("click", () => {
+      if (localStorage.getItem(`editorThemeClear.${themeSelected}`)) {
+        localStorage.removeItem(`editorThemeClear.${themeSelected}`);
+        location.reload();
+        return;
+      }
+      let allowed = confirm(
+        "Are you sure you want to prevent this theme from applying?\n" +
+          "➡️ This will give you an empty slate, essentially making the current theme applied be the default theme.\n" +
+          "➡️ This will allow you to make as many edits to the theme as you like.\n" +
+          "➡️ You can undo this by clicking the button again."
+      );
+      if (!allowed) return;
+
+      localStorage.setItem(`editorThemeClear.${themeSelected}`, "true");
+      location.reload();
+    });
+    document.getElementById("preventTheme2").textContent = localStorage.getItem(
+      `editorThemeClear.${themeSelected}`
+    )
+      ? "Enable Theme"
+      : "Disable Theme";
+  } else {
+    document.getElementById("edit").classList.remove("hidden");
+  }
+  if (document.getElementById("edit"))
+    document.getElementById("edit").addEventListener("click", () => {
+      if (document.querySelector("#preview_menu").style.display !== "none") {
+        alert("Please close the preview menu before editing the theme.");
+        return;
+      }
+      const themeEditor = document.getElementById("themeEditor");
+      if (themeEditor.style.display === "block") {
+        return;
+      }
       themeEditor.style.display = "block";
+      themeEditor.animate(
+        [{ transform: "translateX(-100%)" }, { transform: "translateX(0)" }],
+        {
+          duration: 500,
+          easing: "ease-in-out",
+          fill: "forwards",
+        }
+      );
+
       document
         .getElementById("schedule_page")
-        .animate([{ marginLeft: "0" }], {
-          duration: 0,
+        .animate([{ marginLeft: "-33.33%" }, { marginLeft: "0" }], {
+          duration: 500,
+          easing: "ease-in-out",
           fill: "forwards",
         });
-    }, 500);
-  });
 
-document.getElementById("removeCustomTheme").addEventListener("click", () => {
-  let themeSelected = localStorage.getItem("theme") || "default";
-  localStorage.removeItem(`savedEditor.${themeSelected}`);
-  location.reload();
-});
-document.getElementById("account_settings").addEventListener("click", () => {
-  document.getElementById("manage_account").classList.remove("hidden");
-});
-// for each input in the children of the settings div, add an event listener to the change event
-for (const child of document.getElementById("settings").children) {
-  if (child.nodeName === "SECTION") {
-    child.children[1].addEventListener("change", () => {
-      let block = child.children[0].innerHTML.split(" ")[1];
-      localStorage.setItem(`blk_${block}`, child.children[1].value);
-      document.getElementById("classes").innerHTML = "";
-      // refresh the theme using the refreshTheme custom event
       setTimeout(() => {
-        console.log("refreshing theme");
-        document.dispatchEvent(new Event("login:sync"));
-        document.dispatchEvent(
-          new CustomEvent("refreshTheme", {
-            detail: { disallowRefresh: true },
-          })
-        );
-      }, 100);
+        themeEditor.style.display = "block";
+        document
+          .getElementById("schedule_page")
+          .animate([{ marginLeft: "0" }], {
+            duration: 0,
+            fill: "forwards",
+          });
+      }, 500);
     });
+
+  document.getElementById("removeCustomTheme").addEventListener("click", () => {
+    let themeSelected = localStorage.getItem("theme") || "default";
+    localStorage.removeItem(`savedEditor.${themeSelected}`);
+    location.reload();
+  });
+  document.getElementById("account_settings").addEventListener("click", () => {
+    document.getElementById("manage_account").classList.remove("hidden");
+  });
+  // for each input in the children of the settings div, add an event listener to the change event
+  for (const child of document.getElementById("settings").children) {
+    if (child.nodeName === "SECTION") {
+      child.children[1].addEventListener("change", () => {
+        let block = child.children[0].innerHTML.split(" ")[1];
+        localStorage.setItem(`blk_${block}`, child.children[1].value);
+        document.getElementById("classes").innerHTML = "";
+        // refresh the theme using the refreshTheme custom event
+        setTimeout(() => {
+          console.log("refreshing theme");
+          document.dispatchEvent(new Event("login:sync"));
+          document.dispatchEvent(
+            new CustomEvent("refreshTheme", {
+              detail: { disallowRefresh: true },
+            })
+          );
+        }, 100);
+      });
+    }
   }
-}
 </script>

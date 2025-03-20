@@ -3,5 +3,9 @@
 
 
 interface ImportMetaEnv {
-  NODE_ENV: 'development' | 'production'
+  NODE_ENV: 'development' | 'production',
+  SCHOOL_ASSIGNMENT: string,
+  HOSTER: string,
+  FLEX_CLIENT_ID: string,
+  FLEX_CLIENT_SECRET: string,
 }

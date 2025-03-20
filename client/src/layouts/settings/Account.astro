@@ -1,59 +1,181 @@
 ---
-import { Image } from "astro:assets"
-import GoogleLogo from "../../lib/google_logo.png"
+import { Image } from "astro:assets";
+import GoogleLogo from "../../lib/google_logo.png";
 ---
+
 <div class="screen_account w-full">
-  <div class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4 w-full">
-    <div id="not_loggedin" style="display: none;" class="justify-center items-center flex flex-col gap-2">
-      <button class="rounded-lg p-2 pl-4 pr-4 flex justify-start items-center gap-2 flex-row bg-white hover:bg-white/90 text-black shadow-lg" id="go_login">
-        <Image src={GoogleLogo} alt="Google Logo" class="w-8 h-8" />
-        <h1 class="text-lg font-semibold -mt-1">Login with Google</h1>
+  <div
+    class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4 w-full"
+  >
+    <div
+      id="not_loggedin"
+      style="display: none;"
+      class="flex flex-col items-center justify-center gap-6 p-6 rounded-lg bg-slate-800/50 backdrop-blur-sm"
+    >
+      <button
+        id="go_login"
+        class="flex items-center gap-3 px-6 py-3 bg-white rounded-xl hover:bg-white/90 active:scale-95 transition-all shadow-lg"
+      >
+        <Image src={GoogleLogo} alt="Google Logo" class="w-7 h-7" />
+        <span class="text-lg font-semibold text-slate-900"
+          >Login with Google</span
+        >
       </button>
-      <p class="text-gray-400">
+      <p class="text-sm text-slate-400">
         By logging in, you agree to our
-        <a href="https://github.com/Nat3z/calendar-prod/wiki/Privacy-Policy" class="text-center underline text-purple-600">Privacy Policy</a>
+        <a
+          href="https://github.com/Nat3z/calendar-prod/wiki/Privacy-Policy"
+          class="font-medium text-purple-400 hover:text-purple-300 underline transition-colors"
+        >
+          Privacy Policy
+        </a>
       </p>
+      <div class="flex flex-row flex-wrap justify-center gap-3 mx-auto">
+        <div
+          class="px-4 py-2 rounded-full bg-purple-600/30 text-purple-300 text-base flex items-center justify-center"
+        >
+          <span class="material-symbols-rounded text-lg align-middle mr-2"
+            >cloud_sync</span
+          >
+          Sync Themes
+        </div>
+
+        <div
+          class="px-4 py-2 rounded-full bg-green-600/30 text-green-300 text-base flex items-center justify-center"
+        >
+          <span class="material-symbols-rounded text-lg align-middle mr-2"
+            >backup</span
+          >
+          Cloud Backup
+        </div>
+        <div
+          class="px-4 py-2 rounded-full bg-blue-600/30 text-blue-300 text-base flex items-center justify-center"
+        >
+          <span class="material-symbols-rounded text-lg align-middle mr-2"
+            >schedule</span
+          >
+          BetterFlex Integration
+        </div>
+      </div>
     </div>
 
-    <div id="loggedin" class="flex flex-col gap-2" style="display: none;">
+    <div id="loggedin" class="flex flex-col gap-4" style="display: none;">
       <div class="w-full">
-        <h1 class="text-slate-500 text-center">Logged in as <span id="user_email"></span></h1>
+        <h1 class="text-slate-400 text-center font-medium">
+          Logged in as <span id="user_email" class="text-slate-300"></span>
+        </h1>
       </div>
-      <div class="account_actions flex flex-col md:flex-row text-xl gap-2 justify-center items-center w-full">
-        <button id="pull_account" class="bg-green-700 hover:active:bg-green-800 hover:bg-green-600">
-          <span class="material-symbols-outlined">cloud_download</span>
-          Download 
+
+      <div
+        class="account_actions flex flex-col md:flex-row text-xl gap-3 justify-center items-center w-full"
+      >
+        <button
+          id="pull_account"
+          class="bg-green-700 hover:bg-green-600 active:bg-green-800 transition-colors px-4 py-2 rounded-lg flex items-center justify-center gap-2 shadow-md"
+        >
+          <span class="material-symbols-rounded">cloud_download</span>
+          Download
         </button>
-        <button id="sync_account" class="bg-blue-700 hover:active:bg-blue-800 hover:bg-blue-600">
-          <span class="material-symbols-outlined">cloud_upload</span>
-          Upload 
+        <button
+          id="sync_account"
+          class="bg-blue-700 hover:bg-blue-600 active:bg-blue-800 transition-colors px-4 py-2 rounded-lg flex items-center justify-center gap-2 shadow-md"
+        >
+          <span class="material-symbols-rounded">cloud_upload</span>
+          Upload
         </button>
-        <button id="logout_account" class="bg-red-700 hover:active:bg-red-800 hover:bg-red-600">
-          <span class="material-symbols-outlined">logout</span>
+        <button
+          id="logout_account"
+          class="bg-red-700 hover:bg-red-600 active:bg-red-800 transition-colors px-4 py-2 rounded-lg flex items-center justify-center gap-2 shadow-md"
+        >
+          <span class="material-symbols-rounded">logout</span>
           Logout
         </button>
+      </div>
+
+      <div class="w-full flex flex-col gap-2">
+        <p
+          class="text-sm text-center text-slate-500 font-medium border-t border-slate-700 pt-3 mt-1"
+        >
+          BetterFlex Integration
+        </p>
+
+        <div
+          class="account_actions flex flex-col md:flex-row text-xl gap-3 justify-center items-center w-full"
+          id="flex_manage"
+        >
+          <span id="loggedout_flex_manage" class="w-full">
+            <a
+              href="/redirect-flex"
+              class="w-full flex justify-center items-center"
+            >
+              <button
+                class="bg-blue-700 hover:bg-blue-600 active:bg-blue-800 transition-colors px-4 py-2 rounded-lg flex items-center justify-center gap-2 shadow-md w-full"
+              >
+                <span class="material-symbols-rounded">link</span>
+                Link Flex Account
+              </button>
+            </a>
+          </span>
+
+          <span
+            id="loggedin_flex_manage"
+            style="display: none;"
+            class="flex flex-col md:flex-row gap-3 w-full justify-center items-center"
+          >
+            <div
+              class="flex flex-row gap-3 items-center rounded-lg p-4 w-full max-w-64 md:max-w-none bg-slate-800/80 justify-between shadow-md border border-slate-700/50"
+            >
+              <div class="flex flex-row gap-4 items-center">
+                <span class="material-symbols-rounded !text-3xl text-slate-200"
+                  >person</span
+                >
+                <span class="flex flex-col justify-center items-start">
+                  <p class="text-sm text-slate-200 font-medium">
+                    <span id="flex_username"></span>
+                  </p>
+                  <p
+                    class="text-xs text-green-200 bg-green-600/80 rounded-full px-2 py-0.5 mt-1"
+                  >
+                    <span id="flex_role"></span>
+                  </p>
+                </span>
+              </div>
+              <a href="/integrate-flex">
+                <button
+                  class="text-red-400 hover:text-red-300 transition-colors p-2 rounded-full hover:bg-slate-700/50"
+                  title="Unlink Flex Account"
+                >
+                  <span class="material-symbols-rounded">link_off</span>
+                </button>
+              </a>
+            </div>
+          </span>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-
-
 <script>
-  import { getAuth, GoogleAuthProvider, signInWithPopup, type User } from "firebase/auth";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    type User,
+  } from "firebase/auth";
   import { initializeApp } from "firebase/app";
-  import { getDatabase, set, ref, get, goOffline, goOnline } from "firebase/database";
+  import {
+    getDatabase,
+    set,
+    ref,
+    get,
+    goOffline,
+    goOnline,
+  } from "firebase/database";
   import { animateNotif } from "../../lib/helpers";
   import moment from "moment";
-  const firebaseConfig = {
-    apiKey: "AIzaSyCWBTTV9qu7tzlKeYOSrcj9bzM8ndY6DI4",
-    authDomain: "dynschedule-login.firebaseapp.com",
-    databaseURL: "https://dynschedule-login-default-rtdb.firebaseio.com",
-    projectId: "dynschedule-login",
-    storageBucket: "dynschedule-login.appspot.com",
-    messagingSenderId: "158062505462",
-    appId: "1:158062505462:web:e6f1bbf5415593a2c86bd7"
-  };
+  import { firebaseConfig } from "../../lib/firebase-conf";
+  import { getFlexUser } from "../../lib/flex";
 
   document.getElementById("sync_account")!.addEventListener("click", () => {
     console.log("Sync event triggered.");
@@ -69,45 +191,56 @@ import GoogleLogo from "../../lib/google_logo.png"
     const user = auth.currentUser;
     if (user) {
       // clone localStorage
-      const localStorageExcluded = {...localStorage};
+      const localStorageExcluded = { ...localStorage };
       delete localStorageExcluded["changelog"];
       // check all themes and make sure that they don't exceed the 10mb limit
       for (const key in localStorageExcluded) {
         if (localStorageExcluded[key].length > 10000000) {
-          console.log("Theme " + key + " exceeds the 10mb limit. Deleting from sync.");
+          console.log(
+            "Theme " + key + " exceeds the 10mb limit. Deleting from sync."
+          );
           delete localStorageExcluded[key];
         }
       }
 
       goOnline(realtime);
-      await set(ref(realtime, 'accounts/' + user.uid), 
-        {
-          data: JSON.stringify(localStorageExcluded),
-          lastSynced: moment().unix()
-        }
-      );
+      await set(ref(realtime, "accounts/" + user.uid), {
+        data: JSON.stringify(localStorageExcluded),
+        lastSynced: moment().unix(),
+      });
       goOffline(realtime);
 
       console.log("%cUpload successful.", "color: green; font-weight: bold;");
 
-      animateNotif(
-        "Upload successful.",
-        document.querySelector("#autosave_update")! as HTMLElement
-      );
+      if (document.querySelector("#autosave_update")!) {
+        animateNotif(
+          "Upload successful.",
+          document.querySelector("#autosave_update")! as HTMLElement
+        );
+      }
+
+      document.dispatchEvent(new Event("login:sync-finished"));
     } else {
       console.log("User not logged in.");
+      document.dispatchEvent(new Event("login:sync-finished"));
     }
   });
 
   document.getElementById("logout_account")!.addEventListener("click", () => {
     console.log("Logout event triggered.");
-    auth.signOut()
+    auth
+      .signOut()
       .then(() => {
         console.log("Logged out successfully.");
         document.getElementById("loggedin")!.style.display = "none";
         document.getElementById("not_loggedin")!.style.display = "flex";
+        document.getElementById("loggedin_flex_manage")!.style.display = "none";
+        document.getElementById("loggedout_flex_manage")!.style.display =
+          "flex";
+        localStorage.removeItem("flex_refresh_token");
+        localStorage.removeItem("flex_access_token");
       })
-      .catch(() => console.error("Errored when logging out."))
+      .catch(() => console.error("Errored when logging out."));
   });
 
   document.getElementById("go_login")!.addEventListener("click", () => {
@@ -117,8 +250,8 @@ import GoogleLogo from "../../lib/google_logo.png"
         const user = result.user;
         auth.updateCurrentUser(user);
       })
-    .catch(() => console.error("Errored when logging in."))
-  })
+      .catch(() => console.error("Errored when logging in."));
+  });
 
   document.getElementById("pull_account")!.addEventListener("click", () => {
     console.log("Pull event triggered.");
@@ -142,30 +275,35 @@ import GoogleLogo from "../../lib/google_logo.png"
   goOffline(realtime);
   function pull(user: User) {
     goOnline(realtime);
-    get(ref(realtime, 'accounts/' + user.uid)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log("Syncing data...");
-        const data = JSON.parse(snapshot.val().data);
-        for (const key in data) {
-          localStorage.setItem(key, data[key]);
-        }
-        console.log("%cSync successful.", "color: green; font-weight: bold;");
-        localStorage.setItem("lastSynced", moment().unix().toString());
-        document.dispatchEvent(new CustomEvent("refreshTheme"));
-        document.dispatchEvent(new Event("login:update"))
+    get(ref(realtime, "accounts/" + user.uid))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("Syncing data...");
+          const data = JSON.parse(snapshot.val().data);
+          for (const key in data) {
+            localStorage.setItem(key, data[key]);
+          }
+          console.log("%cSync successful.", "color: green; font-weight: bold;");
+          localStorage.setItem("lastSynced", moment().unix().toString());
+          document.dispatchEvent(new CustomEvent("refreshTheme"));
+          document.dispatchEvent(new Event("login:update"));
 
-        animateNotif(
-          "Sync successful.",
-          document.querySelector("#autosave_update")! as HTMLElement
-        );
-        goOffline(realtime);
-      } else {
-        document.dispatchEvent(new Event("login:sync"));
-        console.log("No data found.");
-      }
-    }).catch((error) => {
-      console.error(error);
-    });
+          if (document.querySelector("#autosave_update")!) {
+            animateNotif(
+              "Sync successful.",
+              document.querySelector("#autosave_update")! as HTMLElement
+            );
+          }
+          goOffline(realtime);
+          checkFlex();
+        } else {
+          document.dispatchEvent(new Event("login:sync"));
+          console.log("No data found.");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   let loggedOut = false;
@@ -177,43 +315,82 @@ import GoogleLogo from "../../lib/google_logo.png"
       document.getElementById("loggedin")!.style.display = "flex";
       document.getElementById("not_loggedin")!.style.display = "none";
       document.getElementById("user_email")!.textContent = user.email;
-      if (!loggedOut && localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60) {
+      if (
+        !loggedOut &&
+        localStorage.getItem("lastSynced") &&
+        moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60
+      ) {
         console.log("Synced within the 1 minute. Skipping pull.");
         return;
       }
       // sync database
-      pull(user)
+      pull(user);
     } else {
       loggedOut = true;
       console.log("User is not logged in.");
       document.getElementById("not_loggedin")!.style.display = "flex";
       document.getElementById("loggedin")!.style.display = "none";
+      checkFlex();
     }
   });
 
   document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState === "visible") return;
 
-    if (localStorage.getItem("lastSynced") && moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60) {
+    if (
+      localStorage.getItem("lastSynced") &&
+      moment().unix() - parseInt(localStorage.getItem("lastSynced")!) < 60
+    ) {
       console.log("Synced within the 1 minute. Skipping pull.");
       return;
     }
-    if (auth.currentUser)
-      pull(auth.currentUser!);
+    if (auth.currentUser) pull(auth.currentUser!);
   });
+
+  // check if the localstorage has a flex_refresh_token
+  function checkFlex() {
+    if (localStorage.getItem("flex_refresh_token")) {
+      getFlexUser()
+        .then((user) => {
+          if (user) {
+            document.getElementById("loggedin_flex_manage")!.style.display =
+              "flex";
+
+            document.getElementById("loggedout_flex_manage")!.style.display =
+              "none";
+            document.getElementById("flex_username")!.textContent = user.name;
+            document.getElementById("flex_role")!.textContent = user.role;
+          }
+        })
+        .catch(() => {
+          console.error("Error fetching Flex user.");
+          document.getElementById("loggedout_flex_manage")!.style.display =
+            "flex";
+          document.getElementById("loggedin_flex_manage")!.style.display =
+            "none";
+        });
+    } else {
+      document.getElementById("loggedout_flex_manage")!.style.display = "flex";
+      document.getElementById("loggedin_flex_manage")!.style.display = "none";
+    }
+  }
+
+  checkFlex();
 </script>
 
 <script>
-(document.querySelector(".screen_account") as HTMLElement).style.display = "none";
-document.addEventListener("screen:change", (e) => {
-  let newScreen = (e as CustomEvent).detail as string;
-  if (newScreen == "account") {
-    (document.querySelector(".screen_account") as HTMLElement).style.display = "flex";
-  }
-  else {
-    (document.querySelector(".screen_account") as HTMLElement).style.display = "none";
-  }
-})
+  (document.querySelector(".screen_account") as HTMLElement).style.display =
+    "none";
+  document.addEventListener("screen:change", (e) => {
+    let newScreen = (e as CustomEvent).detail as string;
+    if (newScreen == "account") {
+      (document.querySelector(".screen_account") as HTMLElement).style.display =
+        "flex";
+    } else {
+      (document.querySelector(".screen_account") as HTMLElement).style.display =
+        "none";
+    }
+  });
 </script>
 
 <style>

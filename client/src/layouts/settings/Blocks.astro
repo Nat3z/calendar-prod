@@ -2,15 +2,32 @@
 
 ---
 
-<div class="z-[99] fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden top-0 left-0" id="paste_screen">
-  <div class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4">
-    <div class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25">
-      <h1 class="font-mono pl-4 text-2xl text-true-white">🏫 Paste from Schoology</h1>
-      <button class="ml-auto flex justify-center items-center h-fit" id="close_paste">
-        <span class="material-symbols-outlined hover:text-red-500 p-4 !text-true-white" style="font-size: 2em">close</span>
+<div
+  class="z-[99] fixed justify-center items-center flex md:backdrop-blur-lg w-screen h-screen hidden top-0 left-0"
+  id="paste_screen"
+>
+  <div
+    class="w-full h-full md:w-5/12 md:h-5/6 shadow-xl animate-pop-in bg-slate-900 md:rounded-lg relative border-black/25 border-4"
+  >
+    <div
+      class="w-[100.5%] h-16 backdrop-blur-sm absolute flex justify-start items-center bg-black/25"
+    >
+      <h1 class="font-mono pl-4 text-2xl text-true-white">
+        🏫 Paste from Schoology
+      </h1>
+      <button
+        class="ml-auto flex justify-center items-center h-fit"
+        id="close_paste"
+      >
+        <span
+          class="material-symbols-rounded hover:text-red-500 p-4 !text-true-white"
+          style="font-size: 2em">close</span
+        >
       </button>
     </div>
-    <div class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4">
+    <div
+      class="overflow-y-auto h-full text-true-white pl-4 pr-4 pt-20 flex items-center flex-col gap-4"
+    >
       <img
         src="./howtocopy.gif"
         alt="Open the Schoology Courses tab and type CTRL + A and CTRL + C. Then, type CTRL + V in the 'Paste Here' field."
@@ -29,140 +46,229 @@
   </div>
 </div>
 
-<div class="screen_blocks flex flex-col justify-center items-center">
-  <div id="settings_blocks">
-    <section
-      id="blk_1-input"
-    >
+<div class="screen_blocks flex flex-col justify-center items-center group">
+  <div
+    class="absolute top-0 left-0 flex flex-col md:flex-row items-start sm:items-center justify-between gap-4 p-4 py-6 sm:p-6 mb-6 rounded-lg bg-slate-800/50 backdrop-blur-sm w-full min-h-[5rem] sm:max-h-[15rem] xl:h-40"
+    id="settings_blocks_login"
+  >
+    <div class="flex flex-col items-start gap-2 w-full">
+      <h2 class="text-lg sm:text-2xl font-semibold text-true-white">
+        Get More Features
+      </h2>
+      <p class="text-sm sm:text-base text-slate-300 max-w-3xl">
+        Create an account to unlock cloud sync and backup your block schedule
+        across devices
+      </p>
+      <div class="hidden md:flex flex-row flex-wrap gap-2 sm:gap-3 w-full">
+        <div
+          class="px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-purple-600/30 text-purple-300 text-xs sm:text-base flex items-center justify-center"
+        >
+          <span
+            class="material-symbols-rounded text-sm sm:text-lg align-middle mr-1 sm:mr-2"
+            >cloud_sync</span
+          >
+          <span class="inline text-xs sm:text-base">Sync Themes</span>
+        </div>
+        <div
+          class="px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-green-600/30 text-green-300 text-xs sm:text-base flex items-center justify-center"
+        >
+          <span
+            class="material-symbols-rounded text-sm sm:text-lg align-middle mr-1 sm:mr-2"
+            >backup</span
+          >
+          <span class="inline text-xs sm:text-base">Cloud Backup</span>
+        </div>
+        <div
+          class="px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-blue-600/30 text-blue-300 text-xs sm:text-base flex items-center justify-center"
+        >
+          <span
+            class="material-symbols-rounded text-sm sm:text-lg align-middle mr-1 sm:mr-2"
+            >schedule</span
+          >
+          <span class="inline text-xs sm:text-base">BetterFlex Integration</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="hidden flex-col items-start gap-2 w-full lg:w-auto md:flex">
+      <a
+        href="#"
+        onclick="document.dispatchEvent(new CustomEvent('screen:change', {detail: 'account'}))"
+        class="px-4 sm:px-6 py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors whitespace-nowrap h-fit text-sm sm:text-base"
+      >
+        Create Account
+      </a>
+    </div>
+  </div>
+  <div
+    id="settings_blocks"
+    data-logged-in="false"
+    class="data-[logged-in=false]:mt-[6.5rem] data-[logged-in=false]:md:mt-44 data-[logged-in=false]:xl:mt-40"
+  >
+    <section id="blk_1-input">
       <h1>Block 1</h1>
       <input class="w-36 text-black font-normal pl-2" />
     </section>
-    <section
-      id="blk_2-input"
-    >
+    <section id="blk_2-input">
       <h1>Block 2</h1>
       <input class="w-36 text-black font-normal pl-2" />
     </section>
-    <section
-      id="blk_3-input"
-    >
+    <section id="blk_3-input">
       <h1>Block 3</h1>
       <input class="w-36 text-black font-normal pl-2" />
     </section>
-    <section
-      id="blk_4-input"
-    >
+    <section id="blk_4-input">
       <h1>Block 4</h1>
       <input class="w-36 text-black font-normal pl-2" />
     </section>
-    <section
-      id="blk_5-input"
-    >
+    <section id="blk_5-input">
       <h1>Block 5</h1>
       <input class="w-36 text-black font-normal pl-2" />
     </section>
-    <section
-      id="blk_6-input"
-    >
+    <section id="blk_6-input">
       <h1>Block 6</h1>
       <input class="w-36 text-black font-normal pl-2" />
     </section>
-    <section
-      id="blk_7-input"
-    >
+    <section id="blk_7-input">
       <h1>Block 7</h1>
       <input class="w-36 text-black font-normal pl-2" />
     </section>
-    </div>
-    <button id="paste" class="bg-slate-800 px-4 py-2 rounded-lg w-fit font-bold">Paste from Schoology</button>
   </div>
+  <button id="paste" class="bg-slate-800 px-4 py-2 rounded-lg w-fit font-bold"
+    >Paste from Schoology</button
+  >
+</div>
 <script>
-(document.querySelector(".screen_blocks") as HTMLElement).style.display = "none";
-document.addEventListener("screen:change", (e) => {
-  let newScreen = (e as CustomEvent).detail as string;
-  if (newScreen == "blocks") {
-    (document.querySelector(".screen_blocks") as HTMLElement).style.display = "flex";
-  }
-  else {
-    (document.querySelector(".screen_blocks") as HTMLElement).style.display = "none";
-  }
-})
+  import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-function setHTML() {
-  (document.getElementById("blk_1-input")!!.children[1] as HTMLButtonElement).value =
-    localStorage.getItem("blk_1") || "Block 1";
-  (document.getElementById("blk_2-input")!!.children[1] as HTMLButtonElement).value =
-    localStorage.getItem("blk_2") || "Block 2";
-  (document.getElementById("blk_3-input")!!.children[1] as HTMLButtonElement).value =
-    localStorage.getItem("blk_3") || "Block 3";
-  (document.getElementById("blk_4-input")!!.children[1] as HTMLButtonElement).value =
-    localStorage.getItem("blk_4") || "Block 4";
-  (document.getElementById("blk_5-input")!!.children[1] as HTMLButtonElement).value =
-    localStorage.getItem("blk_5") || "Block 5";
-  (document.getElementById("blk_6-input")!!.children[1] as HTMLButtonElement).value =
-    localStorage.getItem("blk_6") || "Block 6";
-  (document.getElementById("blk_7-input")!!.children[1] as HTMLButtonElement).value =
-    localStorage.getItem("blk_7") || "Block 7";
-}
-
-setHTML()
-
-for (const child of document.getElementById("settings_blocks")!!.children) {
-  if (child.nodeName === "SECTION") {
-    child.children[1].addEventListener("change", () => {
-      let block = child.children[0].innerHTML.split(" ")[1];
-      localStorage.setItem(`blk_${block}`, (child.children[1] as HTMLButtonElement).value);
-      // refresh the theme using the refreshTheme custom event
-      setTimeout(() => {
-        console.log("refreshing theme");
-        document.dispatchEvent(new Event("login:sync"));
-        document.dispatchEvent(
-          new CustomEvent("refreshTheme", {
-            detail: { disallowRefresh: true },
-          })
-        );
-      }, 100);
-    });
-  }
-}
-
-document.getElementById("paste")!!.addEventListener("click", () => {
-  const paste_screen = document.getElementById("paste_screen")!!;
-  paste_screen.classList.remove("hidden");
-});
-
-document.getElementById("paste_confirm")!!.addEventListener("click", () => {
-  /**
-   * @type {string}
-   */
-  const pasted_text = document.getElementById("pasted_text").value;
-  let regex_pasted = /(.*)\nBlock (\d)/g;
-  let result;
-  pasted_text.match(regex_pasted).forEach((match: string) => {
-    let match_found = match.split("\n");
-    let block = match_found[1].split(" ")[1];
-    let block_name = match_found[0];
-    (document.getElementById(`blk_${block}-input`)!!.children[1] as HTMLInputElement).value =
-      block_name;
-    localStorage.setItem(`blk_${block}`, block_name);
+  (document.querySelector(".screen_blocks") as HTMLElement).style.display =
+    "none";
+  document.addEventListener("screen:change", (e) => {
+    let newScreen = (e as CustomEvent).detail as string;
+    if (newScreen == "blocks") {
+      (document.querySelector(".screen_blocks") as HTMLElement).style.display =
+        "flex";
+    } else {
+      (document.querySelector(".screen_blocks") as HTMLElement).style.display =
+        "none";
+    }
   });
 
-  document.dispatchEvent(new Event("login:sync"))
-  const paste_screen = document.getElementById("paste_screen")!!;
-  paste_screen.classList.add("hidden");
+  function setHTML() {
+    (
+      document.getElementById("blk_1-input")!!.children[1] as HTMLButtonElement
+    ).value = localStorage.getItem("blk_1") || "Block 1";
+    (
+      document.getElementById("blk_2-input")!!.children[1] as HTMLButtonElement
+    ).value = localStorage.getItem("blk_2") || "Block 2";
+    (
+      document.getElementById("blk_3-input")!!.children[1] as HTMLButtonElement
+    ).value = localStorage.getItem("blk_3") || "Block 3";
+    (
+      document.getElementById("blk_4-input")!!.children[1] as HTMLButtonElement
+    ).value = localStorage.getItem("blk_4") || "Block 4";
+    (
+      document.getElementById("blk_5-input")!!.children[1] as HTMLButtonElement
+    ).value = localStorage.getItem("blk_5") || "Block 5";
+    (
+      document.getElementById("blk_6-input")!!.children[1] as HTMLButtonElement
+    ).value = localStorage.getItem("blk_6") || "Block 6";
+    (
+      document.getElementById("blk_7-input")!!.children[1] as HTMLButtonElement
+    ).value = localStorage.getItem("blk_7") || "Block 7";
+  }
+
+  setHTML();
+
+  for (const child of document.getElementById("settings_blocks")!!.children) {
+    if (child.nodeName === "SECTION") {
+      child.children[1].addEventListener("change", () => {
+        let block = child.children[0].innerHTML.split(" ")[1];
+        localStorage.setItem(
+          `blk_${block}`,
+          (child.children[1] as HTMLButtonElement).value
+        );
+        // refresh the theme using the refreshTheme custom event
+        setTimeout(() => {
+          console.log("refreshing theme");
+          document.dispatchEvent(new Event("login:sync"));
+          document.dispatchEvent(
+            new CustomEvent("refreshTheme", {
+              detail: { disallowRefresh: true },
+            })
+          );
+        }, 100);
+      });
+    }
+  }
+
+  document.getElementById("paste")!!.addEventListener("click", () => {
+    const paste_screen = document.getElementById("paste_screen")!!;
+    paste_screen.classList.remove("hidden");
+  });
+
+  document.getElementById("paste_confirm")!!.addEventListener("click", () => {
+    /**
+     * @type {string}
+     */
+    const pasted_text = (
+      document.getElementById("pasted_text") as HTMLTextAreaElement
+    ).value;
+    let regex_pasted = /(.*)\nBlock (\d)/g;
+    pasted_text.match(regex_pasted)!.forEach((match: string) => {
+      let match_found = match.split("\n");
+      let block = match_found[1].split(" ")[1];
+      let block_name = match_found[0];
+      (
+        document.getElementById(`blk_${block}-input`)!!
+          .children[1] as HTMLInputElement
+      ).value = block_name;
+      localStorage.setItem(`blk_${block}`, block_name);
+    });
+
+    document.dispatchEvent(new Event("login:sync"));
+    const paste_screen = document.getElementById("paste_screen")!!;
+    paste_screen.classList.add("hidden");
+    setTimeout(() => {
+      document.dispatchEvent(
+        new CustomEvent("refreshTheme", { detail: { disallowRefresh: true } })
+      );
+    }, 100);
+  });
+
+  document.getElementById("close_paste")!!.addEventListener("click", () => {
+    const paste_screen = document.getElementById("paste_screen")!!;
+    paste_screen.classList.add("hidden");
+  });
+
+  // decide if the user is logged in
   setTimeout(() => {
-    document.dispatchEvent(
-      new CustomEvent("refreshTheme", { detail: { disallowRefresh: true } })
-    );
-  }, 100);
-});
-
-document.getElementById("close_paste")!!.addEventListener("click", () => {
-  const paste_screen = document.getElementById("paste_screen")!!;
-  paste_screen.classList.add("hidden");
-});
-
-
+    function update() {
+      document.getElementById("settings_blocks_login")!!.style.display = "none";
+      // set the data-logged-in attribute to true
+      (
+        document.getElementById("settings_blocks")!! as HTMLElement
+      ).setAttribute("data-logged-in", "true");
+    }
+    function revert() {
+      document.getElementById("settings_blocks_login")!!.style.display = "flex";
+      // set the data-logged-in attribute to false
+      (
+        document.getElementById("settings_blocks")!! as HTMLElement
+      ).setAttribute("data-logged-in", "false");
+    }
+    const logged_in = getAuth().currentUser != null;
+    if (logged_in) {
+      update();
+    }
+    onAuthStateChanged(getAuth(), (user) => {
+      if (user) {
+        update();
+      } else {
+        revert();
+      }
+    });
+  }, 500);
 </script>
 
 <style>
@@ -174,7 +280,6 @@ document.getElementById("close_paste")!!.addEventListener("click", () => {
       @apply text-true-white text-lg font-bold flex flex-row flex-wrap justify-center items-center gap-2 sm:gap-4;
     }
 
-    @apply w-full flex flex-col gap-2 p-8;
+    @apply w-full flex flex-col gap-2 p-8 overflow-y-auto max-h-[80vh];
   }
 </style>
-
