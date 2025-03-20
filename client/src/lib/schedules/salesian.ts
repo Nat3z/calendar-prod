@@ -141,12 +141,19 @@ export default async function handler(request: Request) {
       )
     }
   });
-
-  if (today.getDate() === 7 && today.getMonth() === 2 && today.getFullYear() === 2025) {
+  console.log(today.getDate(), today.getMonth(), today.getFullYear())
+  if (today.getDate() === 19 && today.getMonth() === 2 && today.getFullYear() === 2025) {
     eventDescription = `
-      8:30 - 12:35 Career Day
+      Blk 2 8:30 - 9:30 (60 min)
+      12 min passing
+      Blk 3 9:42 - 10:37 (55 min)
+      Blk 4 10:43 - 11:38 (55 min)
+      Lunch 11:38 - 12:18 (40 min)
+      Flex 12:23 - 12:58 (35 min)
+      Blk 5 1:04 - 1:59 (55 min)
+      Blk 6 2:05 - 3:00 (55 min)
     `;
-    title = "Schedule Change: Career Day; Early 12:35pm Dismissal";
+    title = "Schedule Change: Mental Health Day; Flex";
     return buildSchedule(req, res, {
       eventTitle: title,
       eventDescription,

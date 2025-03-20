@@ -10,923 +10,940 @@ import StorageVersion from "../components/StorageVersion.astro";
 import NewSettings from "../layouts/NewSettings.astro";
 import { Image } from "astro:assets";
 
-import GradLogo from "../lib/grad_logo.png"
+import GradLogo from "../lib/grad_logo.png";
 ---
 
 <Layout title="DynSchedule">
-	<body>
-		<div
-			class="fixed w-full h-full backdrop-blur-lg shadow-lg z-50 text-4xl flex justify-center items-center"
-			id="loading-splash"
-		>
-			<Image
-				src={GradLogo}
-				alt="🎓"
-				class="w-24 h-24 text-4xl text-center animate-pulse"
-			/>
-		</div>
-		<div
-			id="isInDev"
-			data-in-dev={import.meta.env.NODE_ENV === "development"
-				? "true"
-				: "false"}
-		/>
-		<div
-				id="schoolImAssigned"
-				data-assignment={import.meta.env.SCHOOL_ASSIGNMENT}
-		/>
-		<Changelog />
-		<div class="flex justify-start items-center flex-row" data-in-theme-editor>
-			<ScreenSaver />
-			<ThemeEditor />
-			<div
-				class="fixed opacity-0 bg-blue-500 text-custom rounded-lg p-4 top-2 right-2 z-10 hidden justify-start items-center gap-4 h-12 pointer-events-none"
-				id="refresh_notif"
-				data-in-theme-editor
-			>
-				<span class="material-symbols-outlined text-true-white"> refresh</span>
-				<div class="border-l-2 border-white w-1 h-4"></div>
-				<h1 class="text-lg font-mono text-true-white" data-in-theme-editor>
-					Refreshed Schedule!
-				</h1>
-			</div>
-			<div
-				class="flex justify-center items-center w-screen h-screen gap-4 p-2 relative"
-				id="schedule_page"
-				data-intro="This is the preview pane that reflects the changes made in the editor."
-				data-step="99"
-			>
-				<div
-					id="throwback"
-					class="absolute top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm"
-				>
-					<h1>Originally by C.J.F '22, Rebuilt by Nat3z</h1>
-				</div>
+  <body>
+    <div
+      class="fixed w-full h-full backdrop-blur-lg shadow-lg z-50 text-4xl flex justify-center items-center"
+      id="loading-splash"
+    >
+      <Image
+        src={GradLogo}
+        alt="🎓"
+        class="w-24 h-24 text-4xl text-center animate-pulse"
+      />
+    </div>
+    <div
+      id="isInDev"
+      data-in-dev={import.meta.env.NODE_ENV === "development"
+        ? "true"
+        : "false"}
+    >
+    </div>
+    <div
+      id="schoolImAssigned"
+      data-assignment={import.meta.env.SCHOOL_ASSIGNMENT}
+    >
+    </div>
+    <Changelog />
+    <div class="flex justify-start items-center flex-row" data-in-theme-editor>
+      <ScreenSaver />
+      <ThemeEditor />
+      <div
+        class="fixed opacity-0 bg-[#1e1e1e] border-blue-400 border text-[#cccccc] rounded-lg p-3 bottom-2 right-2 z-40 hidden justify-start items-center gap-3 h-10 pointer-events-none shadow-md"
+        id="refresh_notif"
+        data-in-theme-editor
+      >
+        <span class="material-symbols-outlined text-blue-400"> refresh </span>
+        <div class="border-l border-[#444444] w-0.5 h-4"></div>
+        <h1 class="text-sm font-mono" data-in-theme-editor>
+          Refreshed Schedule!
+        </h1>
+      </div>
+      <div
+        class="flex justify-center items-center w-screen h-screen gap-4 p-2 relative"
+        id="schedule_page"
+        data-intro="This is the preview pane that reflects the changes made in the editor."
+        data-step="99"
+      >
+        <div
+          id="throwback"
+          class="absolute top-2 left-2 border-black invisible border-2 rounded-sm bg-primary pl-2 pr-2 text-sm"
+        >
+          <h1>Originally by C.J.F '22, Rebuilt by Nat3z</h1>
+        </div>
 
-				<NewSettings />
-				<div
-					class="bg-primary w-11/12 transition-all relative h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg border-custom border-custom-color"
-					id="main_schedule"
-				>
-					<div
-						class="w-full h-1/6 sm:h-1/4 flex relative justify-center border-b-custom border-custom-color items-center rounded-t-lg bg-quickpeek transition-all"
-						id="quickpeek"
-					>
-						<h1
-							class="text-center text-custom text-4xl md:text-6xl absolute z-10"
-							id="current"
-						>
-							Loading...
-						</h1>
-						<div
-							class="w-full bg-transparent opacity-progress-bar rounded-t-lg h-full"
-						>
-							<div
-								class="bg-progressbar h-full rounded-t-lg rounded-tr-none"
-								style="width: 0%"
-								id="progressbar"
-							>
-							</div>
-						</div>
+        <NewSettings />
+        <div
+          class="bg-primary w-11/12 transition-all relative h-5/6 rounded-lg flex-col flex-wrap justify-center drop-shadow-lg border-custom border-custom-color"
+          id="main_schedule"
+        >
+          <div
+            class="w-full h-1/6 sm:h-1/4 flex relative justify-center border-b-custom border-custom-color items-center rounded-t-lg bg-quickpeek transition-all"
+            id="quickpeek"
+          >
+            <h1
+              class="text-center text-custom text-4xl md:text-6xl absolute z-10"
+              id="current"
+            >
+              Loading...
+            </h1>
+            <div
+              class="w-full bg-transparent opacity-progress-bar rounded-t-lg h-full"
+            >
+              <div
+                class="bg-progressbar h-full rounded-t-lg rounded-tr-none"
+                style="width: 0%"
+                id="progressbar"
+              >
+              </div>
+            </div>
 
-						<div
-							class="absolute w-full z-0 flex justify-center -bottom-2 md:bottom-0 md:top-0 md:left-0 items-center gap-2 h-12 sm:h-full"
-						>
-							<button
-								class="w-12 h-12 flex justify-center items-center"
-								id="wayback-back"
-							>
-								<span class="material-symbols-outlined sm:!text-4xl">
-									arrow_back
-								</span>
-							</button>
-							<button
-								class="ml-auto w-12 h-12 flex justify-center items-center"
-								id="wayback-forward"
-							>
-								<span class="material-symbols-outlined sm:!text-4xl">
-									arrow_forward
-								</span>
-							</button>
-						</div>
-					</div>
+            <div
+              class="absolute w-full z-0 flex justify-center -bottom-2 md:bottom-0 md:top-0 md:left-0 items-center gap-2 h-12 sm:h-full"
+            >
+              <button
+                class="w-12 h-12 flex justify-center items-center"
+                id="wayback-back"
+              >
+                <span class="material-symbols-outlined sm:!text-4xl">
+                  arrow_back
+                </span>
+              </button>
+              <button
+                class="ml-auto w-12 h-12 flex justify-center items-center"
+                id="wayback-forward"
+              >
+                <span class="material-symbols-outlined sm:!text-4xl">
+                  arrow_forward
+                </span>
+              </button>
+            </div>
+          </div>
 
-					<div class="overflow-y-auto" style="height: calc(83.33% - 8%);">
-						<div
-							class="flex flex-col justify-center items-center p-4 text-lg z-1 overflow-y-auto flex-wrap"
-							id="classes"
-						>
-						</div>
-					</div>
-				</div>
+          <div class="overflow-y-auto" style="height: calc(83.33% - 8%);">
+            <div
+              class="flex flex-col justify-center items-center p-4 text-lg z-1 overflow-y-auto flex-wrap"
+              id="classes"
+            >
+            </div>
+          </div>
+        </div>
 
-				<div class="hidden sm:block fixed bottom-4 transition-all" id="vercel">
+        <div class="hidden sm:block fixed bottom-4 transition-all" id="vercel">
+        </div>
+      </div>
+      <!-- <VoteForVP /> -->
+      <ThemeModifier />
+      <StorageVersion />
+    </div>
+  </body>
 
-				</div>
-			</div>
-			<!-- <VoteForVP /> -->
-			<ThemeModifier />
-			<StorageVersion />
-		</div>
-	</body>
+  <script>
+    import moment from "moment";
+    import { fetch } from "../lib/FetchCache";
+    import { animateNotif } from "../lib/helpers";
+    import {
+      intoFlexAccessToken,
+      getFlexTimes,
+      getMyFlexes,
+    } from "../lib/flex";
+    let currentDateOffset = new Date();
+    let isInDev = document.getElementById("isInDev")!.dataset.inDev === "true";
 
-	<script>
-		import moment from "moment";
-		import { fetch } from "../lib/FetchCache";
-		import { animateNotif } from "../lib/helpers";
-		let currentDateOffset = new Date();
-		let isInDev = document.getElementById("isInDev")!.dataset.inDev === "true";
-		
-		// remember to change this to the production url when you're done testing
-		let url = './api/schedule';
-		
-		let dtScheduleFirst = new Date();
-		// don't be influenced by utc
-		dtScheduleFirst.setHours(8, 0, 0, 0);
+    // remember to change this to the production url when you're done testing
+    let url = "./api/schedule";
 
-		let scheduleData: any;
-		let scheduleEvents: any[] = [];
+    let dtScheduleFirst = new Date();
+    // don't be influenced by utc
+    dtScheduleFirst.setHours(8, 0, 0, 0);
 
-		console.log(
-			"%c 🎓 DynSchedule by Nat3z ",
-			"background-color: purple; color: white; text-shadow: -2px -2px black; font-size: 32px;"
-		);
-		const schoolAssignment = document.getElementById("schoolImAssigned")!.dataset.assignment;
-		console.log("Heyo! I'm assigned to " + schoolAssignment);
-		function replaceShorthands(period: string) {
-			// replace period to Lunch if it's ONLY "L" with regex
-			// also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
-			return period
-				.replace("&nbh", "-")
-				.replace(/^(\d) Blk$/, "Block $1")
-				.replace(/^L$/, "Lunch")
-				.replace(/^Flextime$/, "Flex")
-				.replace(/^Blk (\d)$/, "Block $1")
-				.replace(/^FaithFam$/, "Faith Family")
-				.replace(/^EmrDrills$/, "Emergancy Drills");
-		}
+    let scheduleData: any;
+    let scheduleEvents: any[] = [];
 
-		function parseTime(t: string, offsetTime = new Date()) {
-			let momentDate = moment(t, "h:mm A").toDate();
-			if (momentDate.getHours() < 8) {
-				momentDate.setHours(momentDate.getHours() + 12);
-			}
-			return momentDate;
-		}
-		if (new Date().getHours() > 16) {
-			currentDateOffset.setDate(currentDateOffset.getDate() + 1);
-			// don't be influenced by current time and utc rules
-			currentDateOffset.setHours(8, 0, 0, 0);
+    console.log(
+      "%c 🎓 DynSchedule by Nat3z ",
+      "background-color: purple; color: white; text-shadow: -2px -2px black; font-size: 32px;"
+    );
+    const schoolAssignment =
+      document.getElementById("schoolImAssigned")!.dataset.assignment;
+    console.log("Heyo! I'm assigned to " + schoolAssignment);
 
-			scheduleData = await (
-				await fetch(
-					`${url}?date=${moment(
-						currentDateOffset
-					).unix()}&refDate=${moment(new Date()).unix()}`
-				)
-			).json();
-			scheduleEvents = scheduleData.events;
-			console.log("Using tomorrow's schedule");
-		} else {
-			scheduleData = await (
-				await fetch(
-					`${url}?date=${moment(
-						dtScheduleFirst
-					).unix()}&refDate=${moment(new Date()).unix()}`
-				)
-			).json();
-			scheduleEvents = scheduleData.events;
-		}
+    const flexTimes = await getFlexTimes();
+    async function replaceShorthands(period: string) {
+      // replace period to Lunch if it's ONLY "L" with regex
+      // also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
+      let replaced_shorthand = period
+        .replace("&nbh", "-")
+        .replace(/^(\d) Blk$/, "Block $1")
+        .replace(/^L$/, "Lunch")
+        .replace(/^Flextime$/, "Flex")
+        .replace(/^Blk (\d)$/, "Block $1")
+        .replace(/^FaithFam$/, "Faith Family")
+        .replace(/^EmrDrills$/, "Emergancy Drills");
+      if (replaced_shorthand.startsWith("Block ")) {
+        let block_num = replaced_shorthand.split(" ")[1];
+        if (localStorage.getItem("blk_" + block_num)) {
+          replaced_shorthand = localStorage.getItem("blk_" + block_num)!;
+        }
+      }
+      if (
+        replaced_shorthand.startsWith("Flex") &&
+        localStorage.getItem("flex_refresh_token")
+      ) {
+        // find a flex time that is closest to the start time
+        if (flexTimes) {
+          let flexTime = flexTimes.find((flexTime) => {
+            return (
+              new Date(flexTime.date).getDate() === currentDateOffset.getDate()
+            );
+          });
+          if (flexTime) {
+            let flexes = await getMyFlexes(flexTime.id);
+            if (flexes && flexes.length > 0) {
+              replaced_shorthand =
+                flexes[0].activityName + " [" + flexes[0].roomName + "]";
+            }
+          }
+        }
+      }
+      return replaced_shorthand;
+    }
 
-		if (!scheduleEvents || scheduleEvents.length === 0) {
-			document.getElementById("current")!.innerHTML = "Out of Session";
-			document.getElementById("classes")!.innerHTML += `
+    function parseTime(t: string, offsetTime = new Date()) {
+      let momentDate = moment(t, "h:mm A").toDate();
+      if (momentDate.getHours() < 8) {
+        momentDate.setHours(momentDate.getHours() + 12);
+      }
+      return momentDate;
+    }
+    if (new Date().getHours() > 16) {
+      currentDateOffset.setDate(currentDateOffset.getDate() + 1);
+      // don't be influenced by current time and utc rules
+      currentDateOffset.setHours(8, 0, 0, 0);
+
+      scheduleData = await (
+        await fetch(
+          `${url}?date=${moment(
+            currentDateOffset
+          ).unix()}&refDate=${moment(new Date()).unix()}`
+        )
+      ).json();
+      scheduleEvents = scheduleData.events;
+      console.log("Using tomorrow's schedule");
+    } else {
+      scheduleData = await (
+        await fetch(
+          `${url}?date=${moment(
+            dtScheduleFirst
+          ).unix()}&refDate=${moment(new Date()).unix()}`
+        )
+      ).json();
+      scheduleEvents = scheduleData.events;
+    }
+
+    if (!scheduleEvents || scheduleEvents.length === 0) {
+      document.getElementById("current")!.innerHTML = "Out of Session";
+      document.getElementById("classes")!.innerHTML += `
 				<h1 id="title" class="text-center text-lg md:text-3xl">
 					No classes today
 				</h1>
 			`;
-		}
+    }
 
-		let mouseTimeout: number | undefined;
-		document.addEventListener("refreshTheme", () => {
-			let quickpeek = document.getElementById("quickpeek")!;
-			let mainschedule = document.getElementById("main_schedule")!;
-			console.log("resetting adaptive bg")
-			// reset the adaptive bg
-			quickpeek.classList.remove("backdrop-blur");
-			quickpeek.classList.remove("bg-white/0");
-			quickpeek.classList.add("bg-quickpeek");
-			mainschedule.classList.remove("backdrop-blur");
-			mainschedule.classList.remove("dark:bg-white/0");
-			mainschedule.classList.remove("bg-black/5");
-			mainschedule.classList.add("bg-primary");
+    let mouseTimeout: number | undefined;
+    document.addEventListener("refreshTheme", () => {
+      let quickpeek = document.getElementById("quickpeek")!;
+      let mainschedule = document.getElementById("main_schedule")!;
+      console.log("resetting adaptive bg");
+      // reset the adaptive bg
+      quickpeek.classList.remove("backdrop-blur");
+      quickpeek.classList.remove("bg-white/0");
+      quickpeek.classList.add("bg-quickpeek");
+      mainschedule.classList.remove("backdrop-blur");
+      mainschedule.classList.remove("dark:bg-white/0");
+      mainschedule.classList.remove("bg-black/5");
+      mainschedule.classList.add("bg-primary");
 
-			mainschedule.classList.add("text-custom");
-			mainschedule.classList.remove("text-true-white");
-			document.querySelector("#settings_cog")!!.classList.add("border-custom")
+      mainschedule.classList.add("text-custom");
+      mainschedule.classList.remove("text-true-white");
+      document.querySelector("#settings_cog")!!.classList.add("border-custom");
 
-			quickpeek.classList.add("text-custom");
-			quickpeek.classList.remove("text-true-white");
-			quickpeek.classList.add("border-b-custom");
+      quickpeek.classList.add("text-custom");
+      quickpeek.classList.remove("text-true-white");
+      quickpeek.classList.add("border-b-custom");
 
-			quickpeek.querySelector("h1")!.classList.add("text-custom");
-			quickpeek.querySelector("h1")!.classList.remove("text-true-white");
+      quickpeek.querySelector("h1")!.classList.add("text-custom");
+      quickpeek.querySelector("h1")!.classList.remove("text-true-white");
 
-			mainschedule.classList.add("border-custom");
-			document
-				.getElementById("settings_cog")!
-				.classList.remove("backdrop-blur");
-			document.getElementById("settings_cog")!.classList.remove("bg-white/5");
+      mainschedule.classList.add("border-custom");
+      document
+        .getElementById("settings_cog")!
+        .classList.remove("backdrop-blur");
+      document.getElementById("settings_cog")!.classList.remove("bg-white/5");
 
-			document.body.classList.remove("bg-light");
-			document.body.classList.remove("dark:bg-dark");
-			document.getElementById("vercel")!.style.bottom = "1rem";
+      document.body.classList.remove("bg-light");
+      document.body.classList.remove("dark:bg-dark");
+      document.getElementById("vercel")!.style.bottom = "1rem";
 
-			document.body.classList.remove("bg-dark-primary");
-			document.body.style.cursor = "auto";
+      document.body.classList.remove("bg-dark-primary");
+      document.body.style.cursor = "auto";
+    });
+    async function mouseMove() {
+      clearTimeout(mouseTimeout);
 
-		})
-		async function mouseMove() {
-			clearTimeout(mouseTimeout);
+      if (localStorage.getItem("theme") !== "default") {
+        // check if the css variable --background-image-dark and --background-image-light are set to a new value. if not, then return.
+        if (document.getElementById("color-definitions") === null)
+          await new Promise<void>((resolve, reject) => {
+            const interval = setInterval(() => {
+              if (document.getElementById("color-definitions") === null) return;
+              resolve();
+            }, 100);
 
-			if (localStorage.getItem("theme") !== "default") {
-				// check if the css variable --background-image-dark and --background-image-light are set to a new value. if not, then return.
-				if (document.getElementById("color-definitions") === null)
-					await new Promise<void>((resolve, reject) => {
-						const interval = setInterval(() => {
-							if (document.getElementById("color-definitions") === null)
-								return;
-							resolve();
-						}, 100)
+            setTimeout(() => {
+              if (document.getElementById("color-definitions") === null) {
+                clearInterval(interval);
+                const style = document.createElement("style");
+                style.id = "color-definitions";
+                document.head.appendChild(style);
+                resolve();
+              }
+            }, 1000);
+          });
 
-						setTimeout(() => {
-							if (document.getElementById("color-definitions") === null) {
-								clearInterval(interval)
-								const style = document.createElement("style")
-								style.id = "color-definitions"
-								document.head.appendChild(style)
-								resolve()
-							}
-						}, 1000)
-					});
-				
-				const propertyDark = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--background-image-dark");
-				const propertyLight = getComputedStyle(document.getElementById("color-definitions")!!).getPropertyValue("--background-image-light");
-				if (
-					(!propertyDark || !propertyLight) || 
-				(
-					propertyDark === 'url(/dark.gif)' ||
-					propertyLight === 'url(/background.gif)'
-				) || 
-					propertyDark === "url(\\/dark\\.gif)" ||
-					propertyLight === "url(\\/background\\.gif)"
-				) {
-					return;
-				}
-			}
-			let quickpeek = document.getElementById("quickpeek")!;
-			let mainschedule = document.getElementById("main_schedule")!;
-			// WHEN MOUSE IS MOVING
-			quickpeek.classList.remove("backdrop-blur");
-			quickpeek.classList.remove("bg-black/5");
-			quickpeek.classList.add("bg-quickpeek");
-			mainschedule.classList.remove("backdrop-blur");
-			mainschedule.classList.remove("dark:bg-white/0");
-			mainschedule.classList.remove("bg-black/5");
-			mainschedule.classList.add("bg-primary");
+        const propertyDark = getComputedStyle(
+          document.getElementById("color-definitions")!!
+        ).getPropertyValue("--background-image-dark");
+        const propertyLight = getComputedStyle(
+          document.getElementById("color-definitions")!!
+        ).getPropertyValue("--background-image-light");
+        if (
+          !propertyDark ||
+          !propertyLight ||
+          propertyDark === "url(/dark.gif)" ||
+          propertyLight === "url(/background.gif)" ||
+          propertyDark === "url(\\/dark\\.gif)" ||
+          propertyLight === "url(\\/background\\.gif)"
+        ) {
+          return;
+        }
+      }
+      let quickpeek = document.getElementById("quickpeek")!;
+      let mainschedule = document.getElementById("main_schedule")!;
+      // WHEN MOUSE IS MOVING
+      quickpeek.classList.remove("backdrop-blur");
+      quickpeek.classList.remove("bg-black/5");
+      quickpeek.classList.add("bg-quickpeek");
+      mainschedule.classList.remove("backdrop-blur");
+      mainschedule.classList.remove("dark:bg-white/0");
+      mainschedule.classList.remove("bg-black/5");
+      mainschedule.classList.add("bg-primary");
 
-			mainschedule.classList.add("text-custom");
-			mainschedule.classList.remove("text-true-white");
-			document.querySelector("#settings_cog")!!.classList.add("border-custom")
+      mainschedule.classList.add("text-custom");
+      mainschedule.classList.remove("text-true-white");
+      document.querySelector("#settings_cog")!!.classList.add("border-custom");
 
-			quickpeek.classList.add("text-custom");
-			quickpeek.classList.remove("text-true-white");
-			quickpeek.classList.add("border-b-custom");
+      quickpeek.classList.add("text-custom");
+      quickpeek.classList.remove("text-true-white");
+      quickpeek.classList.add("border-b-custom");
 
-			quickpeek.querySelector("h1")!.classList.add("text-custom");
-			quickpeek.querySelector("h1")!.classList.remove("text-true-white");
+      quickpeek.querySelector("h1")!.classList.add("text-custom");
+      quickpeek.querySelector("h1")!.classList.remove("text-true-white");
 
-			mainschedule.classList.add("border-custom");
-			document
-				.getElementById("settings_cog")!
-				.classList.remove("backdrop-blur");
-			document.getElementById("settings_cog")!.classList.remove("bg-white/5");
+      mainschedule.classList.add("border-custom");
+      document
+        .getElementById("settings_cog")!
+        .classList.remove("backdrop-blur");
+      document.getElementById("settings_cog")!.classList.remove("bg-white/5");
 
-			document.body.classList.remove("bg-light");
-			document.body.classList.remove("dark:bg-dark");
-			document.getElementById("vercel")!.style.bottom = "1rem";
+      document.body.classList.remove("bg-light");
+      document.body.classList.remove("dark:bg-dark");
+      document.getElementById("vercel")!.style.bottom = "1rem";
 
-			document.body.classList.remove("bg-dark-primary");
-			document.body.style.cursor = "auto";
-			mouseTimeout = window.setTimeout(() => {
-				// if (
-				//	localStorage.getItem("theme") !== "default" &&
-				//	localStorage.getItem("theme")
-				//)
-				//	return;
+      document.body.classList.remove("bg-dark-primary");
+      document.body.style.cursor = "auto";
+      mouseTimeout = window.setTimeout(() => {
+        // if (
+        //	localStorage.getItem("theme") !== "default" &&
+        //	localStorage.getItem("theme")
+        //)
+        //	return;
 
-				// WHEN MOUSE IS STILL
-				let quickpeek = document.getElementById("quickpeek")!;
-				let mainschedule = document.getElementById("main_schedule")!;
+        // WHEN MOUSE IS STILL
+        let quickpeek = document.getElementById("quickpeek")!;
+        let mainschedule = document.getElementById("main_schedule")!;
 
-				quickpeek.classList.add("backdrop-blur");
-				quickpeek.classList.add("bg-black/5");
-				quickpeek.classList.remove("bg-quickpeek");
-				quickpeek.classList.remove("text-custom");
-				quickpeek.classList.add("text-true-white");
-				quickpeek.classList.remove("border-b-custom");
+        quickpeek.classList.add("backdrop-blur");
+        quickpeek.classList.add("bg-black/5");
+        quickpeek.classList.remove("bg-quickpeek");
+        quickpeek.classList.remove("text-custom");
+        quickpeek.classList.add("text-true-white");
+        quickpeek.classList.remove("border-b-custom");
 
-				quickpeek.querySelector("h1")!.classList.remove("text-custom");
-				quickpeek.querySelector("h1")!.classList.add("text-true-white");
+        quickpeek.querySelector("h1")!.classList.remove("text-custom");
+        quickpeek.querySelector("h1")!.classList.add("text-true-white");
 
-				document.getElementById("settings_cog")!.classList.add("backdrop-blur");
-				document.getElementById("settings_cog")!.classList.add("bg-white/5");
-				document.getElementById("settings_cog")!.classList.remove("border-custom");
+        document.getElementById("settings_cog")!.classList.add("backdrop-blur");
+        document.getElementById("settings_cog")!.classList.add("bg-white/5");
+        document
+          .getElementById("settings_cog")!
+          .classList.remove("border-custom");
 
-				mainschedule.classList.remove("text-custom");
-				mainschedule.classList.add("text-true-white");
-				mainschedule.classList.remove("border-custom");
-				mainschedule.classList.add("backdrop-blur");
-				mainschedule.classList.add("dark:bg-white/0");
-				mainschedule.classList.add("bg-black/5");
-				mainschedule.classList.remove("bg-primary");
-				document.body.classList.add("bg-light");
-				document.getElementById("vercel")!.style.bottom = "-1.5rem";
-				document.body.style.cursor = "none";
-				document.body.classList.add("dark:bg-dark");
+        mainschedule.classList.remove("text-custom");
+        mainschedule.classList.add("text-true-white");
+        mainschedule.classList.remove("border-custom");
+        mainschedule.classList.add("backdrop-blur");
+        mainschedule.classList.add("dark:bg-white/0");
+        mainschedule.classList.add("bg-black/5");
+        mainschedule.classList.remove("bg-primary");
+        document.body.classList.add("bg-light");
+        document.getElementById("vercel")!.style.bottom = "-1.5rem";
+        document.body.style.cursor = "none";
+        document.body.classList.add("dark:bg-dark");
 
-				document.body.classList.remove("bg-dark-primary");
-			}, 5000);
-		}
+        document.body.classList.remove("bg-dark-primary");
+      }, 5000);
+    }
 
-		if (
-			(localStorage.getItem("dynamic_theme") === "true" ||
-				!localStorage.getItem("dynamic_theme"))) {
-			document.onmousemove = mouseMove;
-			mouseMove();
-		}
+    if (
+      localStorage.getItem("dynamic_theme") === "true" ||
+      !localStorage.getItem("dynamic_theme")
+    ) {
+      document.onmousemove = mouseMove;
+      mouseMove();
+    }
 
-		if (localStorage.getItem("theme") === "blurred-img") {
-			let quickpeek = document.getElementById("quickpeek")!;
-			let mainschedule = document.getElementById("main_schedule")!;
+    if (localStorage.getItem("theme") === "blurred-img") {
+      let quickpeek = document.getElementById("quickpeek")!;
+      let mainschedule = document.getElementById("main_schedule")!;
 
-			quickpeek.classList.add("backdrop-blur");
-			quickpeek.classList.add("bg-black/5");
-			quickpeek.classList.remove("bg-quickpeek");
-			document.getElementById("settings_cog")!.classList.add("backdrop-blur");
-			document.getElementById("settings_cog")!.classList.add("bg-white/5");
+      quickpeek.classList.add("backdrop-blur");
+      quickpeek.classList.add("bg-black/5");
+      quickpeek.classList.remove("bg-quickpeek");
+      document.getElementById("settings_cog")!.classList.add("backdrop-blur");
+      document.getElementById("settings_cog")!.classList.add("bg-white/5");
 
-			mainschedule.classList.add("backdrop-blur");
-			mainschedule.classList.add("dark:bg-white/0");
-			mainschedule.classList.remove("text-custom");
-			mainschedule.classList.add("text-true-white");
-			mainschedule.classList.add("bg-black/5");
+      mainschedule.classList.add("backdrop-blur");
+      mainschedule.classList.add("dark:bg-white/0");
+      mainschedule.classList.remove("text-custom");
+      mainschedule.classList.add("text-true-white");
+      mainschedule.classList.add("bg-black/5");
 
-			document.getElementById("vercel")!.classList.add("-bottom-8");
+      document.getElementById("vercel")!.classList.add("-bottom-8");
 
-			// document.body.classList.remove("bg-dark-primary");
-		}
-		if (!scheduleData.possiblyClosed)
-			localStorage.removeItem("alwaysShowSchedule");
+      // document.body.classList.remove("bg-dark-primary");
+    }
+    if (!scheduleData.possiblyClosed)
+      localStorage.removeItem("alwaysShowSchedule");
 
-		let currentStyle = "";
-		// for every second, use a loop and check the events unix time start and end. update the amount of minutes
-		function updateSchedule(events: any) {
-			// get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
-			let current = new Date();
-			let now = moment(current.getTime()).unix();
-			let success = false;
-			let closestStart = 0;
-			let lastEndedBlock = 0;
-			let hasClearedAllDocs = false;
+    let currentStyle = "";
+    // for every second, use a loop and check the events unix time start and end. update the amount of minutes
+    async function updateSchedule(events: any) {
+      // get the current time as milis and add the utcOffset to it and turn it into a unix timestamp
+      let current = new Date();
+      let now = moment(current).unix();
+      let success = false;
+      let closestStart = 0;
+      let lastEndedBlock = 0;
+      let hasClearedAllDocs = false;
+      if (!events) {
+        if (document.getElementById("themeEditor")!!.style.display === "block")
+          document.getElementById("progressbar")!.style.width = `50%`;
+        else document.getElementById("progressbar")!.style.width = `0%`;
 
-			if (!events) {
-				if (document.getElementById("themeEditor")!!.style.display === "block")
-					document.getElementById("progressbar")!.style.width = `50%`;
-				else document.getElementById("progressbar")!.style.width = `0%`;
+        return;
+      }
+      for (const [key, value] of Object.entries(events)) {
+        let startTime = moment(parseTime(events[key].start, current)).unix();
+        let endTime = moment(parseTime(events[key].end, current)).unix();
+        let docKey = document.getElementById(key);
 
-				return;
-			}
-			Object.entries(events).map(([key, value]) => {
-				let startTime = moment(parseTime(events[key].start, current)).unix();
-				let endTime = moment(parseTime(events[key].end, current)).unix();
-				let docKey = document.getElementById(key);
-				if (!hasClearedAllDocs && !docKey) {
-					hasClearedAllDocs = true;
-					document.getElementById("classes")!.innerHTML = `
-					<h1 class="text-lg md:text-3xl font-bold text-center mb-4" id="title" style="${currentStyle}">${replaceShorthands(
-						scheduleData.title
-					)}</h1>
+        if (!hasClearedAllDocs && !docKey) {
+          hasClearedAllDocs = true;
+          document.getElementById("classes")!.innerHTML = `
+					<h1 class="text-lg md:text-3xl font-bold text-center mb-4" id="title" style="${currentStyle}">${scheduleData.title}</h1>
 					`;
-				}
+        }
 
-				if (!docKey) {
-					// add to classes the current period
-					let replace_shorthand = replaceShorthands(key);
-					if (replace_shorthand.startsWith("Block ")) {
-						let block_num = replace_shorthand.split(" ")[1];
-						if (localStorage.getItem("blk_" + block_num)) {
-							replace_shorthand = localStorage.getItem("blk_" + block_num)!;
-						}
-					}
-					document.getElementById("classes")!.innerHTML += `
+        if (!docKey) {
+          // add to classes the current period
+          let replace_shorthand = await replaceShorthands(key);
+          document.getElementById("classes")!.innerHTML += `
 						<h1 id="${key}" class="text-center text-ultramd md:text-3xl" style="${currentStyle}">
 							${parseTime(events[key].start, current).toLocaleTimeString("en-us", {
-								hour12: true,
-								minute: "2-digit",
-								hour: "numeric",
-							})} - ${parseTime(events[key].end, current).toLocaleTimeString(
-						"en-us",
-						{ hour12: true, minute: "2-digit", hour: "numeric" }
-					)} ── ${replace_shorthand}
+                hour12: true,
+                minute: "2-digit",
+                hour: "numeric",
+              })} - ${parseTime(events[key].end, current).toLocaleTimeString(
+                "en-us",
+                { hour12: true, minute: "2-digit", hour: "numeric" }
+              )} ── ${replace_shorthand}
 						</h1>
 					`;
-				}
+        }
 
-				if (now >= startTime && now <= endTime) {
-					document.getElementById(key)!.classList.add("font-bold");
-					const minutes = Math.ceil((endTime - now) / 60);
-					let timeNowCountdown = moment()
-						.startOf("day")
-						.seconds(endTime - now)
-						.format("H:mm:ss");
-					let replace_shorthand = replaceShorthands(key);
-					if (replace_shorthand.startsWith("Block ")) {
-						let block_num = replace_shorthand.split(" ")[1];
-						if (localStorage.getItem("blk_" + block_num)) {
-							replace_shorthand = localStorage.getItem("blk_" + block_num)!;
-						}
-					}
-					document.getElementById(key)!.textContent = `${parseTime(
-						events[key].start,
-						current
-					).toLocaleTimeString("en-us", {
-						hour12: true,
-						minute: "2-digit",
-						hour: "numeric",
-					})} - ${parseTime(events[key].end, current).toLocaleTimeString(
-						"en-us",
-						{ hour12: true, minute: "2-digit", hour: "numeric" }
-					)} ─ ${timeNowCountdown} ─ ${replace_shorthand}`;
-					// get minutes between end and now time and update the #current element
+        if (now >= startTime && now <= endTime) {
+          document.getElementById(key)!.classList.add("font-bold");
+          const minutes = Math.ceil((endTime - now) / 60);
+          let timeNowCountdown = moment()
+            .startOf("day")
+            .seconds(endTime - now)
+            .format("H:mm:ss");
+          let replace_shorthand = await replaceShorthands(key);
 
-					if (Math.ceil(minutes * 60) !== 0) {
-						let text = "";
-						// if the minutes is below 1, then instead of minutes, show seconds
-						let replace_shorthand = replaceShorthands(key);
-						if (replace_shorthand.startsWith("Block ")) {
-							let block_num = replace_shorthand.split(" ")[1];
-							if (localStorage.getItem("blk_" + block_num)) {
-								replace_shorthand = localStorage.getItem("blk_" + block_num)!;
-							}
-						}
+          document.getElementById(key)!.textContent = `${parseTime(
+            events[key].start,
+            current
+          ).toLocaleTimeString("en-us", {
+            hour12: true,
+            minute: "2-digit",
+            hour: "numeric",
+          })} - ${parseTime(events[key].end, current).toLocaleTimeString(
+            "en-us",
+            { hour12: true, minute: "2-digit", hour: "numeric" }
+          )} ─ ${timeNowCountdown} ─ ${replace_shorthand}`;
+          // get minutes between end and now time and update the #current element
 
-						if (minutes <= 1) {
-							text += `${replace_shorthand} (${Math.ceil(endTime - now)}")`;
-						} else {
-							text += `${replace_shorthand} (${Math.ceil(minutes)}')`;
-						}
-						// get the seconds between now and endtime and convert it into a percentage
-						// then set the width of the progress bar to that percentage
-						let percentage = ((endTime - now) / (endTime - startTime)) * 100;
-						document.getElementById(
-							"progressbar"
-						)!.style.width = `${percentage}%`;
+          if (Math.ceil(minutes * 60) !== 0) {
+            let text = "";
+            // if the minutes is below 1, then instead of minutes, show seconds
+            let replace_shorthand = await replaceShorthands(key);
 
-						document.getElementById("current")!.innerHTML = text;
-						if (!document.hasFocus()) {
-							document.title = text;
-						}
+            if (minutes <= 1) {
+              text += `${replace_shorthand} (${Math.ceil(endTime - now)}")`;
+            } else {
+              text += `${replace_shorthand} (${Math.ceil(minutes)}')`;
+            }
+            // get the seconds between now and endtime and convert it into a percentage
+            // then set the width of the progress bar to that percentage
+            let percentage = ((endTime - now) / (endTime - startTime)) * 100;
+            document.getElementById("progressbar")!.style.width =
+              `${percentage}%`;
 
-						success = true;
-					}
-				} else {
-					document.getElementById(key)!.classList.remove("font-bold");
-					let replace_shorthand = replaceShorthands(key);
-					if (replace_shorthand.startsWith("Block ")) {
-						let block_num = replace_shorthand.split(" ")[1];
-						if (localStorage.getItem("blk_" + block_num)) {
-							replace_shorthand = localStorage.getItem("blk_" + block_num)!;
-						}
-					}
-					document.getElementById(key)!.textContent = `${parseTime(
-						events[key].start,
-						current
-					).toLocaleTimeString("en-us", {
-						hour12: true,
-						minute: "2-digit",
-						hour: "numeric",
-					})} - ${parseTime(events[key].end, current).toLocaleTimeString(
-						"en-us",
-						{ hour12: true, minute: "2-digit", hour: "numeric" }
-					)} ── ${replace_shorthand}`;
-				}
+            document.getElementById("current")!.innerHTML = text;
+            if (!document.hasFocus()) {
+              document.title = text;
+            }
 
-				if (
-					startTime - now > 0 &&
-					(closestStart == 0 || startTime - now < closestStart)
-				) {
-					closestStart = startTime - now;
-				}
-				if (
-					endTime - now < 0 &&
-					(lastEndedBlock == 0 || endTime - now > lastEndedBlock)
-				) {
-					lastEndedBlock = endTime - now;
-				}
-			});
+            success = true;
+          }
+        } else {
+          document.getElementById(key)!.classList.remove("font-bold");
+          let replace_shorthand = await replaceShorthands(key);
+          if (document.getElementById(key)) {
+            document.getElementById(key)!.textContent = `${parseTime(
+              events[key].start,
+              current
+            ).toLocaleTimeString("en-us", {
+              hour12: true,
+              minute: "2-digit",
+              hour: "numeric",
+            })} - ${parseTime(events[key].end, current).toLocaleTimeString(
+              "en-us",
+              { hour12: true, minute: "2-digit", hour: "numeric" }
+            )} ── ${replace_shorthand}`;
+          }
+        }
 
-			if (!success) {
-				// if it is still before 3:00 and after 8, most likely just passing period.
-				let text = "";
-				let offset = 0;
-				// if it is 8:00 AM, and before 20 minutes, then it is NOT passing period and is instead the start of the day.
-				// Set offset to 10 to make the nearest event 10 minutes away from 8:30 AM, thus being the actual "Welcome Bell"
-				if (current.getHours() === 8 && current.getMinutes() < 20) {
-					text = "Welcome Bell";
-					offset = 10;
-				}
-				// if it is before 3:00 PM, and after or equal to 8:00 AM, then it is a passing period
-				else if (closestStart != 0 && current.getHours() > 7)
-					text = "Passing Period";
-				// if not, then most likely just out of session
-				else {
-					let text = "Out of Session";
+        if (
+          startTime - now > 0 &&
+          (closestStart == 0 || startTime - now < closestStart)
+        ) {
+          closestStart = startTime - now;
+        }
+        if (
+          endTime - now < 0 &&
+          (lastEndedBlock == 0 || endTime - now > lastEndedBlock)
+        ) {
+          lastEndedBlock = endTime - now;
+        }
+      }
 
-					document.getElementById("current")!.innerHTML = text;
-					if (!document.hasFocus()) {
-						document.title = text;
-					}
+      if (!success) {
+        // if it is still before 3:00 and after 8, most likely just passing period.
+        let text = "";
+        let offset = 0;
+        // if it is 8:00 AM, and before 20 minutes, then it is NOT passing period and is instead the start of the day.
+        // Set offset to 10 to make the nearest event 10 minutes away from 8:30 AM, thus being the actual "Welcome Bell"
+        if (current.getHours() === 8 && current.getMinutes() < 20) {
+          text = "Welcome Bell";
+          offset = 10;
+        }
+        // if it is before 3:00 PM, and after or equal to 8:00 AM, then it is a passing period
+        else if (closestStart != 0 && current.getHours() > 7)
+          text = "Passing Period";
+        // if not, then most likely just out of session
+        else {
+          let text = "Out of Session";
 
-					if (document.getElementById("themeEditor")!!.style.display === "none")
-						document.getElementById("progressbar")!.style.width = `0%`;
-					else document.getElementById("progressbar")!.style.width = `50%`;
-					success = true;
-				}
+          document.getElementById("current")!.innerHTML = text;
+          if (!document.hasFocus()) {
+            document.title = text;
+          }
 
-				if (!success) {
-					// if the minutes is below 1, then instead of minutes, show seconds
+          if (document.getElementById("themeEditor")!!.style.display === "none")
+            document.getElementById("progressbar")!.style.width = `0%`;
+          else document.getElementById("progressbar")!.style.width = `50%`;
+          success = true;
+        }
 
-					if (closestStart / 60 - offset < 1) {
-						text += ` (${Math.ceil(closestStart) - offset * 60}")`;
-					} else {
-						text += ` (${Math.ceil(closestStart / 60) - offset}')`;
-					}
-					document.getElementById("current")!.innerHTML = text;
-					// percentage
-					let percentage =
-						((closestStart - offset * 60) / (closestStart - lastEndedBlock)) *
-						100;
-					document.getElementById(
-						"progressbar"
-					)!.style.width = `${percentage}%`;
+        if (!success) {
+          // if the minutes is below 1, then instead of minutes, show seconds
 
-					if (!document.hasFocus()) {
-						document.title = text;
-					}
-				}
-			}
+          if (closestStart / 60 - offset < 1) {
+            text += ` (${Math.ceil(closestStart) - offset * 60}")`;
+          } else {
+            text += ` (${Math.ceil(closestStart / 60) - offset}')`;
+          }
+          document.getElementById("current")!.innerHTML = text;
+          // percentage
+          let percentage =
+            ((closestStart - offset * 60) / (closestStart - lastEndedBlock)) *
+            100;
+          document.getElementById("progressbar")!.style.width =
+            `${percentage}%`;
 
-			// check if currentDateOffset is in the future of now
-			// if it is, then set the offset to the currentDateOffset
-			// if not, then set the offset to the next day
-			if (currentDateOffset.getDate() != current.getDate()) {
-				let text = "";
-				// calculate how many days it is ahead of now
-				let dayOffset = currentDateOffset.getDate() - current.getDate();
-				if (dayOffset < 0) {
-					// check if the day offset is in the next month or not
-					if (currentDateOffset.getMonth() != current.getMonth()) 
-						text = "Tomorrow's Schedule";
-					else if (dayOffset == -1) text = "Yesterday's Schedule";
-					else text = `${dayOffset * -1} Days in the Past`;
-				} else {
-					if (dayOffset == 1) text = "Tomorrow's Schedule";
-					else text = `${dayOffset} Days in the Future`;
-				}
+          if (!document.hasFocus()) {
+            document.title = text;
+          }
+        }
+      }
 
-				document.getElementById("current")!.innerHTML = text;
-				// percentage
-				if (document.getElementById("themeEditor")!!.style.display === "none")
-					document.getElementById("progressbar")!.style.width = `0%`;
-				else document.getElementById("progressbar")!.style.width = `50%`;
-				if (!document.hasFocus()) {
-					document.title = text;
-				}
-			}
+      // check if currentDateOffset is in the future of now
+      // if it is, then set the offset to the currentDateOffset
+      // if not, then set the offset to the next day
+      if (currentDateOffset.getDate() != current.getDate()) {
+        let text = "";
+        // calculate how many days it is ahead of now
+        let dayOffset = currentDateOffset.getDate() - current.getDate();
+        if (dayOffset < 0) {
+          // check if the day offset is in the next month or not
+          if (currentDateOffset.getMonth() != current.getMonth())
+            text = "Tomorrow's Schedule";
+          else if (dayOffset == -1) text = "Yesterday's Schedule";
+          else text = `${dayOffset * -1} Days in the Past`;
+        } else {
+          if (dayOffset == 1) text = "Tomorrow's Schedule";
+          else text = `${dayOffset} Days in the Future`;
+        }
 
-			if (document.hasFocus()) document.title = `DynSchedule`;
-			if (
-				scheduleData.possiblyClosed &&
-				!localStorage.getItem("alwaysShowSchedule")
-			) {
-				if (!document.hasFocus()) document.title = `Possibly Closed`;
-				document.getElementById("current")!.innerHTML = "No Classes Today";
-				document.getElementById("classes")!.innerHTML = `
+        document.getElementById("current")!.innerHTML = text;
+        // percentage
+        if (document.getElementById("themeEditor")!!.style.display === "none")
+          document.getElementById("progressbar")!.style.width = `0%`;
+        else document.getElementById("progressbar")!.style.width = `50%`;
+        if (!document.hasFocus()) {
+          document.title = text;
+        }
+      }
+
+      if (document.hasFocus()) document.title = `DynSchedule`;
+      if (
+        scheduleData.possiblyClosed &&
+        !localStorage.getItem("alwaysShowSchedule")
+      ) {
+        if (!document.hasFocus()) document.title = `Possibly Closed`;
+        document.getElementById("current")!.innerHTML = "No Classes Today";
+        document.getElementById("classes")!.innerHTML = `
 					<h1 id="title" class="text-center text-lg w-3/4 md:text-3xl text-red-500 font-bold">
 						School is most likely closed for the day. Please check the school's website for more information.
 					</h1>
 					<button class="p-2 pl-4 pr-4 bg-light-primary rounded-lg mt-4" id="revealschedule">Show Schedule Anyways</button>
 				`;
-				document
-					.querySelector("#revealschedule")!
-					.addEventListener("click", () => {
-						localStorage.setItem("alwaysShowSchedule", "true");
-					});
-				document.getElementById("progressbar")!.style.width = `0%`;
+        document
+          .querySelector("#revealschedule")!
+          .addEventListener("click", () => {
+            localStorage.setItem("alwaysShowSchedule", "true");
+          });
+        document.getElementById("progressbar")!.style.width = `0%`;
 
-				(
-					document.querySelector("#showScreenSaver")! as HTMLElement
-				).style.display = "flex !important";
-			} else {
-				(
-					document.querySelector("#showScreenSaver")! as HTMLElement
-				).style.display = "none !important";
-			}
-		}
-		let currentScheduleInterval = setInterval(
-			() => updateSchedule(scheduleEvents),
-			500
-		);
+        (
+          document.querySelector("#showScreenSaver")! as HTMLElement
+        ).style.display = "flex !important";
+      } else {
+        (
+          document.querySelector("#showScreenSaver")! as HTMLElement
+        ).style.display = "none !important";
+      }
+    }
+    let currentScheduleInterval = setInterval(
+      () => updateSchedule(scheduleEvents),
+      500
+    );
 
-		let timeSinceLastFocus = 0;	
+    let timeSinceLastFocus = 0;
 
-		let loadingWayback = false;
+    let loadingWayback = false;
 
-		document
-			.querySelector("#wayback-forward")!
-			.addEventListener("click", () => {
-				if (loadingWayback) return;
-				let dayOffset = currentDateOffset.getDate() - new Date().getDate();
-				// if (dayOffset >= 6 && !isInDev)
-				// 	return animateNotif(
-				// 		"You can only view schedules up to 7 days in the future",
-				// 		document.querySelector("#refresh_notif")! as HTMLElement
-				// 	);
-				currentDateOffset.setDate(currentDateOffset.getDate() + 1);
-				currentDateOffset.setHours(8, 0, 0, 0);
-				if (currentDateOffset.getMonth() != new Date().getMonth()) {
-					currentDateOffset.setDate(currentDateOffset.getDate() - 1);
-					return animateNotif(
-						"You can only view schedules inside of the same month you are currently in.",
-						document.querySelector("#refresh_notif")! as HTMLElement
-					);
-				}
-				let dateSet = currentDateOffset.getDate();
-				clearInterval(currentScheduleInterval);
-				document.getElementById("current")!.innerHTML =
-					"Loading... (" +
-					moment(currentDateOffset).format("dddd, MMMM Do YYYY") +
-					")";
+    document
+      .querySelector("#wayback-forward")!
+      .addEventListener("click", () => {
+        if (loadingWayback) return;
+        let dayOffset = currentDateOffset.getDate() - new Date().getDate();
+        // if (dayOffset >= 6 && !isInDev)
+        // 	return animateNotif(
+        // 		"You can only view schedules up to 7 days in the future",
+        // 		document.querySelector("#refresh_notif")! as HTMLElement
+        // 	);
+        currentDateOffset.setDate(currentDateOffset.getDate() + 1);
+        currentDateOffset.setHours(8, 0, 0, 0);
+        if (currentDateOffset.getMonth() != new Date().getMonth()) {
+          currentDateOffset.setDate(currentDateOffset.getDate() - 1);
+          return animateNotif(
+            "Cannot view schedules from different months.",
+            document.querySelector("#refresh_notif")! as HTMLElement
+          );
+        }
+        let dateSet = currentDateOffset.getDate();
+        clearInterval(currentScheduleInterval);
+        document.getElementById("current")!.innerHTML =
+          "Loading... (" +
+          moment(currentDateOffset).format("dddd, MMMM Do YYYY") +
+          ")";
 
-				setTimeout(async () => {
-					if (dateSet == currentDateOffset.getDate()) {
-						loadingWayback = true;
-						document
-							.querySelector("#wayback-forward")!
-							.classList.add("animate-spin");
-						// make the moment date into a unix timestamp and round it to be consistent with the other unix timestamps
-						await fetch(
-							`${url}?date=${moment(
-								currentDateOffset
-							).unix()}&refDate=${moment().unix()}`
-						)
-							.then((res) => res.json())
-							.then(async (data) => {
-								scheduleData = data;
-								scheduleEvents = scheduleData.events;
-								currentStyle = document.getElementById("title")!.style.cssText;
+        setTimeout(async () => {
+          if (dateSet == currentDateOffset.getDate()) {
+            loadingWayback = true;
+            document
+              .querySelector("#wayback-forward")!
+              .classList.add("animate-spin");
+            // make the moment date into a unix timestamp and round it to be consistent with the other unix timestamps
+            await fetch(
+              `${url}?date=${moment(
+                currentDateOffset
+              ).unix()}&refDate=${moment().unix()}`
+            )
+              .then((res) => res.json())
+              .then(async (data) => {
+                scheduleData = data;
+                scheduleEvents = scheduleData.events;
+                currentStyle = document.getElementById("title")!.style.cssText;
 
-								if (!scheduleEvents || scheduleEvents.length === 0) {
-									document.getElementById("current")!.innerHTML =
-										"Out of Session";
-									document.getElementById("classes")!.innerHTML = `
+                if (!scheduleEvents || scheduleEvents.length === 0) {
+                  document.getElementById("current")!.innerHTML =
+                    "Out of Session";
+                  document.getElementById("classes")!.innerHTML = `
 									<h1 id="title" class="text-center text-lg md:text-3xl w-10/12 md:w-2/4" style="${currentStyle}">
 										No classes today (Either a weekend or a normal school day)
 									</h1>
 								`;
-								}
+                }
 
-								updateSchedule(scheduleEvents);
-								currentScheduleInterval = setInterval(
-									() => updateSchedule(scheduleEvents),
-									100
-								);
-								loadingWayback = false;
-								document
-									.querySelector("#wayback-forward")!
-									.classList.remove("animate-spin");
-								animateNotif(
-									"You are now viewing a future schedule",
-									document.querySelector("#refresh_notif")! as HTMLElement
-								);
-							});
-					}
-				}, 250);
-			});
+                updateSchedule(scheduleEvents);
+                currentScheduleInterval = setInterval(
+                  () => updateSchedule(scheduleEvents),
+                  100
+                );
+                loadingWayback = false;
+                document
+                  .querySelector("#wayback-forward")!
+                  .classList.remove("animate-spin");
+                animateNotif(
+                  "Viewing a future schedule",
+                  document.querySelector("#refresh_notif")! as HTMLElement
+                );
+              });
+          }
+        }, 250);
+      });
 
-		document.querySelector("#wayback-back")!.addEventListener("click", () => {
-			if (loadingWayback) return;
-			let dayOffset = currentDateOffset.getDate() - new Date().getDate();
-			console.log(dayOffset)
-			if (dayOffset <= 0)
-				return animateNotif(
-					"You cannot view past days.",
-					document.querySelector("#refresh_notif")! as HTMLElement
-				);
-			currentDateOffset.setDate(currentDateOffset.getDate() - 1);
-			currentDateOffset.setHours(8, 0, 0, 0);
-			if (currentDateOffset.getMonth() != new Date().getMonth()) {
-				currentDateOffset.setDate(currentDateOffset.getDate() + 1);
-				return animateNotif(
-					"You can only view schedules inside of the same month you are currently in.",
-					document.querySelector("#refresh_notif")! as HTMLElement
-				);
-			}
-			let dateSet = currentDateOffset.getDate();
-			clearInterval(currentScheduleInterval);
-			document.getElementById("current")!.innerHTML =
-				"Loading... (" +
-				moment(currentDateOffset).format("dddd, MMMM Do YYYY") +
-				")";
-			setTimeout(async () => {
-				if (dateSet == currentDateOffset.getDate()) {
-					loadingWayback = true;
-					document
-						.querySelector("#wayback-back")!
-						.classList.add("animate-spin");
-					await fetch(
-						`${url}?date=${moment(
-							currentDateOffset
-						).unix()}&refDate=${moment().unix()}`
-					)
-						.then((res) => res.json())
-						.then(async (data) => {
-							scheduleData = data;
-							scheduleEvents = scheduleData.events;
-							currentStyle = document.getElementById("title")!.style.cssText;
+    document.querySelector("#wayback-back")!.addEventListener("click", () => {
+      if (loadingWayback) return;
+      let dayOffset = currentDateOffset.getDate() - new Date().getDate();
+      console.log(dayOffset);
+      if (dayOffset <= 0)
+        return animateNotif(
+          "You cannot view past days.",
+          document.querySelector("#refresh_notif")! as HTMLElement
+        );
+      currentDateOffset.setDate(currentDateOffset.getDate() - 1);
+      currentDateOffset.setHours(8, 0, 0, 0);
+      if (currentDateOffset.getMonth() != new Date().getMonth()) {
+        currentDateOffset.setDate(currentDateOffset.getDate() + 1);
+        return animateNotif(
+          "Cannot view schedules from different months.",
+          document.querySelector("#refresh_notif")! as HTMLElement
+        );
+      }
+      let dateSet = currentDateOffset.getDate();
+      clearInterval(currentScheduleInterval);
+      document.getElementById("current")!.innerHTML =
+        "Loading... (" +
+        moment(currentDateOffset).format("dddd, MMMM Do YYYY") +
+        ")";
+      setTimeout(async () => {
+        if (dateSet == currentDateOffset.getDate()) {
+          loadingWayback = true;
+          document
+            .querySelector("#wayback-back")!
+            .classList.add("animate-spin");
+          await fetch(
+            `${url}?date=${moment(
+              currentDateOffset
+            ).unix()}&refDate=${moment().unix()}`
+          )
+            .then((res) => res.json())
+            .then(async (data) => {
+              scheduleData = data;
+              scheduleEvents = scheduleData.events;
+              currentStyle = document.getElementById("title")!.style.cssText;
 
-							if (!scheduleEvents || scheduleEvents.length === 0) {
-								let current = new Date();
-								let text = "";
+              if (!scheduleEvents || scheduleEvents.length === 0) {
+                let current = new Date();
+                let text = "";
 
-								if (currentDateOffset.getDate() != current.getDate()) {
-									// calculate how many days it is ahead of now
-									let dayOffset =
-										currentDateOffset.getDate() - current.getDate();
-									if (dayOffset < 0) {
-										if (dayOffset == -1) text = "Yesterday's Schedule";
-										else text = `${dayOffset * -1} Days in the Past`;
-									} else {
-										if (dayOffset == 1) text = "Tomorrow's Schedule";
-										else text = `${dayOffset} Days in the Future`;
-									}
-								}
-								document.getElementById("current")!.innerHTML = text;
-								document.getElementById("classes")!.innerHTML = `
+                if (currentDateOffset.getDate() != current.getDate()) {
+                  // calculate how many days it is ahead of now
+                  let dayOffset =
+                    currentDateOffset.getDate() - current.getDate();
+                  if (dayOffset < 0) {
+                    if (dayOffset == -1) text = "Yesterday's Schedule";
+                    else text = `${dayOffset * -1} Days in the Past`;
+                  } else {
+                    if (dayOffset == 1) text = "Tomorrow's Schedule";
+                    else text = `${dayOffset} Days in the Future`;
+                  }
+                }
+                document.getElementById("current")!.innerHTML = text;
+                document.getElementById("classes")!.innerHTML = `
 									<h1 id="title" class="text-center text-lg md:text-3xl w-10/12 md:w-2/4" style="${currentStyle}">
-										No classes today (Either a weekend or a normal school day. Cached schedules are only available for school days)
+										No classes today
 									</h1>
 								`;
-							}
+              }
 
-							updateSchedule(scheduleEvents);
-							currentScheduleInterval = setInterval(
-								() => updateSchedule(scheduleEvents),
-								100
-							);
-							loadingWayback = false;
-							document
-								.querySelector("#wayback-back")!
-								.classList.remove("animate-spin");
-							animateNotif(
-								"You are now viewing a past schedule",
-								document.querySelector("#refresh_notif")! as HTMLElement
-							);
-						});
-				}
-			}, 250);
-		});
+              updateSchedule(scheduleEvents);
+              currentScheduleInterval = setInterval(
+                () => updateSchedule(scheduleEvents),
+                100
+              );
+              loadingWayback = false;
+              document
+                .querySelector("#wayback-back")!
+                .classList.remove("animate-spin");
+              animateNotif(
+                "Viewing a past schedule",
+                document.querySelector("#refresh_notif")! as HTMLElement
+              );
+            });
+        }
+      }, 250);
+    });
 
-		setInterval(() => {
-			if (!document.hasFocus() && timeSinceLastFocus == 0) {
-				timeSinceLastFocus = moment().unix();
-			}
-			// page has focus
-			// if the page has been unfocused for more than 30 minutes, refetch the schedule
-			else if (
-				document.hasFocus() &&
-				timeSinceLastFocus != 0 &&
-				moment().unix() - timeSinceLastFocus > 30 * 60
-			) {
-				timeSinceLastFocus = 0;
-				fetch(`${url}?date=${moment(new Date()).unix()}&refDate=${moment(new Date()).unix()}`)
-					.then((res) => res.json())
-					.then(async (data) => {
-						scheduleData = data;
-						scheduleEvents = scheduleData.events;
-						currentStyle = document.getElementById("title")!.style.cssText;
+    setInterval(() => {
+      if (!document.hasFocus() && timeSinceLastFocus == 0) {
+        timeSinceLastFocus = moment().unix();
+      }
+      // page has focus
+      // if the page has been unfocused for more than 30 minutes, refetch the schedule
+      else if (
+        document.hasFocus() &&
+        timeSinceLastFocus != 0 &&
+        moment().unix() - timeSinceLastFocus > 30 * 60
+      ) {
+        timeSinceLastFocus = 0;
+        fetch(
+          `${url}?date=${moment(new Date()).unix()}&refDate=${moment(new Date()).unix()}`
+        )
+          .then((res) => res.json())
+          .then(async (data) => {
+            scheduleData = data;
+            scheduleEvents = scheduleData.events;
+            currentStyle = document.getElementById("title")!.style.cssText;
 
-						if (new Date().getHours() > 16) {
-							let currentDate = new Date();
-							currentDate.setDate(currentDate.getDate() + 1);
-							currentDate.setHours(8, 0, 0, 0);
+            if (new Date().getHours() > 16) {
+              let currentDate = new Date();
+              currentDate.setDate(currentDate.getDate() + 1);
+              currentDate.setHours(8, 0, 0, 0);
 
-							scheduleData = await (
-								await fetch(
-									`${url}?date=${Math.round(
-										+currentDate / 1000
-									)}&refDate=${moment().unix()}`
-								)
-							).json();
-							scheduleEvents = scheduleData.events;
-							console.log("Using tomorrow's schedule");
-							currentDateOffset = currentDate;
-						} else {
-							currentDateOffset = new Date();
-						}
+              scheduleData = await (
+                await fetch(
+                  `${url}?date=${Math.round(
+                    +currentDate / 1000
+                  )}&refDate=${moment().unix()}`
+                )
+              ).json();
+              scheduleEvents = scheduleData.events;
+              console.log("Using tomorrow's schedule");
+              currentDateOffset = currentDate;
+            } else {
+              currentDateOffset = new Date();
+            }
 
-						if (!scheduleEvents || scheduleEvents.length === 0) {
-							document.getElementById("current")!.innerHTML = "Out of Session";
-							document.getElementById("classes")!.innerHTML = `
+            if (!scheduleEvents || scheduleEvents.length === 0) {
+              document.getElementById("current")!.innerHTML = "Out of Session";
+              document.getElementById("classes")!.innerHTML = `
 								<h1 id="title" class="text-center text-lg md:text-3xl">
 									No classes today
 								</h1>
 							`;
-						}
+            }
 
-						animateNotif(
-							"Schedule Updated",
-							document.querySelector("#refresh_notif")! as HTMLElement
-						);
-						clearInterval(currentScheduleInterval);
-						currentScheduleInterval = setInterval(
-							() => updateSchedule(scheduleEvents),
-							100
-						);
-						timeSinceLastFocus = 0;
-					});
-			} else if (document.hasFocus() && timeSinceLastFocus != 0) {
-				timeSinceLastFocus = 0;
-			}
-		}, 1000);
-		// make it expand slowly and also fade out
-		const loadingInterval = setInterval(async () => {
-			if (document.getElementById("classes")!.innerHTML === "") {
-				return;
-			}
-			await new Promise((resolve) => setTimeout(resolve, 150));
-			document.getElementById("loading-splash")!!.animate(
-				[
-					{ opacity: 1, transform: "scale(1)" },
-					{ opacity: 0, transform: "scale(1.5)" },
-				],
-				{
-					duration: 1000,
-					easing: "ease-in-out",
-					fill: "forwards",
-				}
-			);
-			setTimeout(() => {
-				document.getElementById("loading-splash")!.style.display = "none";
-			}, 900);
+            animateNotif(
+              "Schedule Updated",
+              document.querySelector("#refresh_notif")! as HTMLElement
+            );
+            clearInterval(currentScheduleInterval);
+            currentScheduleInterval = setInterval(
+              () => updateSchedule(scheduleEvents),
+              100
+            );
+            timeSinceLastFocus = 0;
+          });
+      } else if (document.hasFocus() && timeSinceLastFocus != 0) {
+        timeSinceLastFocus = 0;
+      }
+    }, 1000);
+    // make it expand slowly and also fade out
+    const loadingInterval = setInterval(async () => {
+      if (document.getElementById("classes")!.innerHTML === "") {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      document.getElementById("loading-splash")!!.animate(
+        [
+          { opacity: 1, transform: "scale(1)" },
+          { opacity: 0, transform: "scale(1.5)" },
+        ],
+        {
+          duration: 1000,
+          easing: "ease-in-out",
+          fill: "forwards",
+        }
+      );
+      setTimeout(() => {
+        document.getElementById("loading-splash")!.style.display = "none";
+      }, 900);
 
-			clearInterval(loadingInterval);
-		}, 250);
-	</script>
-	<style --data-og-styles>
-		/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'); */
-		@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hind&family=Nunito+Sans&family=Open+Sans&family=PT+Serif&family=Raleway:wght@500&family=Varela+Round&display=swap");
-		@tailwind base;
-		@tailwind components;
-		@tailwind utilities;
-		:root {
-			--dark-primary: #050014;
-			--light-primary: #1a0066;
-			--primary: #0e003a;
-			--background: #050014;
-			--text-color: #ffffff;
-			--border-width: 0px;
-			--progress-bar: #3b82f6;
-			--border-color: black;
-			--progress-bar-opacity: 20%;
-			--quickpeek: var(--light-primary);
-			--background-image-dark: url("/dark.gif");
-			--background-image-light: url("/background.gif");
-		}
+      clearInterval(loadingInterval);
+    }, 250);
+  </script>
+  <style --data-og-styles>
+    /* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'); */
+    @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Hind&family=Nunito+Sans&family=Open+Sans&family=PT+Serif&family=Raleway:wght@500&family=Varela+Round&display=swap");
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+    :root {
+      --dark-primary: #050014;
+      --light-primary: #1a0066;
+      --primary: #0e003a;
+      --background: #050014;
+      --text-color: #ffffff;
+      --border-width: 0px;
+      --progress-bar: #3b82f6;
+      --border-color: black;
+      --progress-bar-opacity: 20%;
+      --quickpeek: var(--light-primary);
+      --background-image-dark: url("/dark.gif");
+      --background-image-light: url("/background.gif");
+    }
 
-		body {
-			/* font-family: 'Inter', sans-serif; */
-			/* font-family: Arial, Helvetica, sans-serif; */
-			background: var(--background);
-			background-size: cover;
-			background-repeat: no-repeat;
-			min-height: 100vh;
-			@apply transition-all h-screen text-custom;
-		}
+    body {
+      /* font-family: 'Inter', sans-serif; */
+      /* font-family: Arial, Helvetica, sans-serif; */
+      background: var(--background);
+      background-size: cover;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      @apply transition-all h-screen text-custom;
+    }
 
-		.introjs-tooltiptext {
-			color: black !important;
-		}
-	</style>
+    .introjs-tooltiptext {
+      color: black !important;
+    }
+  </style>
 </Layout>

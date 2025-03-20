@@ -1,0 +1,8 @@
+---
+import { BASE_URL } from "../lib/flex";
+---
+
+<meta
+  http-equiv="refresh"
+  content={`0;url=${BASE_URL}/authorize?id=${import.meta.env.FLEX_CLIENT_ID}&redirect_uri=${Astro.url.origin}/integrate-flex`}
+/>
