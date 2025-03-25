@@ -680,13 +680,13 @@ import GradLogo from "../lib/grad_logo.png";
         // 	);
         currentDateOffset.setDate(currentDateOffset.getDate() + 1);
         currentDateOffset.setHours(8, 0, 0, 0);
-        if (currentDateOffset.getMonth() != new Date().getMonth()) {
-          currentDateOffset.setDate(currentDateOffset.getDate() - 1);
-          return animateNotif(
-            "Cannot view schedules from different months.",
-            document.querySelector("#refresh_notif")! as HTMLElement
-          );
-        }
+        // if (currentDateOffset.getMonth() != new Date().getMonth()) {
+        //   currentDateOffset.setDate(currentDateOffset.getDate() - 1);
+        //   return animateNotif(
+        //     "Cannot view schedules from different months.",
+        //     document.querySelector("#refresh_notif")! as HTMLElement
+        //   );
+        // }
         let dateSet = currentDateOffset.getDate();
         clearInterval(currentScheduleInterval);
         document.getElementById("current")!.innerHTML =
@@ -725,7 +725,7 @@ import GradLogo from "../lib/grad_logo.png";
                 updateSchedule(scheduleEvents);
                 currentScheduleInterval = setInterval(
                   () => updateSchedule(scheduleEvents),
-                  100
+                  500
                 );
                 loadingWayback = false;
                 document
@@ -743,21 +743,23 @@ import GradLogo from "../lib/grad_logo.png";
     document.querySelector("#wayback-back")!.addEventListener("click", () => {
       if (loadingWayback) return;
       let dayOffset = currentDateOffset.getDate() - new Date().getDate();
-      console.log(dayOffset);
-      if (dayOffset <= 0)
+      if (
+        dayOffset <= 0 &&
+        currentDateOffset.getMonth() === new Date().getMonth()
+      )
         return animateNotif(
           "You cannot view past days.",
           document.querySelector("#refresh_notif")! as HTMLElement
         );
       currentDateOffset.setDate(currentDateOffset.getDate() - 1);
       currentDateOffset.setHours(8, 0, 0, 0);
-      if (currentDateOffset.getMonth() != new Date().getMonth()) {
-        currentDateOffset.setDate(currentDateOffset.getDate() + 1);
-        return animateNotif(
-          "Cannot view schedules from different months.",
-          document.querySelector("#refresh_notif")! as HTMLElement
-        );
-      }
+      // if (currentDateOffset.getMonth() != new Date().getMonth()) {
+      //   currentDateOffset.setDate(currentDateOffset.getDate() + 1);
+      //   return animateNotif(
+      //     "Cannot view schedules from different months.",
+      //     document.querySelector("#refresh_notif")! as HTMLElement
+      //   );
+      // }
       let dateSet = currentDateOffset.getDate();
       clearInterval(currentScheduleInterval);
       document.getElementById("current")!.innerHTML =
@@ -808,7 +810,7 @@ import GradLogo from "../lib/grad_logo.png";
               updateSchedule(scheduleEvents);
               currentScheduleInterval = setInterval(
                 () => updateSchedule(scheduleEvents),
-                100
+                500
               );
               loadingWayback = false;
               document
@@ -879,7 +881,7 @@ import GradLogo from "../lib/grad_logo.png";
             clearInterval(currentScheduleInterval);
             currentScheduleInterval = setInterval(
               () => updateSchedule(scheduleEvents),
-              100
+              500
             );
             timeSinceLastFocus = 0;
           });
