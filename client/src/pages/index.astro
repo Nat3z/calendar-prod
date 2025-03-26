@@ -162,6 +162,24 @@ import GradLogo from "../lib/grad_logo.png";
     console.log("Heyo! I'm assigned to " + schoolAssignment);
 
     const flexTimes = await getFlexTimes();
+    let lockedIntervals = new Set<string>();
+
+    const REFRESH_INTERVAL = 100;
+    function asyncInterval(
+      name: string,
+      callback: () => Promise<void>,
+      ms: number
+    ) {
+      return setInterval(async () => {
+        if (lockedIntervals.has(name)) {
+          console.log("Interval locked");
+          return;
+        }
+        lockedIntervals.add(name);
+        await callback();
+        lockedIntervals.delete(name);
+      }, ms);
+    }
     async function replaceShorthands(period: string) {
       // replace period to Lunch if it's ONLY "L" with regex
       // also, using regex, replace the "Blk" shorthand to "Block" and switch the number and the word, "Block" with the number. For example, "4 Blk" would be "Block 4"
@@ -192,6 +210,9 @@ import GradLogo from "../lib/grad_logo.png";
           });
           if (flexTime) {
             let flexes = await getMyFlexes(flexTime.id);
+            if (flexes === undefined) {
+              return replaced_shorthand;
+            }
             if (flexes && flexes.length > 0) {
               replaced_shorthand =
                 flexes[0].activityName + " [" + flexes[0].roomName + "]";
@@ -288,12 +309,17 @@ import GradLogo from "../lib/grad_logo.png";
         // check if the css variable --background-image-dark and --background-image-light are set to a new value. if not, then return.
         if (document.getElementById("color-definitions") === null)
           await new Promise<void>((resolve, reject) => {
-            const interval = setInterval(() => {
-              if (document.getElementById("color-definitions") === null) return;
-              resolve();
-            }, 100);
+            const interval = asyncInterval(
+              "mouseMove",
+              async () => {
+                if (document.getElementById("color-definitions") === null)
+                  return;
+                resolve();
+              },
+              100
+            );
 
-            setTimeout(() => {
+            setTimeout(async () => {
               if (document.getElementById("color-definitions") === null) {
                 clearInterval(interval);
                 const style = document.createElement("style");
@@ -450,7 +476,6 @@ import GradLogo from "../lib/grad_logo.png";
         let startTime = moment(parseTime(events[key].start, current)).unix();
         let endTime = moment(parseTime(events[key].end, current)).unix();
         let docKey = document.getElementById(key);
-
         if (!hasClearedAllDocs && !docKey) {
           hasClearedAllDocs = true;
           document.getElementById("classes")!.innerHTML = `
@@ -461,6 +486,7 @@ import GradLogo from "../lib/grad_logo.png";
         if (!docKey) {
           // add to classes the current period
           let replace_shorthand = await replaceShorthands(key);
+
           document.getElementById("classes")!.innerHTML += `
 						<h1 id="${key}" class="text-center text-ultramd md:text-3xl" style="${currentStyle}">
 							${parseTime(events[key].start, current).toLocaleTimeString("en-us", {
@@ -483,6 +509,9 @@ import GradLogo from "../lib/grad_logo.png";
             .seconds(endTime - now)
             .format("H:mm:ss");
           let replace_shorthand = await replaceShorthands(key);
+          if (!replace_shorthand) {
+            continue;
+          }
 
           document.getElementById(key)!.textContent = `${parseTime(
             events[key].start,
@@ -500,7 +529,6 @@ import GradLogo from "../lib/grad_logo.png";
           if (Math.ceil(minutes * 60) !== 0) {
             let text = "";
             // if the minutes is below 1, then instead of minutes, show seconds
-            let replace_shorthand = await replaceShorthands(key);
 
             if (minutes <= 1) {
               text += `${replace_shorthand} (${Math.ceil(endTime - now)}")`;
@@ -523,6 +551,9 @@ import GradLogo from "../lib/grad_logo.png";
         } else {
           document.getElementById(key)!.classList.remove("font-bold");
           let replace_shorthand = await replaceShorthands(key);
+          if (!replace_shorthand) {
+            continue;
+          }
           if (document.getElementById(key)) {
             document.getElementById(key)!.textContent = `${parseTime(
               events[key].start,
@@ -659,9 +690,10 @@ import GradLogo from "../lib/grad_logo.png";
         ).style.display = "none !important";
       }
     }
-    let currentScheduleInterval = setInterval(
-      () => updateSchedule(scheduleEvents),
-      500
+    let currentScheduleInterval = asyncInterval(
+      "updateSchedule",
+      async () => await updateSchedule(scheduleEvents),
+      REFRESH_INTERVAL
     );
 
     let timeSinceLastFocus = 0;
@@ -723,9 +755,10 @@ import GradLogo from "../lib/grad_logo.png";
                 }
 
                 updateSchedule(scheduleEvents);
-                currentScheduleInterval = setInterval(
-                  () => updateSchedule(scheduleEvents),
-                  500
+                currentScheduleInterval = asyncInterval(
+                  "updateSchedule",
+                  async () => await updateSchedule(scheduleEvents),
+                  REFRESH_INTERVAL
                 );
                 loadingWayback = false;
                 document
@@ -808,9 +841,10 @@ import GradLogo from "../lib/grad_logo.png";
               }
 
               updateSchedule(scheduleEvents);
-              currentScheduleInterval = setInterval(
-                () => updateSchedule(scheduleEvents),
-                500
+              currentScheduleInterval = asyncInterval(
+                "updateSchedule",
+                async () => await updateSchedule(scheduleEvents),
+                REFRESH_INTERVAL
               );
               loadingWayback = false;
               document
@@ -825,93 +859,103 @@ import GradLogo from "../lib/grad_logo.png";
       }, 250);
     });
 
-    setInterval(() => {
-      if (!document.hasFocus() && timeSinceLastFocus == 0) {
-        timeSinceLastFocus = moment().unix();
-      }
-      // page has focus
-      // if the page has been unfocused for more than 30 minutes, refetch the schedule
-      else if (
-        document.hasFocus() &&
-        timeSinceLastFocus != 0 &&
-        moment().unix() - timeSinceLastFocus > 30 * 60
-      ) {
-        timeSinceLastFocus = 0;
-        fetch(
-          `${url}?date=${moment(new Date()).unix()}&refDate=${moment(new Date()).unix()}`
-        )
-          .then((res) => res.json())
-          .then(async (data) => {
-            scheduleData = data;
-            scheduleEvents = scheduleData.events;
-            currentStyle = document.getElementById("title")!.style.cssText;
-
-            if (new Date().getHours() > 16) {
-              let currentDate = new Date();
-              currentDate.setDate(currentDate.getDate() + 1);
-              currentDate.setHours(8, 0, 0, 0);
-
-              scheduleData = await (
-                await fetch(
-                  `${url}?date=${Math.round(
-                    +currentDate / 1000
-                  )}&refDate=${moment().unix()}`
-                )
-              ).json();
+    asyncInterval(
+      "mouseMove",
+      async () => {
+        if (!document.hasFocus() && timeSinceLastFocus == 0) {
+          timeSinceLastFocus = moment().unix();
+        }
+        // page has focus
+        // if the page has been unfocused for more than 30 minutes, refetch the schedule
+        else if (
+          document.hasFocus() &&
+          timeSinceLastFocus != 0 &&
+          moment().unix() - timeSinceLastFocus > 30 * 60
+        ) {
+          timeSinceLastFocus = 0;
+          fetch(
+            `${url}?date=${moment(new Date()).unix()}&refDate=${moment(new Date()).unix()}`
+          )
+            .then((res) => res.json())
+            .then(async (data) => {
+              scheduleData = data;
               scheduleEvents = scheduleData.events;
-              console.log("Using tomorrow's schedule");
-              currentDateOffset = currentDate;
-            } else {
-              currentDateOffset = new Date();
-            }
+              currentStyle = document.getElementById("title")!.style.cssText;
 
-            if (!scheduleEvents || scheduleEvents.length === 0) {
-              document.getElementById("current")!.innerHTML = "Out of Session";
-              document.getElementById("classes")!.innerHTML = `
+              if (new Date().getHours() > 16) {
+                let currentDate = new Date();
+                currentDate.setDate(currentDate.getDate() + 1);
+                currentDate.setHours(8, 0, 0, 0);
+
+                scheduleData = await (
+                  await fetch(
+                    `${url}?date=${Math.round(
+                      +currentDate / 1000
+                    )}&refDate=${moment().unix()}`
+                  )
+                ).json();
+                scheduleEvents = scheduleData.events;
+                console.log("Using tomorrow's schedule");
+                currentDateOffset = currentDate;
+              } else {
+                currentDateOffset = new Date();
+              }
+
+              if (!scheduleEvents || scheduleEvents.length === 0) {
+                document.getElementById("current")!.innerHTML =
+                  "Out of Session";
+                document.getElementById("classes")!.innerHTML = `
 								<h1 id="title" class="text-center text-lg md:text-3xl">
 									No classes today
 								</h1>
 							`;
-            }
+              }
 
-            animateNotif(
-              "Schedule Updated",
-              document.querySelector("#refresh_notif")! as HTMLElement
-            );
-            clearInterval(currentScheduleInterval);
-            currentScheduleInterval = setInterval(
-              () => updateSchedule(scheduleEvents),
-              500
-            );
-            timeSinceLastFocus = 0;
-          });
-      } else if (document.hasFocus() && timeSinceLastFocus != 0) {
-        timeSinceLastFocus = 0;
-      }
-    }, 1000);
-    // make it expand slowly and also fade out
-    const loadingInterval = setInterval(async () => {
-      if (document.getElementById("classes")!.innerHTML === "") {
-        return;
-      }
-      await new Promise((resolve) => setTimeout(resolve, 150));
-      document.getElementById("loading-splash")!!.animate(
-        [
-          { opacity: 1, transform: "scale(1)" },
-          { opacity: 0, transform: "scale(1.5)" },
-        ],
-        {
-          duration: 1000,
-          easing: "ease-in-out",
-          fill: "forwards",
+              animateNotif(
+                "Schedule Updated",
+                document.querySelector("#refresh_notif")! as HTMLElement
+              );
+              clearInterval(currentScheduleInterval);
+              currentScheduleInterval = asyncInterval(
+                "updateSchedule",
+                async () => await updateSchedule(scheduleEvents),
+                REFRESH_INTERVAL
+              );
+              timeSinceLastFocus = 0;
+            });
+        } else if (document.hasFocus() && timeSinceLastFocus != 0) {
+          timeSinceLastFocus = 0;
         }
-      );
-      setTimeout(() => {
-        document.getElementById("loading-splash")!.style.display = "none";
-      }, 900);
+      },
+      1000
+    );
+    // make it expand slowly and also fade out
+    const loadingInterval = asyncInterval(
+      "loading",
+      async () => {
+        if (document.getElementById("classes")!.innerHTML === "") {
+          return;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 150));
+        document.getElementById("loading-splash")!!.animate(
+          [
+            { opacity: 1, transform: "scale(1)" },
+            { opacity: 0, transform: "scale(1.5)" },
+          ],
+          {
+            duration: 1000,
+            easing: "ease-in-out",
+            fill: "forwards",
+          }
+        );
+        setTimeout(async () => {
+          document.getElementById("loading-splash")!.style.display = "none";
+        }, 900);
 
-      clearInterval(loadingInterval);
-    }, 250);
+        clearInterval(loadingInterval);
+      },
+      250
+    );
   </script>
   <style --data-og-styles>
     /* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'); */
