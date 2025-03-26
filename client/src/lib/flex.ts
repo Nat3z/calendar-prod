@@ -47,7 +47,13 @@ export async function getFlexTimes() {
   }[] | undefined;
 }
 
+let processingQuery = false;
 export async function getMyFlexes(targetedTime?: number) {
+  if (processingQuery) {
+    console.log("Processing query");
+    return undefined;
+  }
+  processingQuery = true;
   const accessToken = await intoFlexAccessToken();
   if (!accessToken) {
     return [];
@@ -59,6 +65,7 @@ export async function getMyFlexes(targetedTime?: number) {
   if (cached) {
     const { data, expires_at } = JSON.parse(cached);
     if (Date.now() < expires_at) {
+      processingQuery = false;
       return data as {
         activityId: number;
         activityName: string;
@@ -82,11 +89,13 @@ export async function getMyFlexes(targetedTime?: number) {
   });
   if (!response.ok) {
     console.error(await response.text());
+    processingQuery = false;
     return [];
   }
   const data = await response.json();
   if (!response.ok) {
     console.error("Flex: Failed to get my flexes");
+    processingQuery = false;
     return [];
   }
 
@@ -96,6 +105,9 @@ export async function getMyFlexes(targetedTime?: number) {
     expires_at: Date.now() + 1000 * 60 * 10,
   }));
 
+  processingQuery = false;
+
+  console.log("data", data);
   return data.assignments as {
     activityId: number;
     activityName: string;
