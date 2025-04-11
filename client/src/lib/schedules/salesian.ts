@@ -142,18 +142,11 @@ export default async function handler(request: Request) {
     }
   });
   console.log(today.getDate(), today.getMonth(), today.getFullYear())
-  if (today.getDate() === 19 && today.getMonth() === 2 && today.getFullYear() === 2025) {
+  if (today.getDate() === 11 && today.getMonth() === 3 && today.getFullYear() === 2025) {
     eventDescription = `
-      Blk 2 8:30 - 9:30 (60 min)
-      12 min passing
-      Blk 3 9:42 - 10:37 (55 min)
-      Blk 4 10:43 - 11:38 (55 min)
-      Lunch 11:38 - 12:18 (40 min)
-      Flex 12:23 - 12:58 (35 min)
-      Blk 5 1:04 - 1:59 (55 min)
-      Blk 6 2:05 - 3:00 (55 min)
+      Service Day 8:30 - 1:00
     `;
-    title = "Schedule Change: Mental Health Day; Flex";
+    title = "Schedule Change: Service Day";
     return buildSchedule(req, res, {
       eventTitle: title,
       eventDescription,
