@@ -1,8 +1,14 @@
 ---
 import { BASE_URL } from "../lib/flex";
+
+const url =
+  BASE_URL +
+  "/authorize?id=" +
+  import.meta.env.FLEX_CLIENT_ID +
+  "&redirect_uri=" +
+  Astro.url.origin +
+  "/integrate-flex";
+console.log("redirecting to: ", url);
 ---
 
-<meta
-  http-equiv="refresh"
-  content={`0;url=${BASE_URL}/authorize?id=${import.meta.env.FLEX_CLIENT_ID}&redirect_uri=${Astro.url.origin}/integrate-flex`}
-/>
+<meta http-equiv="refresh" content={`0;url=${url}`} />

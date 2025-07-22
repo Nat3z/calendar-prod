@@ -1,4 +1,4 @@
-export const BASE_URL = "https://flex.nat3z.com/api/v1";
+export const BASE_URL = "https://flex.betterflex.co/salesian/api/v1";
 
 export async function intoFlexAccessToken() {
   const flexAccessToken = localStorage.getItem("flex_access_token");
